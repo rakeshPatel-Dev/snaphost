@@ -57,6 +57,16 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <meta name="apple-mobile-web-app-title" content="Snaphost" />
+        <meta name="application-name" content="Snaphost" />
+        <meta name="theme-color" content="#ffffff" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icon1.png" />
+        <link rel="icon" type="image/svg+xml" href="/icon0.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body
         suppressHydrationWarning
         className="min-h-screen bg-white text-zinc-900 flex flex-col"
