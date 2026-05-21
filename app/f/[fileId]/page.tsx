@@ -22,7 +22,7 @@ export default function FilePage() {
   if (!fileId) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-gray-600 dark:text-gray-400">Invalid file ID</p>
+        <p className="text-muted-foreground">Invalid file ID</p>
       </div>
     );
   }

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../styles/globals.css";
+import { Toaster } from "sonner";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -69,14 +72,14 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className="min-h-screen bg-white text-zinc-900 flex flex-col"
+        className="min-h-screen bg-background text-foreground flex flex-col"
       >
-          <header className="p-4 border-b">
-            <nav className="flex gap-2 items-center">
-                         </nav>
-          </header>
-
-          {children}
+          <Toaster position="top-right" closeButton duration={3000}  />
+          <Header />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
       </body>
     </html>
   );

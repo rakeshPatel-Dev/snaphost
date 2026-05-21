@@ -42,7 +42,7 @@ export default function FilePreview({ fileId }: FilePreviewProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -50,10 +50,10 @@ export default function FilePreview({ fileId }: FilePreviewProps) {
   if (error || !metadata) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+        <h1 className="text-2xl font-bold text-foreground">
           {error || 'File Not Found'}
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
+        <p className="text-muted-foreground mt-2">
           The file you're looking for doesn't exist or has been deleted.
         </p>
       </div>
@@ -77,24 +77,24 @@ export default function FilePreview({ fileId }: FilePreviewProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <div className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* File Info Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 break-words">
+          <h1 className="text-3xl font-bold text-foreground break-words">
             {metadata.filename}
           </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-sm text-muted-foreground mt-2">
             Uploaded {new Date(metadata.createdAt).toLocaleDateString()} at{' '}
             {new Date(metadata.createdAt).toLocaleTimeString()}
           </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-muted-foreground">
             {(metadata.size / 1024 / 1024).toFixed(2)} MB
           </p>
         </div>
 
         {/* File Preview */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm mb-6 overflow-hidden">
+        <div className="bg-card rounded-lg shadow-sm mb-6 overflow-hidden">
           {metadata.fileType === 'image' ? (
             <ImagePreview url={metadata.url} filename={metadata.filename} />
           ) : (

@@ -106,8 +106,8 @@ export default function UploadBox() {
   return (
     <div className="w-full max-w-md mx-auto">
       {error && (
-        <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
+        <div className="mb-4 p-4 bg-destructive/10 border border-destructive/30 rounded-lg">
+          <p className="text-sm text-destructive">{error}</p>
         </div>
       )}
       <div
@@ -116,8 +116,8 @@ export default function UploadBox() {
         onDrop={handleDrop}
         className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer ${
           isDragging
-            ? 'border-blue-500 bg-blue-50 dark:bg-blue-950'
-            : 'border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500'
+            ? 'border-accent bg-accent/10'
+            : 'border-border hover:border-muted-foreground'
         }`}
       >
         <input
@@ -130,12 +130,12 @@ export default function UploadBox() {
         />
 
         <div className="flex flex-col items-center gap-3">
-          <Upload className="w-12 h-12 text-gray-400" />
+          <Upload className="w-12 h-12 text-muted-foreground" />
           <div>
-            <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+            <p className="text-lg font-semibold text-foreground">
               {isUploading ? 'Uploading...' : 'Drop file or click to select'}
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               PNG, JPG, WEBP, PDF (up to 10MB)
             </p>
           </div>
