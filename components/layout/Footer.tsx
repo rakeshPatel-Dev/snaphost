@@ -2,53 +2,78 @@
 
 import { copyrightText, footerLinks } from "@/data/footer";
 import Link from "next/link";
+import {    Heart, ArrowUpRight, } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import Logo from "./Logo";
+import FeaturePills from "./FeaturePills";
+import SocialButtons from "./SocialButtons";
+
 
 export default function Footer() {
-
   return (
-    <footer className="border-t border-border bg-card mt-auto">
-      <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">
-              SnapHost
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Makes it simple to upload and share files instantly. No sign up required.
+    <footer className="mt-auto border-t border-border/60 bg-card/50">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+
+        {/* Main grid */}
+        <div className="grid grid-cols-1 gap-10 py-12 md:grid-cols-12">
+
+          {/* Brand col */}
+          <div className="md:col-span-5 flex flex-col gap-5">
+            <Logo />
+
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+              The simplest way to upload and share images instantly. No account needed — just drop, copy, share.
             </p>
+
+            {/* Feature pills */}
+            <FeaturePills />
+
+            {/* Socials */}
+            <SocialButtons />
           </div>
 
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">
-              Features
-            </h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex items-center gap-2">
-                <span className="text-foreground">✓</span> Instant upload
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-foreground">✓</span> No sign up needed
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-foreground">✓</span> Secure links
-              </li>
+          {/* Spacer */}
+          <div className="hidden md:block md:col-span-1" />
+
+          {/* Links cols */}
+          <div className="md:col-span-3 flex flex-col gap-4">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+              Product
+            </p>
+            <ul className="flex flex-col gap-2.5">
+              {[
+                { label: "Upload", href: "/upload" },
+                { label: "Pricing", href: "/pricing" },
+                { label: "Changelog", href: "/changelog" },
+                { label: "Docs", href: "/docs" },
+              ].map(({ label, href }) => (
+                <li key={label}>
+                  <Link
+                    href={href}
+                    className="group flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">
+          <div className="md:col-span-3 flex flex-col gap-4">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60">
               Support
-            </h3>
-            <ul className="space-y-2 text-sm">
-             {footerLinks.map((link) => (
+            </p>
+            <ul className="flex flex-col gap-2.5">
+              {footerLinks.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground"
+                    className="group flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
                   >
                     {link.name}
+                    <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 translate-x-0 transition-all group-hover:opacity-100 group-hover:-translate-y-1 group-hover:translate-x-0.5" />
                   </Link>
                 </li>
               ))}
@@ -56,11 +81,16 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-border pt-8">
-          <p className="text-center text-sm text-muted-foreground">
-            {copyrightText}
+        <Separator className="opacity-60" />
+
+        {/* Bottom bar */}
+        <div className="flex flex-col items-center justify-between gap-3 py-5 sm:flex-row">
+          <p className="text-xs text-muted-foreground">{copyrightText}</p>
+          <p className="flex items-center gap-1 text-xs text-muted-foreground">
+            Made with <Heart className="h-3 w-3 fill-primary text-primary" /> by the SnapHost team
           </p>
         </div>
+
       </div>
     </footer>
   );
