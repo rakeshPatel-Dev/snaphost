@@ -72,14 +72,17 @@ export default function Header() {
           </nav>
 
           {/* buttons */}
+          <div className="hidden md:flex items-center gap-2">
+
             {navButtons.map((button) => (
-                <Link
-                  key={button.name}
-                  href={button.href}
-                >
+              <Link
+              key={button.name}
+              href={button.href}
+              >
                     <Button className="ml-2">{button.name}</Button>
                 </Link>)
             )}
+            </div>
 
 
           {/* Right side actions */}

@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../styles/globals.css";
 import { Toaster } from "sonner";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import SiteChrome from "@/components/layout/SiteChrome";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,6 +18,15 @@ export const metadata: Metadata = {
   title: {
     default: "SnapHost - Instantly upload and share images and PDFs.",
     template: "%s | SnapHost",
+  },
+  themeColor: "#ffffff",
+  icons: {
+    icon: [
+      { url: "/icon0.svg", type: "image/svg+xml" },
+      { url: "/icon1.png", type: "image/png", sizes: "32x32" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-icon.png",
   },
   description:
     "Instantly upload and share images and PDFs with clean, fast links. No login required. Simple, secure file hosting in seconds.",
@@ -63,23 +71,15 @@ export default function RootLayout({
       <head>
         <meta name="apple-mobile-web-app-title" content="Snaphost" />
         <meta name="application-name" content="Snaphost" />
-        <meta name="theme-color" content="#ffffff" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/icon1.png" />
-        <link rel="icon" type="image/svg+xml" href="/icon0.svg" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
       </head>
       <body
         suppressHydrationWarning
         className="min-h-screen bg-background text-foreground flex flex-col"
       >
           <Toaster position="top-right" closeButton duration={3000}  />
-          <Header />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
+          <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

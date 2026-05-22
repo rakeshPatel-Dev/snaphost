@@ -1,8 +1,0 @@
-allowBuilds:
-  '@clerk/shared': false
-  msw: set this to true or false
-  sharp: false
-  unrs-resolver: false
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
