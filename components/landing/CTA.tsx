@@ -15,7 +15,7 @@ export default function CTA() {
           
           {/* Internal glows */}
           <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-accent/10 blur-[80px] -z-10" />
-          <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-purple-500/10 blur-[80px] -z-10" />
+          <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-accent/10 blur-[80px] -z-10" />
 
           {/* Tag */}
           <div className="inline-flex items-center gap-1 text-[11px] font-bold text-accent bg-accent/5 border border-accent/10 px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-6">

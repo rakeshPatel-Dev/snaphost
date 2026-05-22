@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "../styles/globals.css";
+import "./globals.css";
 import { Toaster } from "sonner";
 import SiteChrome from "@/components/layout/SiteChrome";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,7 +20,6 @@ export const metadata: Metadata = {
     default: "SnapHost - Instantly upload and share images and PDFs.",
     template: "%s | SnapHost",
   },
-  themeColor: "#ffffff",
   icons: {
     icon: [
       { url: "/icon0.svg", type: "image/svg+xml" },
@@ -57,6 +57,10 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -73,13 +77,31 @@ export default function RootLayout({
         <meta name="application-name" content="Snaphost" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
         <link rel="manifest" href="/manifest.json" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const theme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const isDark = theme ? theme === 'dark' : prefersDark;
+                if (isDark) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
       </head>
       <body
         suppressHydrationWarning
         className="min-h-screen bg-background text-foreground flex flex-col"
       >
-          <Toaster position="top-right" closeButton duration={3000}  />
-          <SiteChrome>{children}</SiteChrome>
+          <ThemeProvider>
+            <Toaster position="top-right" closeButton duration={3000}  />
+            <SiteChrome>{children}</SiteChrome>
+          </ThemeProvider>
       </body>
     </html>
   );

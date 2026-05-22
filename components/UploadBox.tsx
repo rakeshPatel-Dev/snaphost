@@ -1,17 +1,24 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { Upload, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import UploadForm from './UploadForm';
+import UploadSuccessCard from './UploadSuccessCard';
+
+interface UploadSuccess {
+  fileId: string;
+  filename: string;
+  fileUrl: string;
+  fileSize: number;
+  optimizedSize?: number;
+}
 
 export default function UploadBox() {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadSuccess, setUploadSuccess] = useState<UploadSuccess | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -40,9 +47,8 @@ export default function UploadBox() {
   };
 
   const handleFileUpload = async (file: File) => {
-    setError(null); // Clear previous errors
+    setError(null);
 
-    // Validate file type and size client-side first
     const allowedTypes = [
       'image/png',
       'image/jpeg',
@@ -57,9 +63,7 @@ export default function UploadBox() {
       return;
     }
 
-    const maxImageSize = 10 * 1024 * 1024; // 10MB
-    const maxPdfSize = 10 * 1024 * 1024; // 10MB
-    const maxSize = file.type === 'application/pdf' ? maxPdfSize : maxImageSize;
+    const maxSize = 10 * 1024 * 1024; // 10MB
 
     if (file.size > maxSize) {
       const errorMsg = `File too large. Max: ${maxSize / 1024 / 1024}MB, Got: ${(file.size / 1024 / 1024).toFixed(2)}MB`;
@@ -89,11 +93,19 @@ export default function UploadBox() {
       }
 
       const data = await response.json();
-      setError(null); // Clear errors on success
+      const fileUrl = `${window.location.origin}/f/${data.fileId}`;
+      
+      setUploadSuccess({
+        fileId: data.fileId,
+        filename: file.name,
+        fileUrl: fileUrl,
+        fileSize: file.size,
+        optimizedSize: data.optimizedSize,
+      });
+      
+      setError(null);
       toast.success('File uploaded successfully!');
-
-      // Redirect to file page with success indicator
-      router.push(`/f/${data.fileId}?success=true`);
+      setIsUploading(false);
     } catch (error) {
       const errorMsg = 'Upload failed. Please try again.';
       console.error('Upload error:', error);
@@ -103,62 +115,56 @@ export default function UploadBox() {
     }
   };
 
+  const copyLink = () => {
+    if (!uploadSuccess) return;
+    navigator.clipboard.writeText(uploadSuccess.fileUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+    toast.success('Link copied!');
+  };
+
+  const resetUpload = () => {
+    setUploadSuccess(null);
+    setError(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Success State
+  if (uploadSuccess) {
+    return (
+      <div className="w-full max-w-md mx-auto">
+        <UploadSuccessCard
+          fileId={uploadSuccess.fileId}
+          filename={uploadSuccess.filename}
+          fileUrl={uploadSuccess.fileUrl}
+          fileSize={uploadSuccess.fileSize}
+          optimizedSize={uploadSuccess.optimizedSize}
+          onUploadMore={resetUpload}
+        />
+      </div>
+    );
+  }
+
+  // Upload State
   return (
     <div className="w-full max-w-md mx-auto">
       {error && (
-        <div className="mb-4 p-4 bg-destructive/10 border border-destructive/30 rounded-lg">
+        <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
           <p className="text-sm text-destructive">{error}</p>
         </div>
       )}
-      <div
+      <UploadForm
+        isDragging={isDragging}
+        isUploading={isUploading}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer ${
-          isDragging
-            ? 'border-accent bg-accent/10'
-            : 'border-border hover:border-muted-foreground'
-        }`}
-      >
-        <input
-          ref={fileInputRef}
-          type="file"
-          onChange={handleFileSelect}
-          accept="image/png,image/jpeg,image/webp,.pdf,application/pdf"
-          className="hidden"
-          disabled={isUploading}
-        />
-
-        <div className="flex flex-col items-center gap-3">
-          <Upload className="w-12 h-12 text-muted-foreground" />
-          <div>
-            <p className="text-lg font-semibold text-foreground">
-              {isUploading ? 'Uploading...' : 'Drop file or click to select'}
-            </p>
-            <p className="text-sm text-muted-foreground mt-1">
-              PNG, JPG, WEBP, PDF (up to 10MB)
-            </p>
-          </div>
-        </div>
-
-        <Button
-          onClick={() => fileInputRef.current?.click()}
-          disabled={isUploading}
-          className="mt-6 w-full"
-        >
-          {isUploading ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Uploading...
-            </>
-          ) : (
-            <>
-              <Upload className="w-4 h-4 mr-2" />
-              Choose File
-            </>
-          )}
-        </Button>
-      </div>
+        onFileInputClick={() => fileInputRef.current?.click()}
+        fileInputRef={fileInputRef}
+        onFileSelect={handleFileSelect}
+      />
     </div>
   );
 }

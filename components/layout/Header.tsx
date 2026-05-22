@@ -2,20 +2,11 @@
 
 import Link from 'next/link';
 import Logo from './Logo';
-import { Camera, Upload,  Menu, Sparkles } from 'lucide-react';
+import { Camera, Upload, Menu, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu';
 import {
   Sheet,
   SheetContent,
@@ -23,9 +14,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { cn } from '@/lib/utils';
 import { BsGithub } from 'react-icons/bs';
-import Image from 'next/image';
+import { AnimatedThemeToggler } from '../ui/animated-theme-toggler';
+
+const navItems = [
+  { name: 'Pricing', href: '/pricing' },
+  { name: 'Docs', href: '/docs' },
+  { name: 'Blog', href: '/blog' },
+];
 
 const features = [
   {
@@ -50,6 +46,7 @@ const features = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showFeatures, setShowFeatures] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
@@ -74,48 +71,70 @@ export default function Header() {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex flex-1 items-center justify-center">
-          <NavigationMenu>
-            <NavigationMenuList className="gap-0.5">
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="h-8 text-sm font-medium text-muted-foreground data-[state=open]:text-foreground bg-transparent hover:bg-accent/60">
-                  Product
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[420px] gap-1 p-3">
+          <ul className="flex items-center gap-1">
+            {/* Features Dropdown */}
+            <li className="relative">
+              <button
+                onClick={() => setShowFeatures(!showFeatures)}
+                onBlur={() => setTimeout(() => setShowFeatures(false), 200)}
+                className="flex items-center gap-1 rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              >
+                Product
+                <svg
+                  className={`h-3 w-3 transition-transform ${showFeatures ? 'rotate-180' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {showFeatures && (
+                <div className="absolute left-0 top-full mt-1 w-[420px] rounded-md border border-border bg-background shadow-lg">
+                  <ul className="p-3 space-y-1">
                     {features.map((feature) => (
-                      <ListItem
-                        key={feature.title}
-                        href={feature.href}
-                        title={feature.title}
-                        icon={feature.icon}
-                      >
-                        {feature.description}
-                      </ListItem>
+                      <li key={feature.title}>
+                        <Link
+                          href={feature.href}
+                          className="flex items-start gap-3 rounded-md p-3 transition-colors hover:bg-accent"
+                        >
+                          <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-background">
+                            <feature.icon className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          <div>
+                            <div className="text-[13px] font-medium text-foreground">
+                              {feature.title}
+                            </div>
+                            <p className="text-[12px] text-muted-foreground">
+                              {feature.description}
+                            </p>
+                          </div>
+                        </Link>
+                      </li>
                     ))}
                   </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+                </div>
+              )}
+            </li>
 
-              {['Pricing', 'Docs', 'Blog'].map((item) => (
-                <NavigationMenuItem key={item}>
-                  <Link href={`/${item.toLowerCase()}`} legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={cn(
-                        navigationMenuTriggerStyle(),
-                        'h-8 text-sm font-medium text-muted-foreground hover:text-foreground bg-transparent hover:bg-accent/60'
-                      )}
-                    >
-                      {item}
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              ))}
-            </NavigationMenuList>
-          </NavigationMenu>
+            {/* Regular nav items */}
+            {navItems.map((item) => (
+              <li key={item.name}>
+                <Link
+                  href={item.href}
+                  className="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-2">
+          <AnimatedThemeToggler/>
           <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-muted-foreground hover:text-foreground" asChild>
             <a href="https://github.com/snaphost" target="_blank" rel="noopener noreferrer">
               <BsGithub className="h-3.5 w-3.5" />
@@ -171,26 +190,31 @@ export default function Header() {
 
                 <Separator className="my-2" />
 
-                {['Pricing', 'Docs', 'Blog'].map((item) => (
+                {navItems.map((item) => (
                   <Link
-                    key={item}
-                    href={`/${item.toLowerCase()}`}
+                    key={item.name}
+                    href={item.href}
                     onClick={() => setMobileOpen(false)}
                     className="rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                   >
-                    {item}
+                    {item.name}
                   </Link>
                 ))}
 
-                <a
-                  href="https://github.com/snaphost"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-                >
-                  <BsGithub className="h-4 w-4" />
-                  GitHub
-                </a>
+                <Separator className="my-2" />
+
+                <div className="flex items-center justify-between px-2">
+                  <a
+                    href="https://github.com/snaphost"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                  >
+                    <BsGithub className="h-4 w-4" />
+                    GitHub
+                  </a>
+                  <AnimatedThemeToggler className="hover:bg-accent rounded-lg" />
+                </div>
 
                 <Separator className="my-2" />
 
@@ -211,45 +235,5 @@ export default function Header() {
         </div>
       </nav>
     </header>
-  );
-}
-
-function ListItem({
-  title,
-  children,
-  href,
-  icon: Icon,
-  className,
-}: {
-  title: string;
-  children: React.ReactNode;
-  href: string;
-  icon: React.ElementType;
-  className?: string;
-}) {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <Link
-          href={href}
-          className={cn(
-            'group flex select-none items-start gap-3 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
-            className
-          )}
-        >
-          <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-background shadow-sm transition-colors group-hover:border-primary/30 group-hover:bg-primary/5">
-            <Icon className="h-3.5 w-3.5 text-primary" />
-          </div>
-          <div>
-            <div className="mb-0.5 text-[13px] font-medium leading-none text-foreground">
-              {title}
-            </div>
-            <p className="text-[12px] leading-snug text-muted-foreground">
-              {children}
-            </p>
-          </div>
-        </Link>
-      </NavigationMenuLink>
-    </li>
   );
 }

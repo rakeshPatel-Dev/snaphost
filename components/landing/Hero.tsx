@@ -12,7 +12,7 @@ export default function Hero() {
       <div className="absolute inset-0 bg-grid-pattern opacity-40 -z-10" />
       
       {/* Glowing decorative circles */}
-      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-accent/10 to-purple-500/10 blur-[80px] -z-10 animate-pulse-slow" />
+      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-accent/10 to-accent/10 blur-[80px] -z-10 animate-pulse-slow" />
       
       <div className="mx-auto max-w-6xl px-6 lg:flex lg:items-center lg:gap-16">
         
@@ -32,7 +32,7 @@ export default function Hero() {
           {/* Heading */}
           <h1 className="text-4xl font-extrabold leading-[1.1] text-foreground sm:text-5xl md:text-6xl tracking-tight">
             Developer-first media hosting.{' '}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-accent via-indigo-500 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-accent to-accent dark:from-accent dark:to-accent">
               Built for speed.
             </span>
           </h1>
@@ -77,7 +77,7 @@ export default function Hero() {
         {/* Right Column (Interactive upload dashboard preview) */}
         <div className="mt-12 lg:mt-0 lg:w-1/2 flex items-center justify-center relative">
           {/* Subtle decoration frame */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 via-transparent to-purple-500/5 rounded-3xl blur-xl -z-10" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 via-transparent to-accent/5 rounded-3xl blur-xl -z-10" />
           <UploadMock />
         </div>
 

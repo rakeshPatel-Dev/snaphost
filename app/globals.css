@@ -9,7 +9,7 @@
   --popover-foreground: #0f172a;
   --muted: #f8fafc;
   --muted-foreground: #64748b;
-  --accent: #3b82f6;
+  --accent: #003e9e;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
@@ -20,8 +20,8 @@
   --secondary: #f1f5f9;
   --secondary-foreground: #0f172a;
   --grid: rgba(148, 163, 184, 0.07);
-  --glow-color: rgba(59, 130, 246, 0.05);
-  --glow-color-purple: rgba(147, 51, 234, 0.04);
+  --glow-color: rgba(0, 62, 158, 0.05);
+  --glow-color-purple: rgba(0, 62, 158, 0.04);
   --glow-color-rose: rgba(244, 63, 94, 0.03);
 }
 
@@ -48,31 +48,29 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #030712;
-    --foreground: #f9fafb;
-    --card: #0b0f19;
-    --card-foreground: #f9fafb;
-    --popover: #0b0f19;
-    --popover-foreground: #f9fafb;
-    --muted: #111827;
-    --muted-foreground: #9ca3af;
-    --accent: #3b82f6;
-    --accent-foreground: #f9fafb;
-    --destructive: #ef4444;
-    --destructive-foreground: #030712;
-    --border: #1f2937;
-    --input: #1f2937;
-    --primary: #f9fafb;
-    --primary-foreground: #030712;
-    --secondary: #111827;
-    --secondary-foreground: #f9fafb;
-    --grid: rgba(243, 244, 246, 0.02);
-    --glow-color: rgba(59, 130, 246, 0.12);
-    --glow-color-purple: rgba(147, 51, 234, 0.08);
-    --glow-color-rose: rgba(244, 63, 94, 0.06);
-  }
+.dark {
+  --background: #030712;
+  --foreground: #f9fafb;
+  --card: #0b0f19;
+  --card-foreground: #f9fafb;
+  --popover: #0b0f19;
+  --popover-foreground: #f9fafb;
+  --muted: #111827;
+  --muted-foreground: #9ca3af;
+  --accent: #003e9e;
+  --accent-foreground: #f9fafb;
+  --destructive: #ef4444;
+  --destructive-foreground: #030712;
+  --border: #1f2937;
+  --input: #1f2937;
+  --primary: #f9fafb;
+  --primary-foreground: #030712;
+  --secondary: #111827;
+  --secondary-foreground: #f9fafb;
+  --grid: rgba(243, 244, 246, 0.02);
+  --glow-color: rgba(0, 62, 158, 0.12);
+  --glow-color-purple: rgba(0, 62, 158, 0.08);
+  --glow-color-rose: rgba(244, 63, 94, 0.06);
 }
 
 body {
@@ -113,4 +111,22 @@ body {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* View Transition API for theme switching */
+html {
+  view-transition-name: root;
+}
+
+@supports (view-transition-name: root) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+}
+
+::view-transition-old(root), ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
 }

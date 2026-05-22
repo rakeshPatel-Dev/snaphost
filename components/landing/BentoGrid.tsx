@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Shield, 
   Cpu, 
   Globe, 
   Zap, 
-  Key, 
   Clock, 
   TrendingDown, 
   Code,
@@ -16,7 +15,6 @@ import {
   Check,
   Copy
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 export default function BentoGrid() {
   // Before/After Slider State
@@ -73,7 +71,7 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
       {/* Background glow overlay */}
       <div className="absolute inset-0 bg-grid-pattern opacity-60 -z-10" />
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-80 h-80 rounded-full bg-accent/5 blur-3xl -z-10" />
-      <div className="absolute bottom-10 right-1/4 w-96 h-96 rounded-full bg-purple-500/5 blur-3xl -z-10" />
+      <div className="absolute bottom-10 right-1/4 w-96 h-96 rounded-full bg-accent/5 blur-3xl -z-10" />
 
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -114,7 +112,7 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
               {/* Original Image Container (Left Side / Underneath) */}
               <div className="absolute inset-0 bg-slate-900 flex items-center justify-center">
                 {/* Visual placeholder representation of original image (vibrant abstract layout) */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-rose-500/80 via-purple-600/80 to-blue-500/80 opacity-70 blur-[1px]" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-rose-500/80 via-accent/80 to-accent/80 opacity-70 blur-[1px]" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white/90 p-4">
                   <span className="text-xl font-bold tracking-wider">ORIGINAL JPEG</span>
                   <span className="text-sm bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-full mt-1 border border-white/10">4.8 MB</span>
@@ -127,7 +125,7 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
                 style={{ clipPath: `polygon(${sliderPosition}% 0, 100% 0, 100% 100%, ${sliderPosition}% 100%)` }}
               >
                 {/* Visual placeholder representation of optimized WebP image (stunning crisp abstract layout) */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-rose-500 via-purple-600 to-blue-500 opacity-90" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-rose-500 via-accent to-accent opacity-90" />
                 {/* Subtle grid pattern overlay only on the optimized side to show sharpness */}
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:16px_16px]" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4">
@@ -154,7 +152,7 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
           <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between group">
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
+                <div className="p-1.5 rounded-lg bg-accent/10 text-accent">
                   <Globe className="h-4 w-4" />
                 </div>
                 <h3 className="text-lg font-bold text-foreground">Global Edge CDN</h3>
@@ -207,7 +205,7 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
           <div className="md:col-span-2 rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between overflow-hidden group">
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500">
+                <div className="p-1.5 rounded-lg bg-accent/10 text-accent">
                   <Code className="h-4 w-4" />
                 </div>
                 <h3 className="text-lg font-bold text-foreground">SDK & REST API</h3>
