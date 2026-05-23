@@ -6,10 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "cleanup:expired": "node scripts/cleanup-expired-files.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.3.7",
+    "@clerk/ui": "^1.13.0",
     "@supabase/supabase-js": "^2.106.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
