@@ -1,9 +1,9 @@
 
 export const headerNavs = [
     { name: "Upload", href: "/upload" },
-    { name: "About", href: "/about" },
-    { name: "Pricing", href: "/pricing" },
-  { name: "Docs", href: "/docs" },
+    { name: "Sign up", href: "/sign-up" },
+    { name: "Sign in", href: "/sign-in" },
+    { name: "Profile", href: "/profile" },
 ];
 
 export const socialLinks = [

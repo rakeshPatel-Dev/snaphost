@@ -28,8 +28,8 @@ export const shareSocials: ShareOption[] = [
     id: 'twitter',
     name: 'X (Twitter)',
     icon: FaTwitter,
-    className: 'bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/30',
-    iconColor: 'text-primary',
+    className: 'bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 hover:border-accent/30',
+    iconColor: 'text-accent',
     shareUrl: (fileUrl, filename) => {
       const text = `Check out this file: ${filename}`;
       return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(fileUrl)}`;
@@ -49,8 +49,8 @@ export const shareSocials: ShareOption[] = [
     id: 'facebook',
     name: 'Facebook',
     icon: FaFacebook,
-    className: 'bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/30',
-    iconColor: 'text-primary',
+    className: 'bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 hover:border-accent/30',
+    iconColor: 'text-accent',
     shareUrl: (fileUrl) => {
       return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fileUrl)}`;
     },
@@ -70,8 +70,8 @@ export const shareSocials: ShareOption[] = [
     id: 'telegram',
     name: 'Telegram',
     icon: FaTelegram,
-    className: 'bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/30',
-    iconColor: 'text-primary',
+    className: 'bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 hover:border-accent/30',
+    iconColor: 'text-accent',
     shareUrl: (fileUrl, filename) => {
       return `https://t.me/share/url?url=${encodeURIComponent(fileUrl)}&text=${encodeURIComponent(filename)}`;
     },

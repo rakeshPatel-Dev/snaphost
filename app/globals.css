@@ -21,8 +21,9 @@
   --secondary: #f1f5f9;
   --secondary-foreground: #0f172a;
   --grid: rgba(148, 163, 184, 0.07);
-  --glow-color: rgba(0, 62, 158, 0.05);
-  --glow-color-purple: rgba(0, 62, 158, 0.04);
+  /* Use subtle neutral glows (remove dominant blue page tint) */
+  --glow-color: rgba(15, 23, 42, 0.03);
+  --glow-color-purple: rgba(99, 102, 241, 0.03);
   --glow-color-rose: rgba(244, 63, 94, 0.03);
 }
 
@@ -70,7 +71,7 @@
   --secondary-foreground: #f9fafb;
   --grid: rgba(243, 244, 246, 0.02);
   --glow-color: rgba(0, 62, 158, 0.12);
-  --glow-color-purple: rgba(0, 62, 158, 0.08);
+  --glow-color-purple: rgba(99, 102, 241, 0.08);
   --glow-color-rose: rgba(244, 63, 94, 0.06);
 }
 
@@ -86,10 +87,10 @@ body {
 
 /* Custom background patterns */
 .bg-grid-pattern {
-  background-size: 32px 32px;
+  background-size: 60px 60px;
   background-image:
-    linear-gradient(to right, var(--grid) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+    linear-gradient(to right, var(--grid) 3px, transparent 3px),
+    linear-gradient(to bottom, var(--grid) 3px, transparent 3px);
 }
 
 .glow-radial {
@@ -111,15 +112,20 @@ body {
 }
 .no-scrollbar {
   -ms-overflow-style: none;
-  scrollbar-width: none;
+}
+
+@supports (scrollbar-width: none) {
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
 }
 
 /* View Transition API for theme switching */
-html {
-  view-transition-name: root;
-}
-
 @supports (view-transition-name: root) {
+  html {
+    view-transition-name: root;
+  }
+
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation: none;

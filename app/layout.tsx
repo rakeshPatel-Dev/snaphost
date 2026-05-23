@@ -5,6 +5,8 @@ import { Toaster } from "sonner";
 import SiteChrome from "@/components/layout/SiteChrome";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import ClerkProvider from "@/components/providers/clerk-provider";
+import UserSync from "@/components/providers/user-sync";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -99,9 +101,12 @@ export default function RootLayout({
         className="min-h-screen bg-background text-foreground flex flex-col"
       >
         <ClerkProvider>
+          <UserSync />
           <ThemeProvider>
+            <TooltipProvider>
             <Toaster position="top-right" closeButton duration={3000} />
             <SiteChrome>{children}</SiteChrome>
+            </TooltipProvider>
           </ThemeProvider>
         </ClerkProvider>
       </body>

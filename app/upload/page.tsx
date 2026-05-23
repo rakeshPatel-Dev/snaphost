@@ -8,7 +8,7 @@ export default function UploadPage() {
         <div className="w-full max-w-2xl">
           {/* Header Section */}
           <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 mb-4">
+            <div className="inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-full bg-muted/10 border border-border/10 mb-4">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
               <span className="text-xs font-medium text-primary">Upload & Share</span>
             </div>
@@ -26,21 +26,21 @@ export default function UploadPage() {
           {/* Features */}
           <div className="grid grid-cols-3 gap-4 mt-12 pt-8 border-t border-border/40">
             <div className="text-center">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 mx-auto mb-2">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted/10 mx-auto mb-2">
                 <Lock className="h-5 w-5 text-primary" />
               </div>
               <p className="text-sm font-medium text-foreground">Secure</p>
               <p className="text-xs text-muted-foreground mt-1">SSL encrypted</p>
             </div>
             <div className="text-center">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 mx-auto mb-2">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted/10 mx-auto mb-2">
                 <Zap className="h-5 w-5 text-primary" />
               </div>
               <p className="text-sm font-medium text-foreground">Fast</p>
               <p className="text-xs text-muted-foreground mt-1">Global CDN</p>
             </div>
             <div className="text-center">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 mx-auto mb-2">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted/10 mx-auto mb-2">
                 <Smartphone className="h-5 w-5 text-primary" />
               </div>
               <p className="text-sm font-medium text-foreground">Responsive</p>

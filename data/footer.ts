@@ -1,10 +1,8 @@
 
 export const footerLinks = [
-    { name: "Home", href: "/" },
-    { name: "Upload", href: "/upload" },
-    { name: "About", href: "/about" },
-    { name: "Pricing", href: "/pricing" },
-    { name: "Docs", href: "/docs" },
+  { name: "GitHub", href: "https://github.com/snaphost" },
+  { name: "Twitter", href: "https://twitter.com/snaphost" },
+  { name: "Contact", href: "mailto:hello@snaphost.cloud" },
   ];
 
 export const socialLinks = [
@@ -15,13 +13,13 @@ export const socialLinks = [
   export const copyrightText = `© ${new Date().getFullYear()} SnapHost. All rights reserved.`;
 
   export const features = [
-    "Instant upload",
-    "No sign up needed",
-    "Secure links",
+    "Anonymous uploads",
+    "Username links",
+    "Dashboard control",
   ];
 
 export const supportLinks = [
-    { name: "Contact", href: "mailto:nGw5i@example.com" },
+    { name: "Contact", href: "mailto:hello@snaphost.cloud" },
     { name: "Privacy Policy", href: "/privacy" },
   ];
 
