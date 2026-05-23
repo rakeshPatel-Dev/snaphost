@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { UserButton, useUser } from '@clerk/nextjs';
 import {
   Sheet,
   SheetContent,
@@ -16,6 +17,7 @@ import {
 } from '@/components/ui/sheet';
 import { BsGithub } from 'react-icons/bs';
 import { AnimatedThemeToggler } from '../ui/animated-theme-toggler';
+import { UserRound, Trash2 } from 'lucide-react';
 
 const navItems = [
   { name: 'Pricing', href: '/pricing' },
@@ -47,9 +49,10 @@ const features = [
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showFeatures, setShowFeatures] = useState(false);
+  const { isSignedIn } = useUser();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl supports-backdrop-filter:bg-background/60">
       {/* Announcement bar */}
       <div className="flex items-center justify-center gap-2 bg-primary/5 px-4 py-1.5 text-xs text-muted-foreground border-b border-border/40">
         <Sparkles className="h-3 w-3 text-primary" />
@@ -91,7 +94,7 @@ export default function Header() {
               </button>
               
               {showFeatures && (
-                <div className="absolute left-0 top-full mt-1 w-[420px] rounded-md border border-border bg-background shadow-lg">
+                <div className="absolute left-0 top-full mt-1 w-105 rounded-md border border-border bg-background shadow-lg">
                   <ul className="p-3 space-y-1">
                     {features.map((feature) => (
                       <li key={feature.title}>
@@ -144,16 +147,48 @@ export default function Header() {
 
           <Separator orientation="vertical" className="h-4" />
 
-          <Button variant="ghost" size="sm" className="h-8 text-sm" asChild>
-            <Link href="/login">Sign in</Link>
-          </Button>
+          {!isSignedIn ? (
+            <>
+              <Button variant="ghost" size="sm" className="h-8 text-sm" asChild>
+                <Link href="/login">Sign in</Link>
+              </Button>
 
-          <Button size="sm" className="h-8 gap-1.5 text-sm shadow-sm" asChild>
-            <Link href="/signup">
-              <Upload className="h-3.5 w-3.5" />
-              Start uploading
-            </Link>
-          </Button>
+              <Button size="sm" className="h-8 gap-1.5 text-sm shadow-sm" asChild>
+                <Link href="/signup">
+                  <Upload className="h-3.5 w-3.5" />
+                  Start uploading
+                </Link>
+              </Button>
+            </>
+          ) : (
+            <>
+              <UserButton>
+                <UserButton.MenuItems>
+                  <UserButton.Link href="/profile" label="View profile" labelIcon={<UserRound className="h-4 w-4" />} />
+                  <UserButton.Action
+                    label="Delete account"
+                    labelIcon={<Trash2 className="h-4 w-4" />}
+                    onClick={async () => {
+                      const confirmed = window.confirm('Delete your account and all of your links permanently?');
+
+                      if (!confirmed) {
+                        return;
+                      }
+
+                      const response = await fetch('/api/me/account', { method: 'DELETE' });
+
+                      if (!response.ok) {
+                        const data = await response.json().catch(() => null);
+                        throw new Error(data?.error || 'Failed to delete account');
+                      }
+
+                      window.location.assign('/');
+                    }}
+                  />
+                </UserButton.MenuItems>
+              </UserButton>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu */}
@@ -165,7 +200,7 @@ export default function Header() {
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[280px] p-0">
+            <SheetContent side="right" className="w-70 p-0">
               <SheetHeader className="border-b border-border px-4 py-3">
                 <SheetTitle className="flex items-center gap-2 text-left text-[15px]">
                   <Logo />
@@ -218,17 +253,51 @@ export default function Header() {
 
                 <Separator className="my-2" />
 
-                <div className="flex flex-col gap-2 px-1">
-                  <Button variant="outline" size="sm" className="w-full" asChild>
-                    <Link href="/login" onClick={() => setMobileOpen(false)}>Sign in</Link>
-                  </Button>
-                  <Button size="sm" className="w-full gap-1.5" asChild>
-                    <Link href="/signup" onClick={() => setMobileOpen(false)}>
-                      <Upload className="h-3.5 w-3.5" />
-                      Start uploading
-                    </Link>
-                  </Button>
-                </div>
+                {!isSignedIn ? (
+                  <div className="flex flex-col gap-2 px-1">
+                    <Button variant="outline" size="sm" className="w-full" asChild>
+                      <Link href="/login" onClick={() => setMobileOpen(false)}>Sign in</Link>
+                    </Button>
+                    <Button size="sm" className="w-full gap-1.5" asChild>
+                      <Link href="/signup" onClick={() => setMobileOpen(false)}>
+                        <Upload className="h-3.5 w-3.5" />
+                        Start uploading
+                      </Link>
+                    </Button>
+                  </div>
+                ) : null}
+
+                {isSignedIn ? (
+                  <div className="flex flex-col gap-2 px-1">
+                    <div className="flex justify-center py-2">
+                      <UserButton>
+                        <UserButton.MenuItems>
+                          <UserButton.Link href="/profile" label="View profile" labelIcon={<UserRound className="h-4 w-4" />} />
+                          <UserButton.Action
+                            label="Delete account"
+                            labelIcon={<Trash2 className="h-4 w-4" />}
+                            onClick={async () => {
+                              const confirmed = window.confirm('Delete your account and all of your links permanently?');
+
+                              if (!confirmed) {
+                                return;
+                              }
+
+                              const response = await fetch('/api/me/account', { method: 'DELETE' });
+
+                              if (!response.ok) {
+                                const data = await response.json().catch(() => null);
+                                throw new Error(data?.error || 'Failed to delete account');
+                              }
+
+                              window.location.assign('/');
+                            }}
+                          />
+                        </UserButton.MenuItems>
+                      </UserButton>
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </SheetContent>
           </Sheet>

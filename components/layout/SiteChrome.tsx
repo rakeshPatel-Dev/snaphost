@@ -11,7 +11,12 @@ type SiteChromeProps = {
 export default function SiteChrome({ children }: SiteChromeProps) {
   const pathname = usePathname();
 
-  if (pathname.startsWith('/f/')) {
+  if (
+    pathname.startsWith('/f/') ||
+    pathname.startsWith('/sign-in') ||
+    pathname.startsWith('/sign-up') ||
+    pathname.startsWith('/auth/sync')
+  ) {
     return <>{children}</>;
   }
 

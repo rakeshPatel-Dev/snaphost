@@ -1,10 +1,6 @@
-// import { clerkMiddleware } from '@clerk/nextjs/server'
+import { clerkMiddleware } from '@clerk/nextjs/server'
 
-// Temporarily disabled for development to test theme toggler
-// Re-enable when Clerk is properly configured for localhost
-export default function middleware() {
-  return undefined
-}
+export default clerkMiddleware()
 
 export const config = {
   matcher: [

@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import SiteChrome from "@/components/layout/SiteChrome";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import ClerkProvider from "@/components/providers/clerk-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,8 +26,8 @@ export const metadata: Metadata = {
       { url: "/icon0.svg", type: "image/svg+xml" },
       { url: "/icon1.png", type: "image/png", sizes: "32x32" },
     ],
+    apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
     shortcut: "/favicon.ico",
-    apple: "/apple-icon.png",
   },
   description:
     "Instantly upload and share images and PDFs with clean, fast links. No login required. Simple, secure file hosting in seconds.",
@@ -75,7 +76,6 @@ export default function RootLayout({
       <head>
         <meta name="apple-mobile-web-app-title" content="Snaphost" />
         <meta name="application-name" content="Snaphost" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <script
           dangerouslySetInnerHTML={{
@@ -98,10 +98,12 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-screen bg-background text-foreground flex flex-col"
       >
+        <ClerkProvider>
           <ThemeProvider>
-            <Toaster position="top-right" closeButton duration={3000}  />
+            <Toaster position="top-right" closeButton duration={3000} />
             <SiteChrome>{children}</SiteChrome>
           </ThemeProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
