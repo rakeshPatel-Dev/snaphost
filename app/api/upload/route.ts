@@ -4,7 +4,7 @@ import { sanitizeFilename } from '@/lib/sanitizeFilename';
 import { createFileIdSync } from '@/lib/generateFileId';
 import { uploadFileToStorage } from '@/lib/storage';
 import { auth } from '@clerk/nextjs/server';
-import { createFileRecord, buildFileUrl } from '@/lib/file-admin';
+import { createFileRecord, buildFileUrl, countActiveFilesForUser } from '@/lib/file-admin';
 import { getCurrentAppUser } from '@/lib/clerk-user';
 
 export const maxDuration = 60; // 60 seconds for file upload
@@ -54,6 +54,14 @@ export async function POST(request: NextRequest) {
       userRecord = await getCurrentAppUser(userId);
     }
 
+    // Enforce free-tier file limit: free users can have at most 5 active links.
+    if (userRecord && userRecord.tier === 'free') {
+      const currentCount = await countActiveFilesForUser(userRecord.id);
+      if (currentCount >= 5) {
+        return NextResponse.json({ error: 'Free plan limit reached: maximum 5 links' }, { status: 403 });
+      }
+    }
+
     const uploadType = userId ? 'custom' : 'anonymous';
     const expiresAt =
       uploadType === 'anonymous'
@@ -94,6 +102,7 @@ export async function POST(request: NextRequest) {
         fileId: slug,
         filename: sanitizedName,
         url: shareUrl,
+        expiresAt: fileRecord.expires_at,
 
       },
       { status: 201 }

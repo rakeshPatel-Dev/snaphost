@@ -42,8 +42,12 @@ export async function DELETE() {
     return NextResponse.json({ error: userDeleteError.message }, { status: 500 });
   }
 
-  const clerk = await clerkClient();
-  await clerk.users.deleteUser(userId);
+  try {
+    const clerk = await clerkClient();
+    await clerk.users.deleteUser(userId);
+  } catch (error) {
+    console.error('Clerk user deletion failed after local cleanup', error);
+  }
 
   return NextResponse.json({ success: true }, { status: 200 });
 }

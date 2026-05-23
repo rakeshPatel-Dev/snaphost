@@ -84,7 +84,8 @@ export async function getCurrentAppUser(clerkId?: string | null) {
 }
 
 export async function updateCurrentAppUserUsername(clerkId: string, username: string) {
-  const { data: updatedClerkUser } = await clerkClient.users.updateUser(clerkId, {
+  const clerk = await clerkClient();
+  const updatedClerkUser = await clerk.users.updateUser(clerkId, {
     username,
   });
 

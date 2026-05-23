@@ -22,6 +22,7 @@ export interface FileMetadata {
   fileType: 'pdf' | 'image';
   size: number;
   createdAt: string;
+  expiresAt: string | null;
   url: string;
 }
 
@@ -54,6 +55,7 @@ export async function getFileMetadata(slug: string): Promise<FileMetadata | null
     fileType: file.file_type,
     size: file.size,
     createdAt: file.created_at,
+    expiresAt: file.expires_at,
     url: getStoragePublicUrl(file.storage_path),
   };
 }

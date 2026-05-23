@@ -67,6 +67,20 @@ export async function listFilesForUser(userId: string) {
   return (data ?? []) as AdminFileRow[];
 }
 
+export async function countActiveFilesForUser(userId: string) {
+  const { data, error, count } = await supabaseAdmin
+    .from('files')
+    .select('id', { count: 'exact', head: false })
+    .eq('user_id', userId)
+    .is('deleted_at', null);
+
+  if (error) {
+    throw error;
+  }
+
+  return (count ?? 0) as number;
+}
+
 export async function getFileForUser(fileId: string, userId: string) {
   const { data, error } = await supabaseAdmin
     .from('files')
@@ -80,6 +94,64 @@ export async function getFileForUser(fileId: string, userId: string) {
   }
 
   return data as AdminFileRow | null;
+}
+
+export async function getFileById(fileId: string) {
+  const { data, error } = await supabaseAdmin
+    .from('files')
+    .select('*, user:users(username)')
+    .eq('id', fileId)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return data as AdminFileRow | null;
+}
+
+export async function getFileBySlug(slug: string) {
+  const { data, error } = await supabaseAdmin
+    .from('files')
+    .select('*, user:users(username)')
+    .eq('slug', slug)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return data as AdminFileRow | null;
+}
+
+export async function deleteFileById(fileId: string) {
+  const { data, error } = await supabaseAdmin
+    .from('files')
+    .delete()
+    .eq('id', fileId)
+    .select('id, storage_path, upload_type')
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data as { id: string; storage_path: string; upload_type: 'anonymous' | 'custom' };
+}
+
+export async function deleteFileBySlug(slug: string) {
+  const { data, error } = await supabaseAdmin
+    .from('files')
+    .delete()
+    .eq('slug', slug)
+    .select('id, storage_path, upload_type')
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data as { id: string; storage_path: string; upload_type: 'anonymous' | 'custom' };
 }
 
 export async function updateFileForUser(
@@ -140,5 +212,5 @@ export function buildFileUrl(file: AdminFileRow, username?: string | null) {
   }
 
   const safeUsername = username || 'user';
-  return `${CONFIG.BASE_URL}/u/${safeUsername}/${file.slug}`;
+  return `${CONFIG.BASE_URL}/${encodeURIComponent(safeUsername)}/${encodeURIComponent(file.slug)}`;
 }
