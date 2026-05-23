@@ -10,7 +10,7 @@ interface UploadFormProps {
   onDragLeave: () => void;
   onDrop: (e: React.DragEvent<HTMLDivElement>) => void;
   onFileInputClick: () => void;
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
   onFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -40,6 +40,8 @@ export default function UploadForm({
         type="file"
         onChange={onFileSelect}
         accept="image/png,image/jpeg,image/webp,.pdf,application/pdf"
+        title="Upload file"
+        placeholder="Upload file"
         className="hidden"
         disabled={isUploading}
       />

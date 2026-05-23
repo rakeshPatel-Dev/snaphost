@@ -3,13 +3,15 @@ import { validateFile, getFileType } from '@/lib/fileValidation';
 import { sanitizeFilename } from '@/lib/sanitizeFilename';
 import { createFileIdSync } from '@/lib/generateFileId';
 import { uploadFileToStorage } from '@/lib/storage';
-import { insertFileMetadata } from '@/lib/database';
-import { CONFIG } from '@/lib/config';
+import { auth } from '@clerk/nextjs/server';
+import { createFileRecord, buildFileUrl } from '@/lib/file-admin';
+import { getCurrentAppUser } from '@/lib/clerk-user';
 
 export const maxDuration = 60; // 60 seconds for file upload
 
 export async function POST(request: NextRequest) {
   try {
+    const { userId } = await auth();
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
@@ -44,10 +46,24 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate unique file ID
-    const fileId = createFileIdSync();
+    const slug = createFileIdSync();
+    const expiresAtInput = formData.get('expiresAt');
+
+    let userRecord = null;
+    if (userId) {
+      userRecord = await getCurrentAppUser(userId);
+    }
+
+    const uploadType = userId ? 'custom' : 'anonymous';
+    const expiresAt =
+      uploadType === 'anonymous'
+        ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+        : typeof expiresAtInput === 'string' && expiresAtInput.trim()
+          ? new Date(expiresAtInput).toISOString()
+          : null;
 
     // Upload to storage
-    const { path, error: storageError } = await uploadFileToStorage(fileId, file);
+    const { path, error: storageError } = await uploadFileToStorage(slug, file);
 
     if (storageError) {
       return NextResponse.json(
@@ -57,32 +73,27 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert metadata into database
-    const fileRecord = await insertFileMetadata(
-      fileId,
-      sanitizedName,
-      fileType as 'pdf' | 'image',
-      file.size,
-      path,
-      file.type
-    );
-
-    if (!fileRecord) {
-      return NextResponse.json(
-        { error: 'Failed to save file metadata' },
-        { status: 500 }
-      );
-    }
+    const fileRecord = await createFileRecord({
+      userId: userRecord?.id ?? null,
+      uploadType,
+      slug,
+      filename: sanitizedName,
+      fileType: fileType as 'pdf' | 'image',
+      mimeType: file.type,
+      size: file.size,
+      storagePath: path,
+      expiresAt,
+    });
 
     // Return success with shareable URL
-    const shareUrl = `${CONFIG.BASE_URL}/f/${fileId}`;
+    const shareUrl = buildFileUrl(fileRecord, userRecord?.username);
 
     return NextResponse.json(
       {
         success: true,
-        fileId,
+        fileId: slug,
         filename: sanitizedName,
         url: shareUrl,
-        
 
       },
       { status: 201 }

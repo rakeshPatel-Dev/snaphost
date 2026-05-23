@@ -85,7 +85,12 @@ export default function UploadBox() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        const errorMsg = errorData.details?.join(', ') || errorData.error || 'Upload failed';
+        const errorDetails = Array.isArray(errorData.details)
+          ? errorData.details.join(', ')
+          : typeof errorData.details === 'string'
+            ? errorData.details
+            : '';
+        const errorMsg = errorDetails || errorData.error || 'Upload failed';
         setError(errorMsg);
         toast.error(errorMsg);
         setIsUploading(false);
@@ -93,7 +98,7 @@ export default function UploadBox() {
       }
 
       const data = await response.json();
-      const fileUrl = `${window.location.origin}/f/${data.fileId}`;
+      const fileUrl = data.url || `${window.location.origin}/anon/${data.fileId}`;
       
       setUploadSuccess({
         fileId: data.fileId,
@@ -113,14 +118,6 @@ export default function UploadBox() {
       toast.error(errorMsg);
       setIsUploading(false);
     }
-  };
-
-  const copyLink = () => {
-    if (!uploadSuccess) return;
-    navigator.clipboard.writeText(uploadSuccess.fileUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-    toast.success('Link copied!');
   };
 
   const resetUpload = () => {

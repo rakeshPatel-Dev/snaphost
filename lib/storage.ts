@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { supabaseAdmin } from './supabase-admin';
 import { CONFIG } from './config';
 
 /**
@@ -36,7 +37,7 @@ export async function uploadFileToStorage(
  * Delete file from storage
  */
 export async function deleteFileFromStorage(storagePath: string): Promise<boolean> {
-  const bucket = supabase.storage.from(CONFIG.STORAGE_BUCKET);
+  const bucket = supabaseAdmin.storage.from(CONFIG.STORAGE_BUCKET);
 
   try {
     const { error } = await bucket.remove([storagePath]);
