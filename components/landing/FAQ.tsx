@@ -20,15 +20,15 @@ export default function FAQ() {
       <div className="mx-auto max-w-4xl px-6">
         
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/5 border border-primary/10 px-2.5 py-0.5 text-xs font-semibold text-foreground mb-4">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-muted/10 border border-border/10 px-2.5 py-0.5 text-xs font-semibold text-foreground mb-4">
             <HelpCircle className="h-3.5 w-3.5 text-accent" />
-            Support Helpdesk
+            Common questions
           </div>
           <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
             Frequently asked questions
           </h2>
           <p className="mt-3 text-sm md:text-base text-muted-foreground">
-            Everything you need to know about SnapHost. Can&apos;t find the answer you&apos;re looking for? Reach out to support.
+            Everything you need to know about SnapHost&apos;s new upload flow, link formats, and account tools.
           </p>
         </div>
 

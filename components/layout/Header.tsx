@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { UserButton, useUser } from '@clerk/nextjs';
+import { toast } from 'sonner';
 import {
   Sheet,
   SheetContent,
@@ -20,29 +21,29 @@ import { AnimatedThemeToggler } from '../ui/animated-theme-toggler';
 import { UserRound, Trash2 } from 'lucide-react';
 
 const navItems = [
-  { name: 'Pricing', href: '/pricing' },
-  { name: 'Docs', href: '/docs' },
-  { name: 'Blog', href: '/blog' },
+  { name: 'Upload', href: '/upload' },
+  { name: 'Sign up', href: '/sign-up' },
+  { name: 'Profile', href: '/profile' },
 ];
 
 const features = [
   {
-    title: 'Instant Upload',
-    description: 'Drag & drop or paste images directly. Ready in seconds.',
+    title: 'Anonymous upload',
+    description: 'Drop a file and get a share link instantly without creating an account.',
     icon: Upload,
     href: '/upload',
   },
   {
-    title: 'Smart Hosting',
-    description: 'Global CDN, auto-compression, and WebP conversion built in.',
+    title: 'Profile dashboard',
+    description: 'Signed-in users can rename files, change slugs, and manage expiration.',
     icon: Camera,
-    href: '/hosting',
+    href: '/profile',
   },
   {
-    title: 'Shareable Links',
-    description: 'One-click sharing with expiry, password protection, and analytics.',
+    title: 'Clean share links',
+    description: 'Public URLs follow the new baseurl/username/filename pattern for signed-in uploads.',
     icon: Sparkles,
-    href: '/sharing',
+    href: '/upload',
   },
 ];
 
@@ -54,14 +55,14 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl supports-backdrop-filter:bg-background/60">
       {/* Announcement bar */}
-      <div className="flex items-center justify-center gap-2 bg-primary/5 px-4 py-1.5 text-xs text-muted-foreground border-b border-border/40">
+      <div className="flex items-center justify-center gap-2 bg-background/80 px-4 py-1.5 text-xs text-muted-foreground border-b border-border/40">
         <Sparkles className="h-3 w-3 text-primary" />
         <span>
           Introducing{' '}
-          <Link href="/changelog" className="font-semibold text-foreground underline-offset-4 hover:underline">
+          <Link href="/upload" className="font-semibold text-foreground underline-offset-4 hover:underline">
             SnapHost 2.0
           </Link>{' '}
-          — faster uploads, smarter CDN.
+          — cleaner links, faster uploads.
         </span>
         <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
           New
@@ -175,12 +176,20 @@ export default function Header() {
                         return;
                       }
 
-                      const response = await fetch('/api/me/account', { method: 'DELETE' });
+                      const op = (async () => {
+                        const response = await fetch('/api/me/account', { method: 'DELETE' });
+                        if (!response.ok) {
+                          const data = await response.json().catch(() => null);
+                          throw new Error(data?.error || 'Failed to delete account');
+                        }
+                        return true;
+                      })();
 
-                      if (!response.ok) {
-                        const data = await response.json().catch(() => null);
-                        throw new Error(data?.error || 'Failed to delete account');
-                      }
+                      await toast.promise(op, {
+                        loading: 'Deleting account...',
+                        success: 'Account deleted',
+                        error: (err) => (err instanceof Error ? err.message : 'Failed to delete account'),
+                      });
 
                       window.location.assign('/');
                     }}
@@ -283,12 +292,20 @@ export default function Header() {
                                 return;
                               }
 
-                              const response = await fetch('/api/me/account', { method: 'DELETE' });
+                              const op = (async () => {
+                                const response = await fetch('/api/me/account', { method: 'DELETE' });
+                                if (!response.ok) {
+                                  const data = await response.json().catch(() => null);
+                                  throw new Error(data?.error || 'Failed to delete account');
+                                }
+                                return true;
+                              })();
 
-                              if (!response.ok) {
-                                const data = await response.json().catch(() => null);
-                                throw new Error(data?.error || 'Failed to delete account');
-                              }
+                              await toast.promise(op, {
+                                loading: 'Deleting account...',
+                                success: 'Account deleted',
+                                error: (err) => (err instanceof Error ? err.message : 'Failed to delete account'),
+                              });
 
                               window.location.assign('/');
                             }}

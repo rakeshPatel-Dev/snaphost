@@ -4,9 +4,9 @@ import { Badge } from '@/components/ui/badge';
 import { Zap, Shield, Upload } from 'lucide-react';
 
 const features = [
-  { icon: Zap, label: 'Instant upload' },
-  { icon: Shield, label: 'Secure links' },
-  { icon: Upload, label: 'No sign up needed' },
+  { icon: Zap, label: 'Anonymous uploads' },
+  { icon: Shield, label: 'Username links' },
+  { icon: Upload, label: 'Dashboard control' },
 ];
 
 export default function FeaturePills({ className }: { className?: string }) {

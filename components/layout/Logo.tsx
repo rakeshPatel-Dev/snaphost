@@ -11,10 +11,10 @@ export default function Logo({ className }: { className?: string }) {
         alt="logo"
         width={32}
         height={32}
-        className="h-7 w-7 items-center justify-center rounded-lg bg-primary shadow-sm transition-transform group-hover:scale-105"
+        className="h-7 w-7 items-center justify-center rounded-lg bg-accent shadow-sm transition-transform group-hover:scale-105"
       />
       <span className="font-semibold tracking-tight text-foreground text-[15px]">
-        Snap<span className="text-primary">Host</span>
+        Snap<span className="text-accent">Host</span>
       </span>
     </Link>
   );

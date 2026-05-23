@@ -8,7 +8,7 @@ export default function LogoCloud() {
     <section className="py-12 border-y border-border/40 bg-muted/20 backdrop-blur-sm">
       <div className="mx-auto max-w-6xl px-6">
         <p className="text-center text-xs font-semibold tracking-wider uppercase text-muted-foreground/80">
-          Powering media delivery for modern web applications
+          Built on a modern stack for fast, reliable file sharing
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-6 md:gap-x-16 lg:gap-x-20">
           

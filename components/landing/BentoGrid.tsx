@@ -49,16 +49,11 @@ export default function BentoGrid() {
     }
   };
 
-  const codeSnippet = `import { SnapHost } from '@snaphost/sdk';
+  const codeSnippet = `const signedIn = 'https://snaphost.cloud/jane/project-cover.png';
+const anonymous = 'https://snaphost.cloud/anon/sh_7y2b1x';
 
-const client = new SnapHost({ apiKey: 'sh_live_...' });
-const file = await client.upload(myFile, {
-  optimize: true,
-  format: 'webp',
-  expiry: '24h'
-});
-
-console.log(file.url); // => snaphost.cloud/f/abc123`;
+console.log(signedIn);
+console.log(anonymous);`;
 
   const copyCode = () => {
     navigator.clipboard.writeText(codeSnippet);
@@ -76,10 +71,10 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-            Everything you need to deliver media at scale
+            Everything the new SnapHost release gives you
           </h2>
           <p className="mt-4 text-base md:text-lg text-muted-foreground">
-            A developer-first API, automatic WebP optimization, edge-caching CDN, and granular sharing settings.
+            Direct share links, automatic optimization, and a dashboard built for clean, fast file sharing.
           </p>
         </div>
 
@@ -92,10 +87,10 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
                 <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
                   <Cpu className="h-4 w-4" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">Automatic WebP Compression</h3>
+                <h3 className="text-lg font-bold text-foreground">Automatic optimization</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
-                Images are automatically converted to optimized formats (WebP/AVIF) and compressed at upload. Drag the slider to compare quality and size.
+                Images are optimized on upload so the share link stays fast without extra work.
               </p>
             </div>
 
@@ -114,7 +109,7 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
                 {/* Visual placeholder representation of original image (vibrant abstract layout) */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-rose-500/80 via-accent/80 to-accent/80 opacity-70 blur-[1px]" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white/90 p-4">
-                  <span className="text-xl font-bold tracking-wider">ORIGINAL JPEG</span>
+                  <span className="text-xl font-bold tracking-wider">ORIGINAL FILE</span>
                   <span className="text-sm bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-full mt-1 border border-white/10">4.8 MB</span>
                 </div>
               </div>
@@ -125,11 +120,11 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
                 style={{ clipPath: `polygon(${sliderPosition}% 0, 100% 0, 100% 100%, ${sliderPosition}% 100%)` }}
               >
                 {/* Visual placeholder representation of optimized WebP image (stunning crisp abstract layout) */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-rose-500 via-accent to-accent opacity-90" />
+                <div className="absolute inset-0 bg-linear-to-tr from-rose-500 via-accent to-accent opacity-90" />
                 {/* Subtle grid pattern overlay only on the optimized side to show sharpness */}
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:16px_16px]" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4">
-                  <span className="text-xl font-extrabold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-200">OPTIMIZED WebP</span>
+                  <span className="text-xl font-extrabold tracking-wider bg-clip-text text-transparent bg-linear-to-r from-emerald-400 to-teal-200">OPTIMIZED FILE</span>
                   <span className="text-sm bg-emerald-500/20 text-emerald-300 backdrop-blur-md px-2.5 py-0.5 rounded-full mt-1 border border-emerald-500/30 font-semibold">
                     450 KB (91% Saved)
                   </span>
@@ -155,10 +150,10 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
                 <div className="p-1.5 rounded-lg bg-accent/10 text-accent">
                   <Globe className="h-4 w-4" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">Global Edge CDN</h3>
+                <h3 className="text-lg font-bold text-foreground">Direct public links</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
-                Media is cached and distributed at edge servers globally, delivering sub-20ms loading speeds.
+                Signed-in uploads resolve to baseurl/username/filename, while anonymous uploads use a compact anon path.
               </p>
             </div>
 
@@ -167,9 +162,9 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground flex items-center gap-1.5">
                   <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
-                  Edge: New York
+                  Public: jane/project-cover.png
                 </span>
-                <span className="font-semibold text-emerald-500">12ms</span>
+                <span className="font-semibold text-emerald-500">Clean URL</span>
               </div>
               <div className="h-1 bg-border rounded-full overflow-hidden">
                 <div className="h-full bg-emerald-500 w-[90%]" />
@@ -177,9 +172,9 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground flex items-center gap-1.5">
                   <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                  Edge: London
+                  Public: anon/sh_7y2b1x
                 </span>
-                <span className="font-semibold text-emerald-500">14ms</span>
+                <span className="font-semibold text-emerald-500">Short URL</span>
               </div>
               <div className="h-1 bg-border rounded-full overflow-hidden">
                 <div className="h-full bg-emerald-500 w-[85%]" />
@@ -187,31 +182,31 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground flex items-center gap-1.5">
                   <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                  Edge: Tokyo
+                  Public: profile-ready
                 </span>
-                <span className="font-semibold text-emerald-500">26ms</span>
+                <span className="font-semibold text-emerald-500">Managed</span>
               </div>
               <div className="h-1 bg-border rounded-full overflow-hidden">
                 <div className="h-full bg-emerald-500 w-[70%]" />
               </div>
               <div className="border-t border-border/40 pt-2 flex justify-between items-center font-sans text-xs mt-1">
-                <span className="text-muted-foreground">Global Cache Hit Rate</span>
-                <span className="font-extrabold text-foreground">99.4%</span>
+                <span className="text-muted-foreground">Direct link share rate</span>
+                <span className="font-extrabold text-foreground">100%</span>
               </div>
             </div>
           </div>
 
-          {/* 3. Developer SDK & API (Wide) */}
+          {/* 3. Link formats and dashboard */}
           <div className="md:col-span-2 rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between overflow-hidden group">
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 rounded-lg bg-accent/10 text-accent">
                   <Code className="h-4 w-4" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">SDK & REST API</h3>
+                <h3 className="text-lg font-bold text-foreground">Link formats</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
-                Integrate in minutes with our clean SDK and simple HTTPS endpoints. Perfect for user uploads, profile avatars, or document processing.
+                Signed-in users get direct username URLs, anonymous uploads stay compact, and the profile dashboard keeps everything editable.
               </p>
             </div>
 
@@ -227,17 +222,17 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
             </div>
           </div>
 
-          {/* 4. Smart Sharing / Expirations */}
+          {/* 4. Expiration controls */}
           <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between group">
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
                   <Shield className="h-4 w-4" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">Smart Expirations</h3>
+                <h3 className="text-lg font-bold text-foreground">Expiration controls</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
-                Protect sensitive files. Set password requirements and configure files to auto-delete after view.
+                Anonymous uploads expire automatically, and signed-in users can choose how long a file stays live.
               </p>
             </div>
 
@@ -246,12 +241,12 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium text-foreground flex items-center gap-1.5">
                   {isLocked ? <Lock className="h-3.5 w-3.5 text-amber-500" /> : <Unlock className="h-3.5 w-3.5 text-muted-foreground" />}
-                  Password Protection
+                  Anonymous upload mode
                 </span>
                 <button 
                   onClick={() => setIsLocked(!isLocked)}
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isLocked ? 'bg-primary' : 'bg-input'}`}
-                >
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isLocked ? 'bg-accent' : 'bg-input'}`}>
+                
                   <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-background shadow ring-0 transition duration-200 ease-in-out ${isLocked ? 'translate-x-4' : 'translate-x-0'}`} />
                 </button>
               </div>
@@ -266,31 +261,31 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
                   onChange={(e) => setExpiry(e.target.value)}
                   className="bg-background text-foreground text-xs font-medium border border-border rounded-md px-2 py-1 outline-none cursor-pointer"
                 >
-                  <option value="1h">1 Hour</option>
                   <option value="24h">24 Hours</option>
                   <option value="7d">7 Days</option>
+                  <option value="30d">30 Days</option>
                   <option value="never">Never</option>
                 </select>
               </div>
 
               <div className="pt-2 border-t border-border/40 text-[10px] text-muted-foreground text-center">
-                {isLocked ? '🔒 Access requires password key' : '🔓 Publicly accessible link'}
-                {expiry !== 'never' && ` • Deletes automatically in ${expiry}`}
+                {isLocked ? '🔒 Anonymous links expire automatically' : '🔓 Signed-in uploads use direct links'}
+                {expiry !== 'never' && ` • Kept live for ${expiry}`}
               </div>
             </div>
           </div>
 
-          {/* 5. Metrics & Analytics */}
+          {/* 5. File activity */}
           <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between group">
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 rounded-lg bg-rose-500/10 text-rose-500">
                   <TrendingDown className="h-4 w-4" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">Traffic Analytics</h3>
+                <h3 className="text-lg font-bold text-foreground">File activity</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
-                Monitor request volume, bandwidth metrics, and caching effectiveness from a single console.
+                Keep an eye on upload volume, file status, and what needs attention from the profile dashboard.
               </p>
             </div>
 
@@ -303,28 +298,28 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
               </div>
               <div className="flex justify-between items-center text-[11px] font-medium mt-3 border-t border-border/40 pt-2">
                 <div className="flex flex-col">
-                  <span className="text-muted-foreground text-[9px] uppercase">Bandwidth Saved</span>
-                  <span className="text-foreground font-bold">1.42 TB</span>
+                  <span className="text-muted-foreground text-[9px] uppercase">Files this week</span>
+                  <span className="text-foreground font-bold">142</span>
                 </div>
                 <div className="flex flex-col items-end">
-                  <span className="text-muted-foreground text-[9px] uppercase">Avg Compression</span>
-                  <span className="text-emerald-500 font-bold">89.4%</span>
+                  <span className="text-muted-foreground text-[9px] uppercase">Anonymous share rate</span>
+                  <span className="text-emerald-500 font-bold">68%</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* 6. Instant Drag & Drop Upload (Wider) */}
+          {/* 6. Direct upload flow (Wider) */}
           <div className="md:col-span-2 rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between overflow-hidden group">
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 rounded-lg bg-teal-500/10 text-teal-500">
                   <Zap className="h-4 w-4" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">Zero Configuration Hosting</h3>
+                <h3 className="text-lg font-bold text-foreground">Direct upload flow</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
-                No complex IAM roles, bucket policies, or CORS configurations. We manage storage, CDN integration, and ssl certificates automatically.
+                Drop a file, get a share URL, and keep moving. The app handles storage, validation, and cleanup in the background.
               </p>
             </div>
 
@@ -335,11 +330,11 @@ console.log(file.url); // => snaphost.cloud/f/abc123`;
                   <FileCheck className="h-5 w-5 text-teal-500" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-semibold text-foreground">Auto SSL & CNAME</h4>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">Custom domains load over HTTPS in 1 click.</p>
+                  <h4 className="text-xs font-semibold text-foreground">Direct share URL</h4>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">Upload once and copy the link instantly.</p>
                 </div>
               </div>
-              <div className="text-xs font-semibold bg-primary text-primary-foreground px-3 py-1.5 rounded-lg">
+                <div className="text-xs font-semibold bg-accent text-accent-foreground px-3 py-1.5 rounded-lg">
                 Active
               </div>
             </div>

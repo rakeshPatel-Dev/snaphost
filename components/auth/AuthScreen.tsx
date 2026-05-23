@@ -134,7 +134,7 @@ export default function AuthScreen({ mode }: AuthScreenProps) {
                 routing="path"
                 path="/sign-in"
                 signUpUrl="/sign-up"
-                forceRedirectUrl="/auth/sync"
+                forceRedirectUrl="/profile"
               />
             ) : (
               <SignUp
@@ -142,7 +142,7 @@ export default function AuthScreen({ mode }: AuthScreenProps) {
                 routing="path"
                 path="/sign-up"
                 signInUrl="/sign-in"
-                forceRedirectUrl="/auth/sync"
+                forceRedirectUrl="/profile"
               />
             )}
           </div>

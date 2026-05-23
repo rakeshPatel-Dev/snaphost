@@ -22,7 +22,7 @@ export default function Footer() {
             <Logo />
 
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
-              The simplest way to upload and share images instantly. No account needed — just drop, copy, share.
+              Upload images or PDFs in seconds, then share them with clean direct links. Anonymous uploads work instantly, and signed-in users can manage everything from the dashboard.
             </p>
 
             {/* Feature pills */}
@@ -43,9 +43,9 @@ export default function Footer() {
             <ul className="flex flex-col gap-2.5">
               {[
                 { label: "Upload", href: "/upload" },
-                { label: "Pricing", href: "/pricing" },
-                { label: "Changelog", href: "/changelog" },
-                { label: "Docs", href: "/docs" },
+                { label: "Sign up", href: "/sign-up" },
+                { label: "Sign in", href: "/sign-in" },
+                { label: "Profile", href: "/profile" },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <Link

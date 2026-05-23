@@ -20,17 +20,17 @@ export default function CTA() {
           {/* Tag */}
           <div className="inline-flex items-center gap-1 text-[11px] font-bold text-accent bg-accent/5 border border-accent/10 px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-6">
             <Sparkles className="h-3 w-3" />
-            Get Started Instantly
+            Start sharing today
           </div>
 
           {/* Heading */}
           <h3 className="text-3xl font-extrabold text-foreground tracking-tight sm:text-4xl md:text-5xl max-w-2xl mx-auto leading-[1.1]">
-            Ready to experience next-generation media hosting?
+            Ready to replace messy attachments with clean links?
           </h3>
           
           {/* Description */}
           <p className="mt-4 text-sm md:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Join thousands of developers and product creators who trust SnapHost to process, compress, and deliver their files globally in milliseconds.
+            Upload anonymously or create an account to manage files, usernames, and expiration settings from one place.
           </p>
 
           {/* Buttons */}
@@ -51,7 +51,7 @@ export default function CTA() {
 
           {/* Footnotes */}
           <p className="mt-5 text-xs text-muted-foreground font-medium">
-            Free tier includes 1GB storage • No credit card required • Cancel anytime
+            No credit card required • Anonymous uploads enabled • Manage files anytime
           </p>
 
         </div>

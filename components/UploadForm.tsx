@@ -31,8 +31,8 @@ export default function UploadForm({
       onDrop={onDrop}
       className={`border-2 border-dashed rounded-lg p-12 text-center transition-all cursor-pointer ${
         isDragging
-          ? 'border-primary bg-primary/5'
-          : 'border-border hover:border-primary/50 hover:bg-muted/30'
+          ? 'border-border bg-muted/20'
+          : 'border-border hover:border-border/50 hover:bg-muted/30'
       }`}
     >
       <input
@@ -47,8 +47,8 @@ export default function UploadForm({
       />
 
       <div className="flex flex-col items-center gap-4">
-        <div className="p-3 rounded-lg bg-primary/10">
-          <Upload className="w-6 h-6 text-primary" />
+        <div className="p-3 rounded-lg bg-muted/10">
+          <Upload className="w-6 h-6 text-foreground" />
         </div>
         <div>
           <p className="text-lg font-semibold text-foreground">

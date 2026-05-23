@@ -25,18 +25,13 @@ type ApiFile = {
 
 export default function ProfileGate() {
   const { isLoaded, isSignedIn } = useUser();
-  const [loading, setLoading] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [user, setUser] = useState<ApiUser | null>(null);
   const [files, setFiles] = useState<ApiFile[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isLoaded) {
-      return;
-    }
-
-    if (!isSignedIn) {
-      setLoading(false);
+    if (!isLoaded || !isSignedIn) {
       return;
     }
 
@@ -44,8 +39,6 @@ export default function ProfileGate() {
 
     async function loadProfile() {
       try {
-        setLoading(true);
-
         const [meResponse, filesResponse] = await Promise.all([
           fetch('/api/me'),
           fetch('/api/me/files'),
@@ -76,7 +69,7 @@ export default function ProfileGate() {
         setError(loadError instanceof Error ? loadError.message : 'Failed to load profile');
       } finally {
         if (alive) {
-          setLoading(false);
+          setLoadingProfile(false);
         }
       }
     }
@@ -88,7 +81,7 @@ export default function ProfileGate() {
     };
   }, [isLoaded, isSignedIn]);
 
-  if (!isLoaded || loading) {
+  if (!isLoaded || (isSignedIn && loadingProfile)) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

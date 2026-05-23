@@ -77,39 +77,43 @@ export default function UploadBox() {
     try {
       const formData = new FormData();
       formData.append('file', file);
+      const op = (async () => {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
 
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          const errorDetails = Array.isArray(errorData.details)
+            ? errorData.details.join(', ')
+            : typeof errorData.details === 'string'
+              ? errorData.details
+              : '';
+          const errorMsg = errorDetails || errorData.error || 'Upload failed';
+          throw new Error(errorMsg);
+        }
+
+        const data = await response.json();
+        const fileUrl = data.url || `${window.location.origin}/anon/${data.fileId}`;
+
+        setUploadSuccess({
+          fileId: data.fileId,
+          filename: file.name,
+          fileUrl: fileUrl,
+          fileSize: file.size,
+          optimizedSize: data.optimizedSize,
+        });
+
+        return true;
+      })();
+
+      await toast.promise(op, {
+        loading: 'Uploading file...',
+        success: 'File uploaded successfully!',
+        error: (err) => (err instanceof Error ? err.message : 'Upload failed'),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        const errorDetails = Array.isArray(errorData.details)
-          ? errorData.details.join(', ')
-          : typeof errorData.details === 'string'
-            ? errorData.details
-            : '';
-        const errorMsg = errorDetails || errorData.error || 'Upload failed';
-        setError(errorMsg);
-        toast.error(errorMsg);
-        setIsUploading(false);
-        return;
-      }
-
-      const data = await response.json();
-      const fileUrl = data.url || `${window.location.origin}/anon/${data.fileId}`;
-      
-      setUploadSuccess({
-        fileId: data.fileId,
-        filename: file.name,
-        fileUrl: fileUrl,
-        fileSize: file.size,
-        optimizedSize: data.optimizedSize,
-      });
-      
       setError(null);
-      toast.success('File uploaded successfully!');
       setIsUploading(false);
     } catch (error) {
       const errorMsg = 'Upload failed. Please try again.';

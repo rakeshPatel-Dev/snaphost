@@ -10,9 +10,13 @@ type SiteChromeProps = {
 
 export default function SiteChrome({ children }: SiteChromeProps) {
   const pathname = usePathname();
+  const isFileViewRoute =
+    pathname.startsWith('/f/') ||
+    pathname.startsWith('/anon/') ||
+    /^\/[^/]+\/[^/]+$/.test(pathname);
 
   if (
-    pathname.startsWith('/f/') ||
+    isFileViewRoute ||
     pathname.startsWith('/sign-in') ||
     pathname.startsWith('/sign-up') ||
     pathname.startsWith('/auth/sync')

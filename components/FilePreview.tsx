@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import ImagePreview from './ImagePreview';
 import PdfPreview from './PdfPreview';
 import { FileMetadata } from '@/lib/database';
@@ -17,22 +18,33 @@ export default function FilePreview({ fileId }: FilePreviewProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!fileId) {
+      setError('File not found');
+      setLoading(false);
+      return;
+    }
+
     const fetchMetadata = async () => {
-      try {
+      const op = (async () => {
         const response = await fetch(`/api/files/${fileId}`);
         if (!response.ok) {
-          setError('File not found');
-          setLoading(false);
-          return;
+          throw new Error('File not found');
         }
         const data = await response.json();
         setMetadata(data);
-      } catch (err) {
-        console.error('Error fetching metadata:', err);
-        setError('Failed to load file');
-      } finally {
-        setLoading(false);
-      }
+        return true;
+      })();
+
+      await toast.promise(op, {
+        loading: 'Loading file...',
+        success: 'Loaded',
+        error: (err) => {
+          console.error('Error fetching metadata:', err);
+          setError(err instanceof Error ? err.message : 'Failed to load file');
+          return err instanceof Error ? err.message : 'Failed to load file';
+        },
+      });
+      setLoading(false);
     };
 
     fetchMetadata();
