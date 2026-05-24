@@ -21,6 +21,16 @@ export function validateAnonymousFile(file: File): string | null {
   return null;
 }
 
+async function parseAnonymousLinksResponse(response: Response) {
+  const data = (await response.json().catch(() => null)) as { files?: AnonymousLink[]; error?: string } | null;
+
+  if (!response.ok) {
+    throw new Error(data?.error || 'Failed to load links');
+  }
+
+  return data?.files ?? [];
+}
+
 export function formatFileSize(bytes: number) {
   const megabytes = bytes / (1024 * 1024);
   if (megabytes >= 1) {
@@ -116,36 +126,15 @@ export async function uploadAnonymousFile(file: File): Promise<AnonymousLink> {
   };
 }
 
-export async function hydrateAnonymousLinks(storedLinks: AnonymousLink[]) {
-  const hydrated = await Promise.all(
-    storedLinks.map(async (item) => {
-      const response = await fetch(`/api/files/${item.id}`);
-
-      if (!response.ok) {
-        return null;
-      }
-
-      const metadata = (await response.json()) as {
-        expiresAt: string | null;
-      };
-
-      if (!metadata.expiresAt || new Date(metadata.expiresAt).getTime() <= Date.now()) {
-        return null;
-      }
-
-      return {
-        ...item,
-        expiresAt: metadata.expiresAt,
-      };
-    })
-  );
-
-  return hydrated.filter((item): item is AnonymousLink => Boolean(item));
+export async function fetchAnonymousLinks() {
+  const response = await fetch('/api/anon/files', { credentials: 'same-origin' });
+  return parseAnonymousLinksResponse(response);
 }
 
 export async function deleteAnonymousLink(id: string) {
-  const response = await fetch(`/api/files/${id}`, {
+  const response = await fetch(`/api/anon/files/${id}`, {
     method: 'DELETE',
+    credentials: 'same-origin',
   });
 
   if (!response.ok) {

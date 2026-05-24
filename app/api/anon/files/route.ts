@@ -1,14 +1,23 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import crypto from 'crypto';
 import { listFilesForAnonSession } from '@/lib/file-admin';
 import { buildFileUrl } from '@/lib/file-admin';
+import type { AnonymousLink } from '@/types/app';
 
-export async function GET(request: Request) {
+function formatFileSize(bytes: number) {
+  const megabytes = bytes / (1024 * 1024);
+  if (megabytes >= 1) {
+    return `${megabytes.toFixed(1)} MB`;
+  }
+
+  const kilobytes = bytes / 1024;
+  return `${kilobytes.toFixed(0)} KB`;
+}
+
+export async function GET(request: NextRequest) {
   try {
-    const cookie = request.headers.get('cookie') || '';
-    const match = cookie.match(/anon_session=([^;]+)/);
-    const raw = match ? decodeURIComponent(match[1]) : null;
+    const raw = request.cookies.get('anon_session')?.value ?? null;
 
     if (!raw) {
       return NextResponse.json({ error: 'No anon session' }, { status: 401 });
@@ -28,9 +37,14 @@ export async function GET(request: Request) {
 
     const files = await listFilesForAnonSession(session.id);
 
-    const payload = files.map((f) => ({
-      ...f,
-      publicUrl: buildFileUrl(f, null),
+    const payload: AnonymousLink[] = files.map((f) => ({
+      id: f.id,
+      filename: f.filename,
+      fileType: f.file_type,
+      fileSize: formatFileSize(Number(f.size)),
+      url: buildFileUrl(f, null),
+      createdAt: f.created_at,
+      expiresAt: f.expires_at ?? new Date().toISOString(),
     }));
 
     return NextResponse.json({ files: payload }, { status: 200 });

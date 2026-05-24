@@ -111,10 +111,10 @@ export async function listFilesForAnonSession(anonSessionId: string) {
   return (data ?? []) as AdminFileRow[];
 }
 
-export async function softDeleteFileForAnonSession(fileId: string, anonSessionId: string) {
+export async function deleteFileForAnonSession(fileId: string, anonSessionId: string) {
   const { data, error } = await supabaseAdmin
     .from('files')
-    .update({ deleted_at: new Date().toISOString() })
+    .delete()
     .eq('id', fileId)
     .eq('anon_session_id', anonSessionId)
     .select('id, storage_path')
@@ -125,6 +125,34 @@ export async function softDeleteFileForAnonSession(fileId: string, anonSessionId
   }
 
   return data as { id: string; storage_path: string };
+}
+
+export async function countFilesForAnonSession(anonSessionId: string) {
+  const { count, error } = await supabaseAdmin
+    .from('files')
+    .select('id', { count: 'exact', head: true })
+    .eq('anon_session_id', anonSessionId);
+
+  if (error) {
+    throw error;
+  }
+
+  return count ?? 0;
+}
+
+export async function deleteAnonSession(anonSessionId: string) {
+  const { data, error } = await supabaseAdmin
+    .from('anon_sessions')
+    .delete()
+    .eq('id', anonSessionId)
+    .select('id')
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data as { id: string };
 }
 
 export async function getFileBySlug(slug: string) {

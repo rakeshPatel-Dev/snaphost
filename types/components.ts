@@ -39,6 +39,7 @@ export type DeleteAccountDialogProps = {
 export type UploadMockTabsProps = {
   activeTab: 'upload' | 'links';
   onTabChange: (tab: 'upload' | 'links') => void;
+  linksCount?: number;
 };
 
 export type UploadDropzoneProps = {

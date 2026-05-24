@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { validateFile, getFileType } from '@/lib/fileValidation';
 import { sanitizeFilename } from '@/lib/sanitizeFilename';
 import { createFileIdSync } from '@/lib/generateFileId';
-import { uploadFileToStorage } from '@/lib/storage';
+import { deleteFileFromStorage, uploadFileToStorage } from '@/lib/storage';
 import { auth } from '@clerk/nextjs/server';
 import { createFileRecord, buildFileUrl, countActiveFilesForUser } from '@/lib/file-admin';
 import { supabaseAdmin } from '@/lib/supabase-admin';
@@ -12,6 +12,8 @@ import { getCurrentAppUser } from '@/lib/clerk-user';
 export const maxDuration = 60; // 60 seconds for file upload
 
 export async function POST(request: NextRequest) {
+  let uploadedStoragePath: string | null = null;
+  let currentUploadType: 'anonymous' | 'custom' | null = null;
   try {
     const { userId } = await auth();
     const formData = await request.formData();
@@ -65,6 +67,7 @@ export async function POST(request: NextRequest) {
     }
 
     const uploadType = userId ? 'custom' : 'anonymous';
+    currentUploadType = uploadType;
     const expiresAt =
       uploadType === 'anonymous'
         ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
@@ -74,6 +77,7 @@ export async function POST(request: NextRequest) {
 
     // Upload to storage
     const { path, error: storageError } = await uploadFileToStorage(slug, file);
+    uploadedStoragePath = path || null;
 
     if (storageError) {
       return NextResponse.json(
@@ -84,7 +88,7 @@ export async function POST(request: NextRequest) {
 
     // For anonymous uploads attach or create a secure session
     let anonSessionId: string | null = null;
-    let setCookieHeader: string | null = null;
+    let rawAnonToken: string | null = null;
 
     if (!userId) {
       // read cookie
@@ -130,27 +134,50 @@ export async function POST(request: NextRequest) {
           console.error('Failed to create anon session', insErr);
         } else {
           anonSessionId = ins.id;
-
-          // set secure HttpOnly cookie for the raw token
-          const cookie = `anon_session=${rawToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`;
-          setCookieHeader = cookie;
+          rawAnonToken = rawToken;
         }
       }
     }
 
-    // Insert metadata into database
-    const fileRecord = await createFileRecord({
-      userId: userRecord?.id ?? null,
-      uploadType,
-      slug,
-      filename: sanitizedName,
-      fileType: fileType as 'pdf' | 'image',
-      mimeType: file.type,
-      size: file.size,
-      storagePath: path,
-      expiresAt,
-      anonSessionId: anonSessionId ?? null,
-    });
+    let fileRecord;
+
+    try {
+      // Insert metadata into database
+      fileRecord = await createFileRecord({
+        userId: userRecord?.id ?? null,
+        uploadType,
+        slug,
+        filename: sanitizedName,
+        fileType: fileType as 'pdf' | 'image',
+        mimeType: file.type,
+        size: file.size,
+        storagePath: path,
+        expiresAt,
+        anonSessionId: anonSessionId ?? null,
+      });
+    } catch (dbError) {
+      const dbRecord = dbError as { code?: string; message?: string; details?: string; hint?: string } | null;
+      const dbText = [dbRecord?.code, dbRecord?.message, dbRecord?.details, dbRecord?.hint, String(dbError)]
+        .filter(Boolean)
+        .join(' ');
+
+      // If the anon-session limit trigger rejects the insert, clean up the uploaded blob and return 403.
+      if (currentUploadType === 'anonymous' && dbText.includes('anon session link limit reached')) {
+        if (uploadedStoragePath) {
+          await deleteFileFromStorage(uploadedStoragePath);
+        }
+        return NextResponse.json(
+          { error: 'Anon session link limit reached', details: 'Anon links limit reached: Maximum 3 links.' },
+          { status: 403 }
+        );
+      }
+
+      // Any other DB failure should also clean up the uploaded blob.
+      if (uploadedStoragePath) {
+        await deleteFileFromStorage(uploadedStoragePath);
+      }
+      throw dbError;
+    }
 
     // Return success with shareable URL
     const shareUrl = buildFileUrl(fileRecord, userRecord?.username);
@@ -163,17 +190,40 @@ export async function POST(request: NextRequest) {
       expiresAt: fileRecord.expires_at,
     };
 
-    if (setCookieHeader) {
-      return NextResponse.json(responseBody, {
-        status: 201,
-        headers: {
-          'Set-Cookie': setCookieHeader,
-        },
+    const response = NextResponse.json(responseBody, { status: 201 });
+
+    if (rawAnonToken) {
+      response.cookies.set({
+        name: 'anon_session',
+        value: rawAnonToken,
+        httpOnly: true,
+        secure: request.nextUrl.protocol === 'https:',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60 * 24,
       });
     }
 
-    return NextResponse.json(responseBody, { status: 201 });
+    return response;
   } catch (error) {
+    if (currentUploadType === 'anonymous') {
+      const dbRecord = error as { code?: string; message?: string; details?: string; hint?: string } | null;
+      const dbText = [dbRecord?.code, dbRecord?.message, dbRecord?.details, dbRecord?.hint, String(error)]
+        .filter(Boolean)
+        .join(' ');
+
+      if (dbText.includes('anon session link limit reached')) {
+        if (uploadedStoragePath) {
+          await deleteFileFromStorage(uploadedStoragePath);
+        }
+
+        return NextResponse.json(
+          { error: 'Anon session link limit reached', details: 'Maximum 3 anon links per session' },
+          { status: 403 }
+        );
+      }
+    }
+
     console.error('Upload route error:', error);
     return NextResponse.json(
       { error: 'Internal server error', details: String(error) },

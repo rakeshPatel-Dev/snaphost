@@ -1,24 +1,26 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Loader2, Archive, FilePlus, Link2, Clock, Copy, Check, ExternalLink, Trash2 } from "lucide-react";
+import { Loader2, FilePlus, Link2, Copy, Check } from "lucide-react";
 import UploadMockTabs from "./upload-mock/UploadMockTabs";
 import UploadDropzone from "./upload-mock/UploadDropzone";
 import AnonymousLinksDialog from "./upload-mock/AnonymousLinksDialog";
+import AnonymousLinkCard from "./upload-mock/AnonymousLinkCard";
 import type { AnonymousLink } from "@/types/app";
 import {
   deleteAnonymousLink,
-  formatShortDate,
+  fetchAnonymousLinks,
   getAutoCleanupIntervalMs,
-  getTimeRemaining,
-  hydrateAnonymousLinks,
   uploadAnonymousFile,
 } from "@/services/upload-mock";
+import { floatingFeatures } from "@/data/floatingFeatures"
 
 type TabType = "upload" | "links";
 type UploadState = "idle" | "uploading" | "completed";
+
+
 
 export function UploadMock() {
   const [activeTab, setActiveTab] = useState<TabType>("upload");
@@ -30,33 +32,48 @@ export function UploadMock() {
   const [isDragging, setIsDragging] = useState(false);
   const [isViewAllOpen, setIsViewAllOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const linksRef = useRef<AnonymousLink[]>([]);
 
-  useEffect(() => {
-    linksRef.current = links;
-  }, [links]);
+  const refreshLinks = useCallback(async () => {
+    try {
+      const activeLinks = await fetchAnonymousLinks();
+      setLinks(activeLinks);
+      setCurrentFile((current) => {
+        if (!current) {
+          return activeLinks[0] ?? null;
+        }
+
+        return activeLinks.some((item) => item.id === current.id) ? current : activeLinks[0] ?? null;
+      });
+      setError(null);
+      return activeLinks;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to refresh anonymous links";
+
+      if (message.toLowerCase().includes('session')) {
+        setLinks([]);
+        setCurrentFile(null);
+        setError(null);
+        return [] as AnonymousLink[];
+      }
+
+      console.error('refresh anon links', err);
+      setError(message);
+      return [] as AnonymousLink[];
+    }
+  }, []);
 
   useEffect(() => {
     let alive = true;
 
-    const refreshLinks = async () => {
-      const activeLinks = await hydrateAnonymousLinks(linksRef.current);
-
+    const run = async () => {
       if (!alive) {
         return;
       }
 
-      setLinks(activeLinks);
-      setCurrentFile((current) => {
-        if (!current) {
-          return current;
-        }
-
-        return activeLinks.some((item) => item.id === current.id) ? current : null;
-      });
+      await refreshLinks();
     };
 
-    void refreshLinks();
+    void run();
 
     const intervalId = window.setInterval(() => {
       void refreshLinks();
@@ -66,25 +83,22 @@ export function UploadMock() {
       alive = false;
       window.clearInterval(intervalId);
     };
-  }, []);
+  }, [refreshLinks]);
 
   const uploadAnonFile = async (file: File) => {
     setError(null);
     setUploadState("uploading");
 
     try {
-      const op = uploadAnonymousFile(file).then((newLink) => {
-        setLinks((current) => [newLink, ...current]);
-        setCurrentFile(newLink);
-        setUploadState("completed");
-        return newLink;
-      });
+      const newLink = await uploadAnonymousFile(file);
+      setLinks((current) => [newLink, ...current.filter((item) => item.id !== newLink.id)]);
+      setCurrentFile(newLink);
+      setUploadState("completed");
 
-      await toast.promise(op, {
-        loading: 'Uploading anonymous file...',
-        success: 'Anonymous link created',
-        error: (err) => (err instanceof Error ? err.message : 'Upload failed'),
-      });
+      toast.success('Anonymous link created');
+      void refreshLinks();
+
+      return newLink;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Upload failed';
       setError(message);
@@ -146,8 +160,8 @@ export function UploadMock() {
   };
 
   const removeLink = async (id: string) => {
-    const op = deleteAnonymousLink(id).then(() => {
-      setLinks((current) => current.filter((item) => item.id !== id));
+    const op = deleteAnonymousLink(id).then(async () => {
+      await refreshLinks();
 
       if (currentFile?.id === id) {
         setCurrentFile(null);
@@ -168,10 +182,27 @@ export function UploadMock() {
 
   return (
     <div className="relative w-full">
+      {floatingFeatures.map(({ className, icon: Icon, title, description, tone, iconTone }) => (
+        <div key={title} className={`pointer-events-none ${className}`}>
+          <div className={`w-48 rounded-2xl border p-3 shadow-xl backdrop-blur-md ${tone}`}>
+            <div className="flex items-start gap-3">
+              <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${iconTone}`}>
+                <Icon className="h-4 w-4" />
+              </div>
+
+              <div className="min-w-0 space-y-0.5">
+                <p className="text-sm font-semibold leading-none">{title}</p>
+                <p className="text-[11px] leading-snug text-current/70">{description}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+
       <div className="absolute -inset-6 -z-10 rounded-3xl bg-linear-to-br from-muted/10 via-transparent to-transparent blur-2xl opacity-60" />
 
       <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.15)] backdrop-blur-xl">
-        <UploadMockTabs activeTab={activeTab} onTabChange={setActiveTab} />
+        <UploadMockTabs activeTab={activeTab} onTabChange={setActiveTab} linksCount={links.length} />
 
         {error && (
           <div className="mb-4 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
@@ -211,7 +242,7 @@ export function UploadMock() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-1.5">
-                      <p className="truncate text-xs font-bold text-foreground">{currentFile.filename}</p>
+                      <p className="truncate text-xs w-55 font-bold text-foreground">{currentFile.filename}</p>
                       <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/15 uppercase">ready to share</span>
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -219,6 +250,7 @@ export function UploadMock() {
                     </p>
                   </div>
                   <button
+                    type="button"
                     onClick={resetUpload}
                     className="p-1 rounded-md text-muted-foreground hover:text-accent hover:bg-accent/5 transition-all hover:scale-105"
                     title="Upload another file"
@@ -247,20 +279,6 @@ export function UploadMock() {
 
         {activeTab === 'links' && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between gap-3 border-b border-border/40 pb-2">
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                  <Archive className="h-3.5 w-3.5 text-accent" />
-                  Anonymous links synced from the database
-                </p>
-                <p className="mt-1 text-[11px] text-muted-foreground">
-                  This demo reads expiration from the database and removes expired links automatically.
-                </p>
-              </div>
-              <span className="rounded-full bg-muted/10 px-2.5 py-1 text-[11px] font-semibold text-foreground tabular-nums">
-                {links.length}
-              </span>
-            </div>
 
             {links.length === 0 ? (
               <div className="rounded-xl border border-dashed border-border bg-muted/20 px-6 py-10 text-center">
@@ -271,47 +289,15 @@ export function UploadMock() {
             ) : (
               <>
                 {latestLink && (
-                  <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted/20 border border-border">
-                            <span className="text-[10px] font-bold text-foreground">{latestLink.fileType === 'pdf' ? 'PDF' : 'IMG'}</span>
-                          </div>
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold text-foreground">{latestLink.filename}</p>
-                            <p className="text-[11px] text-muted-foreground">Created {formatShortDate(latestLink.createdAt)} • {latestLink.fileSize}</p>
-                          </div>
-                        </div>
-
-                        <div className="mt-3 rounded-lg border border-border/60 bg-muted/20 px-3 py-2">
-                          <p className="truncate font-mono text-[11px] text-foreground">{latestLink.url}</p>
-                        </div>
-
-                        <div className="mt-2 flex items-center gap-2 text-[11px] text-muted-foreground">
-                          <Clock className="h-3 w-3" />
-                          <span>{getTimeRemaining(latestLink.expiresAt)}</span>
-                          <span className="h-1 w-1 rounded-full bg-border" />
-                          <span>Synced from DB</span>
-                        </div>
-                      </div>
-
-                      <div className="flex shrink-0 flex-col gap-2">
-                        <Button size="sm" variant="outline" className="h-8 gap-1.5" onClick={() => copyLink(latestLink.url, latestLink.id)}>
-                          {copiedId === latestLink.id ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
-                          {copiedId === latestLink.id ? 'Copied' : 'Copy'}
-                        </Button>
-                        <Button size="sm" variant="outline" className="h-8 gap-1.5" onClick={() => openLink(latestLink.url)}>
-                          <ExternalLink className="h-3.5 w-3.5" />
-                          Open
-                        </Button>
-                        <Button size="sm" variant="ghost" className="h-8 gap-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10" onClick={() => void removeLink(latestLink.id)}>
-                          <Trash2 className="h-3.5 w-3.5" />
-                          Delete
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+                  <AnonymousLinkCard
+                    {...latestLink}
+                    copied={copiedId === latestLink.id}
+                    onCopy={copyLink}
+                    onOpen={openLink}
+                    onDelete={(id) => {
+                      void removeLink(id);
+                    }}
+                  />
                 )}
 
                 {links.length > 1 && (
@@ -320,7 +306,7 @@ export function UploadMock() {
                       <p className="text-sm font-semibold text-foreground">{links.length - 1} more anonymous link{links.length - 1 === 1 ? '' : 's'}</p>
                       <p className="text-xs text-muted-foreground">Browse, copy, or delete the full browser history.</p>
                     </div>
-                    <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setIsViewAllOpen(true)}>
+                    <Button type="button" size="sm" variant="outline" className="gap-1.5" onClick={() => setIsViewAllOpen(true)}>
                       View all
                     </Button>
                   </div>

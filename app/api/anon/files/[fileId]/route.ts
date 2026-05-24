@@ -1,13 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { softDeleteFileForAnonSession } from '@/lib/file-admin';
+import { CONFIG } from '@/lib/config';
+import {
+  countFilesForAnonSession,
+  deleteAnonSession,
+  deleteFileForAnonSession,
+} from '@/lib/file-admin';
 
-export async function DELETE(request: NextRequest, { params }: { params: { fileId: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ fileId: string }> }
+) {
   try {
-    const cookie = request.headers.get('cookie') || '';
-    const match = cookie.match(/anon_session=([^;]+)/);
-    const raw = match ? decodeURIComponent(match[1]) : null;
+    const { fileId } = await params;
+
+    if (!fileId) {
+      return NextResponse.json({ error: 'Missing file id' }, { status: 400 });
+    }
+
+    const raw = request.cookies.get('anon_session')?.value ?? null;
 
     if (!raw) {
       return NextResponse.json({ error: 'No anon session' }, { status: 401 });
@@ -25,11 +37,50 @@ export async function DELETE(request: NextRequest, { params }: { params: { fileI
       return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
     }
 
-    const fileId = params.fileId;
+    const { data: fileRow, error: fileLookupError } = await supabaseAdmin
+      .from('files')
+      .select('id, storage_path')
+      .eq('id', fileId)
+      .eq('anon_session_id', session.id)
+      .maybeSingle();
 
-    const result = await softDeleteFileForAnonSession(fileId, session.id);
+    if (fileLookupError) {
+      throw fileLookupError;
+    }
 
-    return NextResponse.json({ success: true, id: result.id }, { status: 200 });
+    if (!fileRow) {
+      return NextResponse.json({ error: 'File not found' }, { status: 404 });
+    }
+
+    const { error: storageError } = await supabaseAdmin.storage
+      .from(CONFIG.STORAGE_BUCKET)
+      .remove([fileRow.storage_path]);
+
+    if (storageError) {
+      throw storageError;
+    }
+
+    const result = await deleteFileForAnonSession(fileId, session.id);
+
+    const remaining = await countFilesForAnonSession(session.id);
+
+    const response = NextResponse.json({ success: true, id: result.id }, { status: 200 });
+
+    if (remaining === 0) {
+      await deleteAnonSession(session.id);
+
+      response.cookies.set({
+        name: 'anon_session',
+        value: '',
+        httpOnly: true,
+        secure: request.nextUrl.protocol === 'https:',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 0,
+      });
+    }
+
+    return response;
   } catch (err) {
     console.error('anon delete error', err);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });

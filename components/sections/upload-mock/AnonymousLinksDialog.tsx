@@ -21,25 +21,34 @@ export default function AnonymousLinksDialog({
 }: AnonymousLinksDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>All anonymous links</DialogTitle>
+      <DialogContent className=" max-w-[30vw]!">
+        <DialogHeader className="pb-2">
+          <DialogTitle className="text-xl">Anonymous Links</DialogTitle>
           <DialogDescription>
-            These links are stored only in this browser and expire automatically after 24 hours.
+            Links are automatically deleted 24 hours after creation.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="max-h-[60vh] space-y-3 overflow-y-auto pr-1">
-          {links.map((item) => (
-            <AnonymousLinkCard
-              key={item.id}
-              {...item}
-              copied={copiedId === item.id}
-              onCopy={onCopy}
-              onOpen={onOpen}
-              onDelete={onDelete}
-            />
-          ))}
+        <div className="max-h-[65vh] space-y-3 overflow-y-auto pr-1 scrollbar-thin">
+          {links.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <p className="text-sm text-muted-foreground">No anonymous links yet</p>
+              <p className="text-xs text-muted-foreground/70 mt-1">
+                Upload files anonymously to see them here
+              </p>
+            </div>
+          ) : (
+            links.map((item) => (
+              <AnonymousLinkCard
+                key={item.id}
+                {...item}
+                copied={copiedId === item.id}
+                onCopy={onCopy}
+                onOpen={onOpen}
+                onDelete={onDelete}
+              />
+            ))
+          )}
         </div>
       </DialogContent>
     </Dialog>

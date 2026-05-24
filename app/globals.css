@@ -106,6 +106,30 @@ body {
   animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+@keyframes float-soft {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+.animate-float-slow {
+  animation: float-soft 6s ease-in-out infinite;
+}
+
+.animate-float-medium {
+  animation: float-soft 5s ease-in-out infinite;
+  animation-delay: -1.5s;
+}
+
+.animate-float-fast {
+  animation: float-soft 4.5s ease-in-out infinite;
+  animation-delay: -0.75s;
+}
+
 /* Custom horizontal scrolling bar if needed */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

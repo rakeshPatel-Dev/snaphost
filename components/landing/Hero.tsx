@@ -8,7 +8,7 @@ import Announcement from './Announcement';
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden pt-28 pb-20 border-b border-border/20">
+    <section className="relative overflow-hidden pt-20 pb-20 border-b border-border/20">
       {/* Background visual effects */}
       <div className="absolute inset-0 bg-grid-pattern opacity-40 -z-10" />
       
@@ -40,7 +40,7 @@ export default function Hero() {
 
           {/* Subtext */}
           <p className="mt-6 text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl">
-            Upload images or PDFs in seconds. Anonymous links are ready instantly, and signed-in users get a dashboard, direct username URLs, and expiration controls.
+           Upload images and PDFs anonymously, and sign up for more uploads, and url customization with custom expiration controls. 
           </p>
 
           {/* CTAs */}

@@ -5,7 +5,7 @@ export const Announcement = () => {
   return (
     <span className="font-semibold text-foreground inline"  >
       SnapHost 
-      <Badge variant="outline" className="ml-2 px-2 py-1 text-xs font-semibold bg-green-100 text-green-600 border border-green-200 animate-pulse">
+      <Badge variant="outline" className="ml-2 font-semibold bg-green-100 text-green-600 border-2 border-black ">
         Beta
       </Badge>
     </span>
