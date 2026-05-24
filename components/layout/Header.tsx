@@ -6,6 +6,7 @@ import { Camera, Upload, Menu, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import Announcement from '@/components/landing/Announcement';
 import { Separator } from '@/components/ui/separator';
 import { UserButton, useUser } from '@clerk/nextjs';
 import {
@@ -61,7 +62,7 @@ export default function Header() {
         <span>
           Introducing{' '}
           <Link href="/upload" className="font-semibold text-foreground underline-offset-4 hover:underline">
-            SnapHost 2.0
+            <Announcement />
           </Link>{' '}
           — cleaner links, faster uploads.
         </span>

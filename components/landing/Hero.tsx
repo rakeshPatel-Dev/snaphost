@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { UploadMock } from '../sections/UploadMock';
 import { Sparkles, ArrowRight, Play } from 'lucide-react';
+import Announcement from './Announcement';
 
 export default function Hero() {
   return (
@@ -22,7 +23,7 @@ export default function Hero() {
           {/* Announcement Pill */}
           <div className="inline-flex self-start items-center gap-1.5 rounded-full bg-muted/10 hover:bg-muted/20 border border-border/10 px-3 py-1 text-xs font-semibold text-foreground transition-all cursor-pointer mb-6">
             <Sparkles className="h-3.5 w-3.5 text-accent animate-pulse" />
-            <span>SnapHost 2.0 is live</span>
+            <span><Announcement/> is live</span>   
             <span className="h-1.5 w-1.5 rounded-full bg-border" />
             <span className="text-muted-foreground flex items-center gap-0.5">
               Upload fast <ArrowRight className="h-3 w-3" />
