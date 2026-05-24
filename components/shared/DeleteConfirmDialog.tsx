@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import type { ReactNode } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,16 +12,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-
-type DeleteConfirmDialogProps = {
-  trigger: ReactNode;
-  title: string;
-  description: ReactNode;
-  confirmLabel?: string;
-  cancelLabel?: string;
-  onConfirm: () => Promise<void> | void;
-  destructiveClassName?: string;
-};
+import type { DeleteConfirmDialogProps } from '@/types/components';
 
 export default function DeleteConfirmDialog({
   trigger,
@@ -32,9 +22,13 @@ export default function DeleteConfirmDialog({
   cancelLabel = 'Cancel',
   onConfirm,
   destructiveClassName,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: DeleteConfirmDialogProps) {
-  const [open, setOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const open = controlledOpen ?? uncontrolledOpen;
+  const setOpen = controlledOnOpenChange ?? setUncontrolledOpen;
 
   const handleConfirm = async () => {
     try {
@@ -48,7 +42,7 @@ export default function DeleteConfirmDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+      {trigger ? <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger> : null}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>

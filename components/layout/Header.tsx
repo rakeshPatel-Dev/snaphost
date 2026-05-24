@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { UserButton, useUser } from '@clerk/nextjs';
-import { toast } from 'sonner';
 import {
   Sheet,
   SheetContent,
@@ -19,6 +18,7 @@ import {
 import { BsGithub } from 'react-icons/bs';
 import { AnimatedThemeToggler } from '../ui/animated-theme-toggler';
 import { UserRound, Trash2 } from 'lucide-react';
+import DeleteAccountDialog from '@/components/shared/DeleteAccountDialog';
 
 const navItems = [
   { name: 'Upload', href: '/upload' },
@@ -50,6 +50,7 @@ const features = [
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showFeatures, setShowFeatures] = useState(false);
+  const [accountDeleteOpen, setAccountDeleteOpen] = useState(false);
   const { isSignedIn } = useUser();
 
   return (
@@ -151,7 +152,7 @@ export default function Header() {
           {!isSignedIn ? (
             <>
               <Button variant="ghost" size="sm" className="h-8 text-sm" asChild>
-                <Link href="/login">Sign in</Link>
+                <Link href="/sign-in">Sign in</Link>
               </Button>
 
               <Button size="sm" className="h-8 gap-1.5 text-sm shadow-sm" asChild>
@@ -169,33 +170,15 @@ export default function Header() {
                   <UserButton.Action
                     label="Delete account"
                     labelIcon={<Trash2 className="h-4 w-4" />}
-                    onClick={async () => {
-                      const confirmed = window.confirm('Delete your account and all of your links permanently?');
-
-                      if (!confirmed) {
-                        return;
-                      }
-
-                      const op = (async () => {
-                        const response = await fetch('/api/me/account', { method: 'DELETE' });
-                        if (!response.ok) {
-                          const data = await response.json().catch(() => null);
-                          throw new Error(data?.error || 'Failed to delete account');
-                        }
-                        return true;
-                      })();
-
-                      await toast.promise(op, {
-                        loading: 'Deleting account...',
-                        success: 'Account deleted',
-                        error: (err) => (err instanceof Error ? err.message : 'Failed to delete account'),
-                      });
-
-                      window.location.assign('/');
-                    }}
+                    onClick={() => setAccountDeleteOpen(true)}
                   />
                 </UserButton.MenuItems>
               </UserButton>
+              <DeleteAccountDialog
+                trigger={null}
+                open={accountDeleteOpen}
+                onOpenChange={setAccountDeleteOpen}
+              />
             </>
           )}
         </div>
@@ -265,7 +248,7 @@ export default function Header() {
                 {!isSignedIn ? (
                   <div className="flex flex-col gap-2 px-1">
                     <Button variant="outline" size="sm" className="w-full" asChild>
-                      <Link href="/login" onClick={() => setMobileOpen(false)}>Sign in</Link>
+                      <Link href="/sign-in" onClick={() => setMobileOpen(false)}>Sign in</Link>
                     </Button>
                     <Button size="sm" className="w-full gap-1.5" asChild>
                       <Link href="/signup" onClick={() => setMobileOpen(false)}>
@@ -282,36 +265,18 @@ export default function Header() {
                       <UserButton>
                         <UserButton.MenuItems>
                           <UserButton.Link href="/profile" label="View profile" labelIcon={<UserRound className="h-4 w-4" />} />
-                          <UserButton.Action
-                            label="Delete account"
-                            labelIcon={<Trash2 className="h-4 w-4" />}
-                            onClick={async () => {
-                              const confirmed = window.confirm('Delete your account and all of your links permanently?');
-
-                              if (!confirmed) {
-                                return;
-                              }
-
-                              const op = (async () => {
-                                const response = await fetch('/api/me/account', { method: 'DELETE' });
-                                if (!response.ok) {
-                                  const data = await response.json().catch(() => null);
-                                  throw new Error(data?.error || 'Failed to delete account');
-                                }
-                                return true;
-                              })();
-
-                              await toast.promise(op, {
-                                loading: 'Deleting account...',
-                                success: 'Account deleted',
-                                error: (err) => (err instanceof Error ? err.message : 'Failed to delete account'),
-                              });
-
-                              window.location.assign('/');
-                            }}
-                          />
+                            <UserButton.Action
+                              label="Delete account"
+                              labelIcon={<Trash2 className="h-4 w-4" />}
+                              onClick={() => setAccountDeleteOpen(true)}
+                            />
                         </UserButton.MenuItems>
                       </UserButton>
+                        <DeleteAccountDialog
+                          trigger={null}
+                          open={accountDeleteOpen}
+                          onOpenChange={setAccountDeleteOpen}
+                        />
                     </div>
                   </div>
                 ) : null}
