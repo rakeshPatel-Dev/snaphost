@@ -2,9 +2,12 @@
 
 import { useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
+import { snaphostApi } from '@/lib/api';
+import { useAppDispatch } from '@/lib/store';
 
 export default function UserSync() {
   const { isLoaded, isSignedIn, user } = useUser();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!isLoaded || !isSignedIn || !user?.id) {
@@ -19,10 +22,12 @@ export default function UserSync() {
 
     sessionStorage.setItem(storageKey, '1');
 
-    fetch('/api/me').catch(() => {
+    const request = dispatch(snaphostApi.endpoints.getMe.initiate());
+
+    request.unwrap().catch(() => {
       sessionStorage.removeItem(storageKey);
     });
-  }, [isLoaded, isSignedIn, user?.id]);
+  }, [dispatch, isLoaded, isSignedIn, user?.id]);
 
   return null;
 }

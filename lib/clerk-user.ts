@@ -1,15 +1,6 @@
 import { clerkClient, currentUser } from '@clerk/nextjs/server';
 import { supabaseAdmin } from './supabase-admin';
-
-export type AppUser = {
-  id: string;
-  clerk_id: string;
-  username: string | null;
-  email: string;
-  tier: 'free' | 'premium';
-  created_at: string;
-  updated_at: string;
-};
+import type { AppUser } from '@/types/app';
 
 export async function getCurrentAppUser(clerkId?: string | null) {
   const signedInUserId = clerkId ?? (await currentUser())?.id ?? null;

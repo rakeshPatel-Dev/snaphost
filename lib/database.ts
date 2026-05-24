@@ -1,30 +1,8 @@
 import { supabase } from './supabase';
 import { CONFIG } from './config';
+import type { AdminFileRow, FileMetadata } from '@/types/app';
 
-export interface FileRecord {
-  id: string;
-  user_id: string | null;
-  upload_type: 'anonymous' | 'custom';
-  slug: string;
-  filename: string;
-  file_type: 'pdf' | 'image';
-  size: number;
-  storage_path: string;
-  created_at: string;
-  expires_at: string | null;
-  deleted_at: string | null;
-  mime_type?: string;
-}
-
-export interface FileMetadata {
-  slug: string;
-  filename: string;
-  fileType: 'pdf' | 'image';
-  size: number;
-  createdAt: string;
-  expiresAt: string | null;
-  url: string;
-}
+export type FileRecord = AdminFileRow;
 
 /**
  * Fetch public file metadata by slug.

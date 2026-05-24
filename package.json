@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^7.3.7",
+    "@reduxjs/toolkit": "^2.12.0",
     "@supabase/supabase-js": "^2.106.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -23,6 +24,7 @@
     "react-dom": "19.2.4",
     "react-icons": "^5.6.0",
     "react-qr-code": "^2.0.21",
+    "react-redux": "^9.3.0",
     "shadcn": "^4.7.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.6.0",

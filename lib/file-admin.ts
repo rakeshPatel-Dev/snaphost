@@ -1,29 +1,13 @@
 import { supabaseAdmin } from './supabase-admin';
 import { CONFIG } from './config';
-
-export type AdminFileRow = {
-  id: string;
-  user_id: string | null;
-  upload_type: 'anonymous' | 'custom';
-  slug: string;
-  filename: string;
-  file_type: 'pdf' | 'image';
-  mime_type: string;
-  size: number;
-  storage_path: string;
-  expires_at: string | null;
-  deleted_at: string | null;
-  created_at: string;
-  updated_at: string;
-  user?: { username: string | null } | null;
-};
+import type { AdminFileRow, FileType, UploadType } from '@/types/app';
 
 export async function createFileRecord(input: {
   userId: string | null;
-  uploadType: 'anonymous' | 'custom';
+  uploadType: UploadType;
   slug: string;
   filename: string;
-  fileType: 'pdf' | 'image';
+  fileType: FileType;
   mimeType: string;
   size: number;
   storagePath: string;
@@ -68,7 +52,7 @@ export async function listFilesForUser(userId: string) {
 }
 
 export async function countActiveFilesForUser(userId: string) {
-  const { data, error, count } = await supabaseAdmin
+  const { error, count } = await supabaseAdmin
     .from('files')
     .select('id', { count: 'exact', head: false })
     .eq('user_id', userId)
@@ -136,7 +120,7 @@ export async function deleteFileById(fileId: string) {
     throw error;
   }
 
-  return data as { id: string; storage_path: string; upload_type: 'anonymous' | 'custom' };
+  return data as { id: string; storage_path: string; upload_type: UploadType };
 }
 
 export async function deleteFileBySlug(slug: string) {
@@ -151,7 +135,7 @@ export async function deleteFileBySlug(slug: string) {
     throw error;
   }
 
-  return data as { id: string; storage_path: string; upload_type: 'anonymous' | 'custom' };
+  return data as { id: string; storage_path: string; upload_type: UploadType };
 }
 
 export async function updateFileForUser(

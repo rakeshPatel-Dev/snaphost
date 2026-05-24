@@ -3,10 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-
-type SiteChromeProps = {
-  children: React.ReactNode;
-};
+import type { SiteChromeProps } from '@/types/components';
 
 export default function SiteChrome({ children }: SiteChromeProps) {
   const pathname = usePathname();

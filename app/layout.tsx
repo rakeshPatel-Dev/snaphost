@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import SiteChrome from "@/components/layout/SiteChrome";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import ClerkProvider from "@/components/providers/clerk-provider";
+import ReduxProvider from "@/components/providers/redux-provider";
 import UserSync from "@/components/providers/user-sync";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -78,6 +79,7 @@ export default function RootLayout({
       <head>
         <meta name="apple-mobile-web-app-title" content="Snaphost" />
         <meta name="application-name" content="Snaphost" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <script
           dangerouslySetInnerHTML={{
@@ -100,15 +102,17 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-screen bg-background text-foreground flex flex-col"
       >
-        <ClerkProvider>
-          <UserSync />
-          <ThemeProvider>
-            <TooltipProvider>
-            <Toaster position="top-right" closeButton duration={3000} />
-            <SiteChrome>{children}</SiteChrome>
-            </TooltipProvider>
-          </ThemeProvider>
-        </ClerkProvider>
+        <ReduxProvider>
+          <ClerkProvider>
+            <UserSync />
+            <ThemeProvider>
+              <TooltipProvider>
+              <Toaster position="top-right" closeButton duration={3000} />
+              <SiteChrome>{children}</SiteChrome>
+              </TooltipProvider>
+            </ThemeProvider>
+          </ClerkProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
