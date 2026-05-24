@@ -96,6 +96,37 @@ export async function getFileById(fileId: string) {
   return data as AdminFileRow | null;
 }
 
+export async function listFilesForAnonSession(anonSessionId: string) {
+  const { data, error } = await supabaseAdmin
+    .from('files')
+    .select('*, user:users(username)')
+    .eq('anon_session_id', anonSessionId)
+    .is('deleted_at', null)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []) as AdminFileRow[];
+}
+
+export async function softDeleteFileForAnonSession(fileId: string, anonSessionId: string) {
+  const { data, error } = await supabaseAdmin
+    .from('files')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', fileId)
+    .eq('anon_session_id', anonSessionId)
+    .select('id, storage_path')
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data as { id: string; storage_path: string };
+}
+
 export async function getFileBySlug(slug: string) {
   const { data, error } = await supabaseAdmin
     .from('files')
