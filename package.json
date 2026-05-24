@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "cleanup:expired": "node scripts/cleanup-expired-files.mjs"
+    "cleanup:expired": "node scripts/cleanup-expired-files.mjs",
+    "purge:anon": "node scripts/purge-expired-anon-sessions.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.3.7",
