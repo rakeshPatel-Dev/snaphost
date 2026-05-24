@@ -1,10 +1,5 @@
 'use client';
-
-interface FileDetailsCardProps {
-  filename: string;
-  fileSize: number;
-  optimizedSize?: number;
-}
+import type { FileDetailsCardProps } from '@/types/components';
 
 export default function FileDetailsCard({
   filename,

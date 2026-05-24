@@ -1,37 +1,35 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { toast } from 'sonner';
 import UploadForm from './UploadForm';
 import UploadSuccessCard from './UploadSuccessCard';
-
-interface UploadSuccess {
-  fileId: string;
-  filename: string;
-  fileUrl: string;
-  fileSize: number;
-  optimizedSize?: number;
-}
+import { validateFile } from '@/lib/fileValidation';
+import { getApiErrorMessage } from '@/lib/api-error';
+import { useAppDispatch, useAppSelector } from '@/lib/store';
+import { resetUploadState, setDragging, setError, setSuccess } from '@/lib/uploadSlice';
+import { useUploadFileMutation } from '@/lib/api';
 
 export default function UploadBox() {
-  const [isDragging, setIsDragging] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [uploadSuccess, setUploadSuccess] = useState<UploadSuccess | null>(null);
+  const dispatch = useAppDispatch();
+  const isDragging = useAppSelector((state) => state.upload.isDragging);
+  const error = useAppSelector((state) => state.upload.error);
+  const uploadSuccess = useAppSelector((state) => state.upload.success);
+  const [uploadFile, { isLoading: isUploading }] = useUploadFileMutation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    setIsDragging(true);
+    dispatch(setDragging(true));
   };
 
   const handleDragLeave = () => {
-    setIsDragging(false);
+    dispatch(setDragging(false));
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    setIsDragging(false);
+    dispatch(setDragging(false));
 
     const files = e.dataTransfer.files;
     if (files.length > 0) {
@@ -47,86 +45,52 @@ export default function UploadBox() {
   };
 
   const handleFileUpload = async (file: File) => {
-    setError(null);
+    dispatch(setError(null));
 
-    const allowedTypes = [
-      'image/png',
-      'image/jpeg',
-      'image/webp',
-      'application/pdf',
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-      const errorMsg = 'Invalid file type. Allowed: PNG, JPG, WEBP, PDF';
-      setError(errorMsg);
+    const validation = validateFile(file);
+    if (!validation.valid) {
+      const errorMsg = validation.errors.map((item) => item.message).join(', ');
+      dispatch(setError(errorMsg));
       toast.error(errorMsg);
       return;
     }
-
-    const maxSize = 10 * 1024 * 1024; // 10MB
-
-    if (file.size > maxSize) {
-      const errorMsg = `File too large. Max: ${maxSize / 1024 / 1024}MB, Got: ${(file.size / 1024 / 1024).toFixed(2)}MB`;
-      setError(errorMsg);
-      toast.error(errorMsg);
-      return;
-    }
-
-    setIsUploading(true);
 
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const op = (async () => {
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
+      const op = uploadFile(formData)
+        .unwrap()
+        .then((data) => {
+          const fileUrl = data.url || `${window.location.origin}/anon/${data.fileId}`;
+
+          dispatch(
+            setSuccess({
+              fileId: data.fileId,
+              filename: file.name,
+              fileUrl,
+              fileSize: file.size,
+              optimizedSize: data.optimizedSize,
+            })
+          );
+
+          return true;
         });
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          const errorDetails = Array.isArray(errorData.details)
-            ? errorData.details.join(', ')
-            : typeof errorData.details === 'string'
-              ? errorData.details
-              : '';
-          const errorMsg = errorDetails || errorData.error || 'Upload failed';
-          throw new Error(errorMsg);
-        }
-
-        const data = await response.json();
-        const fileUrl = data.url || `${window.location.origin}/anon/${data.fileId}`;
-
-        setUploadSuccess({
-          fileId: data.fileId,
-          filename: file.name,
-          fileUrl: fileUrl,
-          fileSize: file.size,
-          optimizedSize: data.optimizedSize,
-        });
-
-        return true;
-      })();
 
       await toast.promise(op, {
         loading: 'Uploading file...',
         success: 'File uploaded successfully!',
-        error: (err) => (err instanceof Error ? err.message : 'Upload failed'),
+        error: (err) => getApiErrorMessage(err, 'Upload failed'),
       });
-      setError(null);
-      setIsUploading(false);
     } catch (error) {
-      const errorMsg = 'Upload failed. Please try again.';
+      const errorMsg = getApiErrorMessage(error, 'Upload failed. Please try again.');
       console.error('Upload error:', error);
-      setError(errorMsg);
+      dispatch(setError(errorMsg));
       toast.error(errorMsg);
-      setIsUploading(false);
     }
   };
 
   const resetUpload = () => {
-    setUploadSuccess(null);
-    setError(null);
+    dispatch(resetUploadState());
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }

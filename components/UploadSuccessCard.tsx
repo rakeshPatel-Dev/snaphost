@@ -6,15 +6,7 @@ import { Button } from '@/components/ui/button';
 import ShareModal from './ShareModal';
 import FileDetailsCard from './FileDetailsCard';
 import ShareLinkInput from './ShareLinkInput';
-
-interface UploadSuccessCardProps {
-  fileId: string;
-  filename: string;
-  fileUrl: string;
-  fileSize: number;
-  optimizedSize?: number;
-  onUploadMore: () => void;
-}
+import type { UploadSuccessCardProps } from '@/types/components';
 
 export default function UploadSuccessCard({
   filename,

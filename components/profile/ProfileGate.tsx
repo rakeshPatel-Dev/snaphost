@@ -1,85 +1,26 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { Loader2 } from 'lucide-react';
 import ProfileDashboard from './ProfileDashboard';
-
-type ApiUser = {
-  id: string;
-  username: string | null;
-  email: string;
-  tier: 'free' | 'premium';
-};
-
-type ApiFile = {
-  id: string;
-  slug: string;
-  filename: string;
-  file_type: 'image' | 'pdf';
-  upload_type: 'anonymous' | 'custom';
-  expires_at: string | null;
-  created_at: string;
-  publicUrl: string;
-};
+import { useGetMeFilesQuery, useGetMeQuery } from '@/lib/api';
+import { getApiErrorMessage } from '@/lib/api-error';
+import type { AppFile, AppUser } from '@/types/app';
 
 export default function ProfileGate() {
   const { isLoaded, isSignedIn } = useUser();
-  const [loadingProfile, setLoadingProfile] = useState(true);
-  const [user, setUser] = useState<ApiUser | null>(null);
-  const [files, setFiles] = useState<ApiFile[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const shouldSkip = !isLoaded || !isSignedIn;
+  const { data: userData, error: userError, isLoading: loadingUser } = useGetMeQuery(undefined, {
+    skip: shouldSkip,
+  });
+  const { data: filesData, error: filesError, isLoading: loadingFiles } = useGetMeFilesQuery(undefined, {
+    skip: shouldSkip,
+  });
 
-  useEffect(() => {
-    if (!isLoaded || !isSignedIn) {
-      return;
-    }
-
-    let alive = true;
-
-    async function loadProfile() {
-      try {
-        const [meResponse, filesResponse] = await Promise.all([
-          fetch('/api/me'),
-          fetch('/api/me/files'),
-        ]);
-
-        if (!meResponse.ok) {
-          throw new Error('Unable to load profile');
-        }
-
-        if (!filesResponse.ok) {
-          throw new Error('Unable to load files');
-        }
-
-        const meData = await meResponse.json();
-        const filesData = await filesResponse.json();
-
-        if (!alive) {
-          return;
-        }
-
-        setUser(meData.user);
-        setFiles(filesData.files ?? []);
-        setError(null);
-      } catch (loadError) {
-        if (!alive) {
-          return;
-        }
-        setError(loadError instanceof Error ? loadError.message : 'Failed to load profile');
-      } finally {
-        if (alive) {
-          setLoadingProfile(false);
-        }
-      }
-    }
-
-    loadProfile();
-
-    return () => {
-      alive = false;
-    };
-  }, [isLoaded, isSignedIn]);
+  const loadingProfile = !isLoaded || (isSignedIn && (loadingUser || loadingFiles));
+  const error = userError || filesError;
+  const user: AppUser | null = userData?.user ?? null;
+  const files: AppFile[] = filesData?.files ?? [];
 
   if (!isLoaded || (isSignedIn && loadingProfile)) {
     return (
@@ -107,7 +48,9 @@ export default function ProfileGate() {
       <div className="mx-auto flex min-h-[60vh] w-full max-w-3xl items-center justify-center px-4 text-center">
         <div className="space-y-3">
           <h1 className="text-2xl font-semibold">Profile unavailable</h1>
-          <p className="text-sm text-muted-foreground">{error || 'Try refreshing the page.'}</p>
+          <p className="text-sm text-muted-foreground">
+            {getApiErrorMessage(error, 'Try refreshing the page.')}
+          </p>
         </div>
       </div>
     );

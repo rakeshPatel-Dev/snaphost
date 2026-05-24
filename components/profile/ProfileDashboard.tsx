@@ -15,7 +15,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
 import { useClerk } from '@clerk/nextjs';
 import {
   Copy,
@@ -36,23 +35,17 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-type FileItem = {
-  id: string;
-  slug: string;
-  filename: string;
-  file_type: 'image' | 'pdf';
-  upload_type: 'anonymous' | 'custom';
-  expires_at: string | null;
-  created_at: string;
-  publicUrl: string;
-};
+import DeleteAccountDialog from '@/components/shared/DeleteAccountDialog';
+import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
+import { useDeleteFileMutation, useUpdateFileMutation } from '@/lib/api';
+import { getApiErrorMessage } from '@/lib/api-error';
+import type { AppFile } from '@/types/app';
 
 type ProfileDashboardProps = {
   initialUsername: string;
   email: string;
   tier: 'free' | 'premium';
-  files: FileItem[];
+  files: AppFile[];
 };
 
 const PREMIUM_FEATURES = [
@@ -69,9 +62,11 @@ export default function ProfileDashboard({
   files: initialFiles,
 }: ProfileDashboardProps) {
   const [username] = useState(initialUsername);
-  const [files, setFiles] = useState<FileItem[]>(initialFiles);
+  const [files, setFiles] = useState<AppFile[]>(initialFiles);
   const [editingFileId, setEditingFileId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [updateFile] = useUpdateFileMutation();
+  const [deleteFileMutation] = useDeleteFileMutation();
   const { signOut } = useClerk();
 
   const isPremium = tier === 'premium';
@@ -89,33 +84,28 @@ export default function ProfileDashboard({
     });
   }
 
-  async function saveFile(file: FileItem) {
+  async function saveFile(file: AppFile) {
     setEditingFileId(file.id);
     try {
-      const op = (async () => {
-        const response = await fetch(`/api/me/files/${file.id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ slug: file.slug, filename: file.filename, expiresAt: file.expires_at }),
+      const op = updateFile({
+        fileId: file.id,
+        slug: file.slug,
+        filename: file.filename,
+        expiresAt: file.expires_at,
+      })
+        .unwrap()
+        .then((data) => {
+          setFiles((c) => c.map((item) => (item.id === file.id ? data.file : item)));
+          return true;
         });
-
-        if (!response.ok) {
-          const data = await response.json().catch(() => ({}));
-          throw new Error(data.error || 'Failed to update file');
-        }
-
-        const data = await response.json();
-        setFiles((c) => c.map((item) => (item.id === file.id ? data.file : item)));
-        return true;
-      })();
 
       await toast.promise(op, {
         loading: 'Saving changes...',
         success: 'Link updated',
-        error: (err) => (err instanceof Error ? err.message : 'Failed to update file'),
+        error: (err) => getApiErrorMessage(err, 'Failed to update file'),
       });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to update file');
+      toast.error(getApiErrorMessage(error, 'Failed to update file'));
     } finally {
       setEditingFileId(null);
     }
@@ -124,48 +114,22 @@ export default function ProfileDashboard({
   async function deleteFile(fileId: string) {
     setEditingFileId(fileId);
     try {
-      const op = (async () => {
-        const response = await fetch(`/api/me/files/${fileId}`, { method: 'DELETE' });
-        if (!response.ok) {
-          const data = await response.json().catch(() => ({}));
-          throw new Error(data.error || 'Failed to delete file');
-        }
+      const op = deleteFileMutation({ fileId })
+        .unwrap()
+        .then(() => {
         setFiles((c) => c.filter((item) => item.id !== fileId));
         return true;
-      })();
+      });
 
       await toast.promise(op, {
         loading: 'Deleting link...',
         success: 'Link deleted',
-        error: (err) => (err instanceof Error ? err.message : 'Failed to delete file'),
+        error: (err) => getApiErrorMessage(err, 'Failed to delete file'),
       });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete file');
+      toast.error(getApiErrorMessage(error, 'Failed to delete file'));
     } finally {
       setEditingFileId(null);
-    }
-  }
-
-  async function deleteAccount() {
-    try {
-      const op = (async () => {
-        const response = await fetch('/api/me/account', { method: 'DELETE' });
-        if (!response.ok) {
-          const data = await response.json().catch(() => ({}));
-          throw new Error(data.error || 'Failed to delete account');
-        }
-        return true;
-      })();
-
-      await toast.promise(op, {
-        loading: 'Deleting account...',
-        success: 'Account deleted',
-        error: (err) => (err instanceof Error ? err.message : 'Failed to delete account'),
-      });
-
-      await signOut({ redirectUrl: '/' });
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete account');
     }
   }
 
@@ -282,18 +246,13 @@ export default function ProfileDashboard({
               </Button>
 
               <div className="ml-auto">
-                <DeleteConfirmDialog
+                <DeleteAccountDialog
                   trigger={(
                     <Button size="sm" variant="ghost" className="gap-1.5 h-8 text-destructive hover:text-destructive hover:bg-destructive/10">
                       <Trash2 className="h-3.5 w-3.5" />
                       Delete account
                     </Button>
                   )}
-                  title="Delete account?"
-                  description="This will permanently delete your account and all uploaded links. This action cannot be undone."
-                  confirmLabel="Yes, delete everything"
-                  destructiveClassName="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  onConfirm={deleteAccount}
                 />
               </div>
             </div>

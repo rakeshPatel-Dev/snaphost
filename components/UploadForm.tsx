@@ -2,17 +2,7 @@
 
 import { Upload, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-interface UploadFormProps {
-  isDragging: boolean;
-  isUploading: boolean;
-  onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
-  onDragLeave: () => void;
-  onDrop: (e: React.DragEvent<HTMLDivElement>) => void;
-  onFileInputClick: () => void;
-  fileInputRef: React.RefObject<HTMLInputElement | null>;
-  onFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+import type { UploadFormProps } from '@/types/components';
 
 export default function UploadForm({
   isDragging,

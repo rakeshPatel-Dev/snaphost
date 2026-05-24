@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { 
-  Share2, X,
+  Share2,
   QrCode, Link2, Clock, CheckCircle2, ExternalLink, Copy
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -10,14 +10,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import QRCode from 'react-qr-code';
 import { shareSocials } from '@/data/shareSocials';
-
-interface ShareModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  fileUrl: string;
-  filename: string;
-  fileSize?: string;
-}
+import type { ShareModalProps } from '@/types/components';
 
 export default function ShareModal({ 
   open, 
@@ -67,7 +60,7 @@ export default function ShareModal({
       case 'email':
         const subject = `Shared file: ${filename}`;
         const body = `I wanted to share this file with you:\n\n${filename}\nSize: ${fileSize}\n\nDownload link: ${fileUrl}`;
-        window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_self');
         toast.success('Opening email client!');
         break;
     }
@@ -110,6 +103,8 @@ export default function ShareModal({
                   type="text"
                   value={fileUrl}
                   readOnly
+                  title="Shareable link"
+                  aria-label="Shareable link"
                   className="flex-1 text-xs bg-transparent rounded px-3 py-2 outline-none truncate font-mono text-foreground"
                 />
                 <Button

@@ -4,10 +4,7 @@ import { useState } from 'react';
 import { Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-
-interface ShareLinkInputProps {
-  fileUrl: string;
-}
+import type { ShareLinkInputProps } from '@/types/components';
 
 export default function ShareLinkInput({ fileUrl }: ShareLinkInputProps) {
   const [copied, setCopied] = useState(false);
@@ -27,6 +24,8 @@ export default function ShareLinkInput({ fileUrl }: ShareLinkInputProps) {
           type="text"
           value={fileUrl}
           readOnly
+          title="Share link"
+          aria-label="Share link"
           className="flex-1 text-xs bg-background rounded px-3 py-2 border border-border truncate font-mono"
         />
         <Button
