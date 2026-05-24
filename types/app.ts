@@ -15,6 +15,7 @@ export type AppUser = {
 export type AdminFileRow = {
   id: string;
   user_id: string | null;
+  anon_session_id?: string | null;
   upload_type: UploadType;
   slug: string;
   filename: string;

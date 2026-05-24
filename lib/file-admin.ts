@@ -12,11 +12,13 @@ export async function createFileRecord(input: {
   size: number;
   storagePath: string;
   expiresAt: string | null;
+  anonSessionId?: string | null;
 }) {
   const { data, error } = await supabaseAdmin
     .from('files')
     .insert({
       user_id: input.userId,
+      anon_session_id: input.anonSessionId ?? null,
       upload_type: input.uploadType,
       slug: input.slug,
       filename: input.filename,

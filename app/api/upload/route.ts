@@ -5,6 +5,8 @@ import { createFileIdSync } from '@/lib/generateFileId';
 import { uploadFileToStorage } from '@/lib/storage';
 import { auth } from '@clerk/nextjs/server';
 import { createFileRecord, buildFileUrl, countActiveFilesForUser } from '@/lib/file-admin';
+import { supabaseAdmin } from '@/lib/supabase-admin';
+import crypto from 'crypto';
 import { getCurrentAppUser } from '@/lib/clerk-user';
 
 export const maxDuration = 60; // 60 seconds for file upload
@@ -80,6 +82,62 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // For anonymous uploads attach or create a secure session
+    let anonSessionId: string | null = null;
+    let setCookieHeader: string | null = null;
+
+    if (!userId) {
+      // read cookie
+      const cookieValue = request.cookies.get('anon_session')?.value ?? null;
+
+      const now = new Date();
+      const expiresAtIso = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+
+      if (cookieValue) {
+        try {
+          const tokenHash = crypto.createHash('sha256').update(cookieValue).digest('hex');
+          const { data: existing, error: existingErr } = await supabaseAdmin
+            .from('anon_sessions')
+            .select('id, expires_at, revoked_at')
+            .eq('token_hash', tokenHash)
+            .maybeSingle();
+
+          if (!existing || existing.revoked_at || new Date(existing.expires_at) <= now) {
+            // fall through to create a new session
+          } else {
+            anonSessionId = existing.id;
+          }
+        } catch (e) {
+          // ignore and create new session
+        }
+      }
+
+      if (!anonSessionId) {
+        // create a new secure random token and store only its hash in DB
+        const rawToken = crypto.randomBytes(32).toString('hex');
+        const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+        const { data: ins, error: insErr } = await supabaseAdmin
+          .from('anon_sessions')
+          .insert({
+            token_hash: tokenHash,
+            expires_at: expiresAtIso,
+          })
+          .select('id')
+          .single();
+
+        if (insErr || !ins) {
+          console.error('Failed to create anon session', insErr);
+        } else {
+          anonSessionId = ins.id;
+
+          // set secure HttpOnly cookie for the raw token
+          const cookie = `anon_session=${rawToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`;
+          setCookieHeader = cookie;
+        }
+      }
+    }
+
     // Insert metadata into database
     const fileRecord = await createFileRecord({
       userId: userRecord?.id ?? null,
@@ -91,22 +149,30 @@ export async function POST(request: NextRequest) {
       size: file.size,
       storagePath: path,
       expiresAt,
+      anonSessionId: anonSessionId ?? null,
     });
 
     // Return success with shareable URL
     const shareUrl = buildFileUrl(fileRecord, userRecord?.username);
 
-    return NextResponse.json(
-      {
-        success: true,
-        fileId: slug,
-        filename: sanitizedName,
-        url: shareUrl,
-        expiresAt: fileRecord.expires_at,
+    const responseBody = {
+      success: true,
+      fileId: slug,
+      filename: sanitizedName,
+      url: shareUrl,
+      expiresAt: fileRecord.expires_at,
+    };
 
-      },
-      { status: 201 }
-    );
+    if (setCookieHeader) {
+      return NextResponse.json(responseBody, {
+        status: 201,
+        headers: {
+          'Set-Cookie': setCookieHeader,
+        },
+      });
+    }
+
+    return NextResponse.json(responseBody, { status: 201 });
   } catch (error) {
     console.error('Upload route error:', error);
     return NextResponse.json(
