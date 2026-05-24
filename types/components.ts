@@ -98,6 +98,7 @@ export type ShareModalProps = {
   onOpenChange: (open: boolean) => void;
   fileUrl: string;
   filename: string;
+  fileSize?: string | number;
 };
 
 export type AuthScreenProps = {
