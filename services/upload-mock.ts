@@ -94,7 +94,7 @@ export async function uploadAnonymousFile(file: File): Promise<AnonymousLink> {
   const response = await fetch('/api/upload', {
     method: 'POST',
     body: formData,
-    credentials: 'omit',
+    credentials: 'same-origin',
   });
 
   if (!response.ok) {
