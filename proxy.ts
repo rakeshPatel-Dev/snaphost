@@ -1,6 +1,11 @@
 import { clerkMiddleware } from '@clerk/nextjs/server'
 
-export default clerkMiddleware()
+export default clerkMiddleware({
+  frontendApiProxy: {
+    enabled: true,
+    path: '/__clerk',
+  },
+})
 
 export const config = {
   matcher: [
