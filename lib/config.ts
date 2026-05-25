@@ -5,5 +5,5 @@ export const CONFIG = {
   ALLOWED_PDF_TYPES: ['application/pdf'],
   FILE_ID_LENGTH: 8,
   STORAGE_BUCKET: process.env.NEXT_PUBLIC_STORAGE_BUCKET || 'files',
-  BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || 'https://snaphost.cloud',
+  BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || 'https://sh.rakeshpatel.me',
 };

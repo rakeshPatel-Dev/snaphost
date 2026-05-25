@@ -375,7 +375,7 @@ pnpm run lint           # Check linting
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous key |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Yes | Clerk public key |
 | `CLERK_SECRET_KEY` | Yes | Clerk secret key |
-| `NEXT_PUBLIC_BASE_URL` | No | Custom domain (default: localhost:3000) |
+| `NEXT_PUBLIC_BASE_URL` | No | Custom domain (default: localhost:3000, production: https://sh.rakeshpatel.me) |
 
 ---
 
