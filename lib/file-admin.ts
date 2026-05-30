@@ -1,6 +1,7 @@
 import { supabaseAdmin } from './supabase-admin';
 import { CONFIG } from './config';
 import type { AdminFileRow, FileType, UploadType } from '@/types/app';
+import { buildPublicFileUrl } from './public-file-url';
 
 export async function createFileRecord(input: {
   userId: string | null;
@@ -252,10 +253,10 @@ export async function deleteFileForUser(fileId: string, userId: string) {
 }
 
 export function buildFileUrl(file: AdminFileRow, username?: string | null) {
-  if (file.upload_type === 'anonymous' || !file.user_id) {
-    return `${CONFIG.BASE_URL}/anon/${file.slug}`;
-  }
-
-  const safeUsername = username || 'user';
-  return `${CONFIG.BASE_URL}/${encodeURIComponent(safeUsername)}/${encodeURIComponent(file.slug)}`;
+  return buildPublicFileUrl({
+    baseUrl: CONFIG.BASE_URL,
+    slug: file.slug,
+    username,
+    uploadType: file.upload_type,
+  });
 }

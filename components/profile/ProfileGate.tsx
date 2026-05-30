@@ -1,28 +1,14 @@
 'use client';
 
-import { useUser } from '@clerk/nextjs';
 import { Loader2 } from 'lucide-react';
 import ProfileDashboard from './ProfileDashboard';
-import { useGetMeFilesQuery, useGetMeQuery } from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/api-error';
-import type { AppFile, AppUser } from '@/types/app';
+import { useProfileData } from '@/lib/useProfileData';
 
 export default function ProfileGate() {
-  const { isLoaded, isSignedIn } = useUser();
-  const shouldSkip = !isLoaded || !isSignedIn;
-  const { data: userData, error: userError, isLoading: loadingUser } = useGetMeQuery(undefined, {
-    skip: shouldSkip,
-  });
-  const { data: filesData, error: filesError, isLoading: loadingFiles } = useGetMeFilesQuery(undefined, {
-    skip: shouldSkip,
-  });
+  const { isLoading, isSignedIn, loadingProfile, error, user, files } = useProfileData();
 
-  const loadingProfile = !isLoaded || (isSignedIn && (loadingUser || loadingFiles));
-  const error = userError || filesError;
-  const user: AppUser | null = userData?.user ?? null;
-  const files: AppFile[] = filesData?.files ?? [];
-
-  if (!isLoaded || (isSignedIn && loadingProfile)) {
+  if (isLoading || (isSignedIn && loadingProfile)) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -58,6 +44,7 @@ export default function ProfileGate() {
 
   return (
     <ProfileDashboard
+      key={`${user.id}:${user.username || ''}`}
       initialUsername={user.username || ''}
       email={user.email}
       tier={user.tier}

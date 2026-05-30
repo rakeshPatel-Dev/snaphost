@@ -1,12 +1,52 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { AppFile, FileMetadata, FilesPayload, ProfilePayload, UpdateFilePayload, UploadResponse } from '@/types/app';
+import { supabase } from '@/lib/supabase';
+
+const rawBaseQuery = fetchBaseQuery({
+  baseUrl: '/',
+  credentials: 'include',
+});
+
+const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+  api,
+  extraOptions
+) => {
+  const { data } = await supabase.auth.getSession();
+  const accessToken = data.session?.access_token;
+
+  const request = typeof args === 'string' ? { url: args } : { ...args };
+
+  if (accessToken) {
+    const headers = new Headers();
+
+    if (request.headers instanceof Headers) {
+      request.headers.forEach((value, key) => headers.set(key, value));
+    } else if (Array.isArray(request.headers)) {
+      request.headers.forEach(([key, value]) => {
+        if (typeof key === 'string' && typeof value === 'string') {
+          headers.set(key, value);
+        }
+      });
+    } else if (request.headers) {
+      Object.entries(request.headers).forEach(([key, value]) => {
+        if (typeof value === 'string') {
+          headers.set(key, value);
+        }
+      });
+    }
+
+    headers.set('authorization', `Bearer ${accessToken}`);
+    request.headers = headers;
+  }
+
+  return rawBaseQuery(request, api, extraOptions);
+};
 
 export const snaphostApi = createApi({
   reducerPath: 'snaphostApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/',
-    credentials: 'include',
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ['Me', 'MeFiles', 'PublicFile'],
   endpoints: (builder) => ({
     getMe: builder.query<ProfilePayload, void>({
@@ -52,6 +92,15 @@ export const snaphostApi = createApi({
       }),
       invalidatesTags: ['Me', 'MeFiles'],
     }),
+    updateMeUsername: builder.mutation<{ user: ProfilePayload['user'] }, { username: string }>({
+      query: ({ username }) => ({
+        url: '/api/me',
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: { username },
+      }),
+      invalidatesTags: ['Me', 'MeFiles'],
+    }),
   }),
 });
 
@@ -63,4 +112,5 @@ export const {
   useUpdateFileMutation,
   useDeleteFileMutation,
   useDeleteAccountMutation,
+  useUpdateMeUsernameMutation,
 } = snaphostApi;

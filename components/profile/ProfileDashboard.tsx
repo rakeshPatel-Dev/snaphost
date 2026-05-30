@@ -24,7 +24,6 @@ export default function ProfileDashboard({
   tier,
   files: initialFiles,
 }: ProfileDashboardProps) {
-  const [username] = useState(initialUsername);
   const [files, setFiles] = useState<AppFile[]>(initialFiles);
   const [editingFileId, setEditingFileId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -79,9 +78,9 @@ export default function ProfileDashboard({
       const op = deleteFileMutation({ fileId })
         .unwrap()
         .then(() => {
-        setFiles((c) => c.filter((item) => item.id !== fileId));
-        return true;
-      });
+          setFiles((c) => c.filter((item) => item.id !== fileId));
+          return true;
+        });
 
       await toast.promise(op, {
         loading: 'Deleting link...',
@@ -96,23 +95,24 @@ export default function ProfileDashboard({
   }
 
   return (
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-10">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-10">
 
-        <TierBanner isPremium={isPremium} />        
+      <TierBanner isPremium={isPremium} />
 
-        {/* --- Profile Card --- */}
-        <AccountInfo isPremium={isPremium} username={username} email={email} tier={tier} />
+      {/* --- Profile Card --- */}
+      <AccountInfo isPremium={isPremium} username={initialUsername} email={email} tier={tier} />
 
-        <LinkCard
-          files={files}
-          isPremium={isPremium}
-          editingFileId={editingFileId}
-          copiedId={copiedId}
-          setFiles={setFiles}
-          onCopyLink={copyLink}
-          onSaveFile={saveFile}
-          onDeleteFile={deleteFile}
-        />
-      </div>
+      <LinkCard
+        username={initialUsername}
+        files={files}
+        isPremium={isPremium}
+        editingFileId={editingFileId}
+        copiedId={copiedId}
+        setFiles={setFiles}
+        onCopyLink={copyLink}
+        onSaveFile={saveFile}
+        onDeleteFile={deleteFile}
+      />
+    </div>
   );
 } 

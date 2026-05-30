@@ -4,7 +4,7 @@ export type FileType = 'image' | 'pdf';
 
 export type AppUser = {
   id: string;
-  clerk_id: string;
+  auth_user_id: string;
   username: string | null;
   email: string;
   tier: UserTier;
