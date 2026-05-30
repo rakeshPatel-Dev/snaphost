@@ -29,7 +29,7 @@ CREATE TYPE upload_type_enum AS ENUM (
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  clerk_id TEXT UNIQUE NOT NULL,
+  auth_user_id UUID UNIQUE NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
 
   -- public username used in links: /u/:username/:slug
   username TEXT UNIQUE,
@@ -145,7 +145,7 @@ CREATE OR REPLACE FUNCTION current_user_id()
 RETURNS UUID AS $$
   SELECT id
   FROM users
-  WHERE clerk_id = auth.jwt() ->> 'sub'
+  WHERE auth_user_id = auth.uid()
   LIMIT 1;
 $$ LANGUAGE sql STABLE SECURITY DEFINER;
 
@@ -184,13 +184,13 @@ ALTER TABLE files ENABLE ROW LEVEL SECURITY;
 -- Users can read their own profile
 CREATE POLICY "Users can read own profile"
   ON users FOR SELECT
-  USING (clerk_id = auth.jwt() ->> 'sub');
+  USING (auth_user_id = auth.uid());
 
 -- Users can update their own profile
 CREATE POLICY "Users can update own profile"
   ON users FOR UPDATE
-  USING (clerk_id = auth.jwt() ->> 'sub')
-  WITH CHECK (clerk_id = auth.jwt() ->> 'sub');
+  USING (auth_user_id = auth.uid())
+  WITH CHECK (auth_user_id = auth.uid());
 
 -- System/backend can insert users
 CREATE POLICY "System can insert users"

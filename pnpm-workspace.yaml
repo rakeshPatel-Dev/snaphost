@@ -1,5 +1,4 @@
 allowBuilds:
-  '@clerk/shared': false
   bufferutil: false
   core-js: false
   msw: false

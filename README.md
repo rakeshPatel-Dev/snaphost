@@ -60,8 +60,8 @@ SnapHost solves the problem of quickly sharing files online without friction:
    ```env
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_key
-   CLERK_SECRET_KEY=your_clerk_secret
+  SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+  NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS=google,github
    ```
 
 3. **Setup Supabase**
@@ -222,7 +222,7 @@ Fetch file metadata.
 - **Database**: PostgreSQL (Supabase)
 - **Storage**: Supabase Storage (object storage)
 - **PDF Viewer**: react-pdf
-- **Auth**: Clerk (optional, not enforced in MVP)
+- **Auth**: Supabase Auth (email/password + OAuth providers)
 - **Icons**: Lucide React
 - **Notifications**: Sonner (toast)
 
@@ -322,7 +322,7 @@ pnpm start
 ## 🗓️ Post-MVP Roadmap
 
 ### Phase 2 (User Accounts)
-- User accounts with Clerk
+- User accounts with Supabase Auth
 - Dashboard to manage uploads
 - Delete file functionality
 - File expiration dates
@@ -373,8 +373,8 @@ pnpm run lint           # Check linting
 |----------|----------|-------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous key |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Yes | Clerk public key |
-| `CLERK_SECRET_KEY` | Yes | Clerk secret key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes | Supabase service role key (server only) |
+| `NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS` | No | OAuth providers to show on auth screen (e.g. `google,github`) |
 | `NEXT_PUBLIC_BASE_URL` | No | Custom domain (default: localhost:3000, production: https://sh.rakeshpatel.me) |
 
 ---

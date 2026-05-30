@@ -186,8 +186,7 @@ NEXT_PUBLIC_BASE_URL=https://sh.rakeshpatel.me
 NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
 NEXT_PUBLIC_STORAGE_BUCKET=files
-NEXT_PUBLIC_CLERK_DOMAIN=sh.rakeshpatel.me
-NEXT_PUBLIC_CLERK_PROXY_URL=/__clerk
+
 ```
 
 ---
@@ -240,7 +239,7 @@ NEXT_PUBLIC_CLERK_PROXY_URL=/__clerk
 
 ## 📞 Next Phase Features (Post-MVP)
 
-- User accounts (Clerk integration ready)
+- User accounts (Supabase Auth integration ready)
 - File expiration/deletion
 - Analytics dashboard
 - Custom domains

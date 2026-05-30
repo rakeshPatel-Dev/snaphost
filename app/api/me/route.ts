@@ -1,24 +1,27 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
-import { getCurrentAppUser, updateCurrentAppUserUsername } from '@/lib/clerk-user';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getCurrentAppUser, updateCurrentAppUserUsername } from '@/lib/auth-user';
+import { getAuthUserFromRequest } from '@/lib/auth-server';
 
-export async function GET() {
-  const { userId } = await auth();
+export async function GET(request: Request) {
+  const authUser = await getAuthUserFromRequest(request);
 
-  if (!userId) {
+  if (!authUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const user = await getCurrentAppUser(userId);
+  const user = await getCurrentAppUser({
+    authUserId: authUser.id,
+    email: authUser.email,
+    usernameHint: authUser.usernameHint,
+  });
 
   return NextResponse.json({ user }, { status: 200 });
 }
 
 export async function PATCH(request: Request) {
-  const { userId } = await auth();
+  const authUser = await getAuthUserFromRequest(request);
 
-  if (!userId) {
+  if (!authUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -30,7 +33,7 @@ export async function PATCH(request: Request) {
   }
 
   try {
-    const { user } = await updateCurrentAppUserUsername(userId, username);
+    const { user } = await updateCurrentAppUserUsername(authUser.id, username);
     return NextResponse.json({ user }, { status: 200 });
   } catch (error) {
     return NextResponse.json(

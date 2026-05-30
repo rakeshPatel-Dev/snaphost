@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
-import { getCurrentAppUser } from '@/lib/clerk-user';
+import { getCurrentAppUser } from '@/lib/auth-user';
+import { getAuthUserFromRequest } from '@/lib/auth-server';
 import {
   buildFileUrl,
   deleteFileForUser,
@@ -14,13 +14,17 @@ type RouteContext = {
 };
 
 export async function PATCH(request: Request, { params }: RouteContext) {
-  const { userId } = await auth();
+  const authUser = await getAuthUserFromRequest(request);
 
-  if (!userId) {
+  if (!authUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const user = await getCurrentAppUser(userId);
+  const user = await getCurrentAppUser({
+    authUserId: authUser.id,
+    email: authUser.email,
+    usernameHint: authUser.usernameHint,
+  });
 
   if (!user) {
     return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
@@ -61,13 +65,17 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 }
 
 export async function DELETE(_request: Request, { params }: RouteContext) {
-  const { userId } = await auth();
+  const authUser = await getAuthUserFromRequest(_request);
 
-  if (!userId) {
+  if (!authUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const user = await getCurrentAppUser(userId);
+  const user = await getCurrentAppUser({
+    authUserId: authUser.id,
+    email: authUser.email,
+    usernameHint: authUser.usernameHint,
+  });
 
   if (!user) {
     return NextResponse.json({ error: 'Profile not found' }, { status: 404 });

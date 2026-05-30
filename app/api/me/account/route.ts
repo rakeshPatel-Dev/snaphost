@@ -1,18 +1,22 @@
 import { NextResponse } from 'next/server';
-import { auth, clerkClient } from '@clerk/nextjs/server';
-import { getCurrentAppUser } from '@/lib/clerk-user';
+import { getCurrentAppUser } from '@/lib/auth-user';
+import { getAuthUserFromRequest } from '@/lib/auth-server';
 import { deleteFileFromStorage } from '@/lib/storage';
 import { deleteFileForUser, listFilesForUser } from '@/lib/file-admin';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
-export async function DELETE() {
-  const { userId } = await auth();
+export async function DELETE(request: Request) {
+  const authUser = await getAuthUserFromRequest(request);
 
-  if (!userId) {
+  if (!authUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const user = await getCurrentAppUser(userId);
+  const user = await getCurrentAppUser({
+    authUserId: authUser.id,
+    email: authUser.email,
+    usernameHint: authUser.usernameHint,
+  });
 
   if (!user) {
     return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
@@ -36,17 +40,16 @@ export async function DELETE() {
   const { error: userDeleteError } = await supabaseAdmin
     .from('users')
     .delete()
-    .eq('clerk_id', userId);
+    .eq('auth_user_id', authUser.id);
 
   if (userDeleteError) {
     return NextResponse.json({ error: userDeleteError.message }, { status: 500 });
   }
 
   try {
-    const clerk = await clerkClient();
-    await clerk.users.deleteUser(userId);
+    await supabaseAdmin.auth.admin.deleteUser(authUser.id);
   } catch (error) {
-    console.error('Clerk user deletion failed after local cleanup', error);
+    console.error('Supabase auth user deletion failed after local cleanup', error);
   }
 
   return NextResponse.json({ success: true }, { status: 200 });

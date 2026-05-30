@@ -3,11 +3,11 @@ import { validateFile, getFileType } from '@/lib/fileValidation';
 import { sanitizeFilename } from '@/lib/sanitizeFilename';
 import { createFileIdSync } from '@/lib/generateFileId';
 import { deleteFileFromStorage, uploadFileToStorage } from '@/lib/storage';
-import { auth } from '@clerk/nextjs/server';
 import { createFileRecord, buildFileUrl, countActiveFilesForUser } from '@/lib/file-admin';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import crypto from 'crypto';
-import { getCurrentAppUser } from '@/lib/clerk-user';
+import { getCurrentAppUser } from '@/lib/auth-user';
+import { getAuthUserFromRequest } from '@/lib/auth-server';
 
 export const maxDuration = 60; // 60 seconds for file upload
 
@@ -15,7 +15,8 @@ export async function POST(request: NextRequest) {
   let uploadedStoragePath: string | null = null;
   let currentUploadType: 'anonymous' | 'custom' | null = null;
   try {
-    const { userId } = await auth();
+    const authUser = await getAuthUserFromRequest(request);
+    const authUserId = authUser?.id ?? null;
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
@@ -54,8 +55,12 @@ export async function POST(request: NextRequest) {
     const expiresAtInput = formData.get('expiresAt');
 
     let userRecord = null;
-    if (userId) {
-      userRecord = await getCurrentAppUser(userId);
+    if (authUserId && authUser?.email) {
+      userRecord = await getCurrentAppUser({
+        authUserId,
+        email: authUser.email,
+        usernameHint: authUser.usernameHint,
+      });
     }
 
     // Enforce free-tier file limit: free users can have at most 5 active links.
@@ -66,7 +71,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const uploadType = userId ? 'custom' : 'anonymous';
+    const uploadType = authUserId ? 'custom' : 'anonymous';
     currentUploadType = uploadType;
     const expiresAt =
       uploadType === 'anonymous'
@@ -90,7 +95,7 @@ export async function POST(request: NextRequest) {
     let anonSessionId: string | null = null;
     let rawAnonToken: string | null = null;
 
-    if (!userId) {
+    if (!authUserId) {
       // read cookie
       const cookieValue = request.cookies.get('anon_session')?.value ?? null;
 

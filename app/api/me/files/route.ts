@@ -1,16 +1,20 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
-import { getCurrentAppUser } from '@/lib/clerk-user';
+import { getCurrentAppUser } from '@/lib/auth-user';
+import { getAuthUserFromRequest } from '@/lib/auth-server';
 import { listFilesForUser, buildFileUrl } from '@/lib/file-admin';
 
-export async function GET() {
-  const { userId } = await auth();
+export async function GET(request: Request) {
+  const authUser = await getAuthUserFromRequest(request);
 
-  if (!userId) {
+  if (!authUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const user = await getCurrentAppUser(userId);
+  const user = await getCurrentAppUser({
+    authUserId: authUser.id,
+    email: authUser.email,
+    usernameHint: authUser.usernameHint,
+  });
 
   if (!user) {
     return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
