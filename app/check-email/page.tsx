@@ -1,0 +1,39 @@
+import Link from 'next/link';
+import { checkEmailContent } from '@/data/checkEmail';
+
+type Props = {
+    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export default async function CheckEmailPage({ searchParams }: Props) {
+    const resolvedSearchParams = (await searchParams) ?? {};
+    const type = Array.isArray(resolvedSearchParams.type) ? resolvedSearchParams.type[0] : resolvedSearchParams.type;
+    const email = Array.isArray(resolvedSearchParams.email) ? resolvedSearchParams.email[0] : resolvedSearchParams.email;
+
+    const kind = type === 'forgot-password' ? 'forgotPassword' : 'signup';
+    const data = checkEmailContent[kind as keyof typeof checkEmailContent];
+
+    const description = data.description.replace('{email}', email ?? 'your email');
+
+    return (
+        <main className="flex min-h-screen items-center justify-center bg-background">
+            <div className="mx-auto w-full max-w-md">
+                <div className="w-full rounded-4xl border border-border bg-card p-7 shadow-xl dark:shadow-black/40 sm:p-8">
+                    <h1 className="text-2xl font-bold text-foreground">{data.heading}</h1>
+                    <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+
+                    <div className="mt-6">
+                        <Link
+                            href="https://mail.google.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white"
+                        >
+                            Open Gmail
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </main>
+    );
+}
