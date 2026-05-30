@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 
@@ -17,6 +18,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
         let mounted = true;
@@ -39,9 +41,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         loadUser();
 
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+        const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
             if (!mounted) {
                 return;
+            }
+
+            // If the user clicked the recovery link, Supabase emits PASSWORD_RECOVERY.
+            // Redirect them to the reset page where they can set a new password.
+            if (event === 'PASSWORD_RECOVERY') {
+                try {
+                    router.replace('/reset-password');
+                } catch (e) {
+                    // fallback to full navigation if router is unavailable
+                    // eslint-disable-next-line no-console
+                    console.warn('Redirecting to reset-password failed, falling back to location assign.', e);
+                    window.location.href = '/reset-password';
+                }
             }
 
             setUser(session?.user ?? null);
