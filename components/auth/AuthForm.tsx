@@ -108,7 +108,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 toast.success('Account created');
                 router.push('/profile');
             } else {
-                toast.success('Check your email to confirm your account');
+                // Redirect to check-email page with context
+                router.replace(`/check-email?type=signup&email=${encodeURIComponent(email)}`);
             }
         } catch (err) {
             toast.error(err instanceof Error ? err.message : 'Authentication failed');
