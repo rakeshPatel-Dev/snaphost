@@ -15,6 +15,10 @@ export async function GET(request: Request) {
     usernameHint: authUser.usernameHint,
   });
 
+  if (!user) {
+    return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
+  }
+
   return NextResponse.json({ user }, { status: 200 });
 }
 

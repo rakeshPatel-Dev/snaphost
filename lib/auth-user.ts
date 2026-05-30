@@ -103,9 +103,13 @@ export async function updateCurrentAppUserUsername(authUserId: string, username:
     throw error;
   }
 
-  await supabaseAdmin.auth.admin.updateUserById(authUserId, {
-    user_metadata: { username },
-  });
+  try {
+    await supabaseAdmin.auth.admin.updateUserById(authUserId, {
+      user_metadata: { username },
+    });
+  } catch (metadataError) {
+    console.error('Failed to sync username to user_metadata', authUserId,    metadataError);
+  }
 
   return {
     user: updatedUser as AppUser,

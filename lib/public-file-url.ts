@@ -8,10 +8,13 @@ type PublicFileUrlInput = {
 };
 
 export function buildPublicFileUrl({ baseUrl, slug, username, uploadType }: PublicFileUrlInput) {
+
+    const normalizedBaseUrl = baseUrl.replace(/\/+$/, ''); // Remove trailing slashes
+
   if (uploadType === 'anonymous') {
-    return `${baseUrl}/anon/${encodeURIComponent(slug)}`;
+    return `${normalizedBaseUrl}/anon/${encodeURIComponent(slug)}`;
   }
 
   const safeUsername = username || 'user';
-  return `${baseUrl}/${encodeURIComponent(safeUsername)}/${encodeURIComponent(slug)}`;
+  return `${normalizedBaseUrl}/${encodeURIComponent(safeUsername)}/${encodeURIComponent(slug)}`;
 }

@@ -112,6 +112,7 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
                   <div className="flex items-start gap-3">
                     <div className="flex-1">
                       <UsernameAvailability
+                        id="username"
                         value={value}
                         isChecking={isChecking}
                         statusText={status.text}
@@ -144,7 +145,7 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
+              <Label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
                 <Mail className="h-3 w-3" />
                 Email Address
               </Label>

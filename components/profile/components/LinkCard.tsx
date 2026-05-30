@@ -175,8 +175,7 @@ const LinkCard = ({
 
                     <div className="grid gap-1.5">
                       <Label className={cn(
-                        'text-[10px] uppercase tracking-widest font-semibold flex items-center gap-1',
-                        !isPremium ? 'text-muted-foreground/40' : 'text-muted-foreground/60'
+                        'text-[10px] uppercase tracking-widest font-semibold flex items-center gap-1 text-muted-foreground/60'
                       )}>
                         <Clock className="h-3 w-3" />
                         Expiration date
@@ -236,7 +235,7 @@ const LinkCard = ({
                               size="icon"
                               variant="outline"
                               className="h-8 w-8 shrink-0"
-                              onClick={() => window.open(resolvedPublicUrl, '_blank')}
+                              onClick={() => window.open(resolvedPublicUrl, '_blank', 'noopener,noreferrer')}
                             >
                               <ExternalLink className="h-3.5 w-3.5" />
                             </Button>

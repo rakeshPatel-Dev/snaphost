@@ -159,6 +159,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                         <div className="relative">
                             <RiUserLine className="pointer-events-none absolute left-3 top-3.5 size-4 text-muted-foreground" />
                             <UsernameAvailability
+                                id="username"
                                 value={username}
                                 isChecking={isUsernameChecking}
                                 statusText={usernameStatus.text}

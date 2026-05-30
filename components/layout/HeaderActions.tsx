@@ -31,7 +31,7 @@ export default function HeaderActions() {
                     </Button>
 
                     <Button size="sm" className="h-8 gap-1.5 text-sm shadow-sm" asChild>
-                        <Link href="/signup">
+                        <Link href="/sign-up">
                             <Upload className="h-3.5 w-3.5" />
                             Start uploading
                         </Link>

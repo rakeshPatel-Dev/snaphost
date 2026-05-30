@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 export type UsernameAvailabilityState = {
+    id: string;
     value: string;
     isChecking: boolean;
     statusText: string;
@@ -18,6 +19,7 @@ type UsernameAvailabilityProps = UsernameAvailabilityState & {
 };
 
 export default function UsernameAvailability({
+    id,
     value,
     isChecking,
     statusText,
@@ -29,6 +31,7 @@ export default function UsernameAvailability({
     return (
         <div className="space-y-2">
             <Input
+                id={id}
                 type="text"
                 placeholder="Username"
                 value={value}

@@ -11,12 +11,7 @@ import { Upload, UserRound, LogOut, Trash2 } from 'lucide-react';
 import DeleteAccountDialog from '@/components/shared/DeleteAccountDialog';
 import { useState } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
-
-const navItems = [
-    { name: 'Upload', href: '/upload' },
-    { name: 'Sign up', href: '/sign-up' },
-    { name: 'Profile', href: '/profile' },
-];
+import { getHeaderNavItems } from './header-nav-items';
 
 const features = [
     { title: 'Anonymous upload', href: '/upload', icon: Upload },
@@ -26,7 +21,17 @@ const features = [
 export default function HeaderMobile() {
     const [open, setOpen] = useState(false);
     const [accountDeleteOpen, setAccountDeleteOpen] = useState(false);
-    const { isSignedIn } = useAuth();
+    const { isSignedIn, signOut } = useAuth();
+    const navItems = getHeaderNavItems(isSignedIn);
+
+    async function handleSignOut() {
+        try {
+            await signOut();
+            setOpen(false);
+            window.location.href = '/';
+        } catch {
+        }
+    }
 
     return (
         <div className="md:hidden">
@@ -91,7 +96,7 @@ export default function HeaderMobile() {
                                         Profile
                                     </Link>
                                 </Button>
-                                <Button variant="outline" size="sm" className="w-full" onClick={() => { setOpen(false); /* sign out handled elsewhere */ }}>
+                                <Button variant="outline" size="sm" className="w-full" onClick={handleSignOut}>
                                     <LogOut className="h-3.5 w-3.5" />
                                     Sign out
                                 </Button>

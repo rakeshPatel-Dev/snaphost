@@ -3,12 +3,8 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { Camera, Upload } from 'lucide-react';
-
-const navItems = [
-    { name: 'Upload', href: '/upload' },
-    { name: 'Sign up', href: '/sign-up' },
-    { name: 'Profile', href: '/profile' },
-];
+import { useAuth } from '@/components/providers/auth-provider';
+import { getHeaderNavItems } from './header-nav-items';
 
 const features = [
     { title: 'Anonymous upload', description: 'Drop a file and get a share link instantly without creating an account.', icon: Upload, href: '/upload' },
@@ -17,6 +13,8 @@ const features = [
 
 export default function HeaderNav() {
     const [showFeatures, setShowFeatures] = useState(false);
+    const { isSignedIn } = useAuth();
+    const navItems = getHeaderNavItems(isSignedIn);
 
     return (
         <div className="hidden md:flex flex-1 items-center justify-center">
