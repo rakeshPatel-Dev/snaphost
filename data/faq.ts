@@ -22,7 +22,7 @@ export const faqs: FAQItem[] = [
   },
   { 
     q: 'What happens if I delete my account?', 
-    a: 'Your user record, uploaded files, and related public links are removed from the app. The account deletion flow is designed to clean up the local data first so the app does not break if Clerk deletion is delayed.' 
+    a: 'Your user record, uploaded files, and related public links are removed from the app. The account deletion flow cleans up storage and app data before removing the authentication account.' 
   },
   { 
     q: 'Where can I manage my uploads?', 

@@ -1,10 +1,10 @@
 'use client';
 
-import { useClerk } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
 import { useDeleteAccountMutation } from '@/lib/api';
 import type { DeleteAccountDialogProps } from '@/types/components';
+import { useAuth } from '@/components/providers/auth-provider';
 
 export default function DeleteAccountDialog({
   trigger,
@@ -17,13 +17,14 @@ export default function DeleteAccountDialog({
   onOpenChange,
 }: DeleteAccountDialogProps) {
   const [deleteAccount] = useDeleteAccountMutation();
-  const { signOut } = useClerk();
+  const { signOut } = useAuth();
 
   const handleDelete = async () => {
     const op = deleteAccount()
       .unwrap()
       .then(async () => {
-        await signOut({ redirectUrl });
+        await signOut();
+        window.location.href = redirectUrl;
       });
 
     await toast.promise(op, {

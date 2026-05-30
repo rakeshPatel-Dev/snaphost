@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@layer theme, base, clerk, components, utilities; /* Ensure 'clerk' is listed */   
+@layer theme, base, components, utilities;
 
 :root {
   --background: #ffffff;

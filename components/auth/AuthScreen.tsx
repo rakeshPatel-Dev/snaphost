@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowRight, CloudLightning, ShieldCheck, Sparkles, UploadCloud } from 'lucide-react';
-import { SignIn, SignUp } from '@clerk/nextjs';
+import AuthForm from '@/components/auth/AuthForm';
 
 type AuthScreenProps = {
   mode: 'sign-in' | 'sign-up';
@@ -10,40 +10,6 @@ type AuthScreenProps = {
 
 export default function AuthScreen({ mode }: AuthScreenProps) {
   const isSignIn = mode === 'sign-in';
- const clerkAppearance = {
-  cssLayerName: 'clerk',
-  variables: {
-    colorPrimary: '#000000',
-    colorTextOnPrimaryBackground: '#ffffff',
-    borderRadius: '20px',
-    fontFamily: 'var(--font-geist-sans), system-ui, sans-serif',
-  },
-  elements: {
-    rootBox: 'w-full',
-    cardBox: 'w-full bg-transparent',
-    card: 'w-full overflow-hidden rounded-4xl border border-border/80 p-0',
-    header: 'px-7 sm:px-8 ',
-    headerTitle: 'text-3xl font-semibold tracking-tight',
-    headerSubtitle: ' text-sm leading-6',
-    socialButtonsBlockButton: 'h-9 border border-border/80',
-    socialButtonsBlockButtonText: 'text-sm font-medium',
-    dividerLine: 'bg-border/80',
-    dividerText: 'text-[11px] font-medium uppercase tracking-[0.22em]',
-    formFieldLabel: 'text-sm font-medium',
-    formFieldInput: 'h-11 rounded-2xl border border-border outline-none focus:border-accent',
-    formFieldHintText: 'text-xs',
-    formFieldAction: 'text-sm font-medium text-accent',
-    formButtonPrimary:
-      'h-11 rounded-2xl !bg-linear-to-b from-black/90 to-white/30 !text-white border border-white/10 px-4 text-sm font-semibold hover:!bg-black/95',
-    footerActionLink: 'text-accent',
-    footerActionText: 'text-sm',
-    identityPreviewText: '',
-    identityPreviewEditButton: 'text-accent',
-    otpCodeFieldInput: 'h-12 rounded-2xl border border-border focus:border-accent',
-    resendButton: 'text-sm font-medium text-accent',
-    alertText: 'text-sm',
-  },
-};
 
   return (
     <div className="relative isolate min-h-dvh overflow-hidden bg-background px-4 py-6 text-foreground sm:px-6 lg:px-8">
@@ -116,7 +82,7 @@ export default function AuthScreen({ mode }: AuthScreenProps) {
                 {isSignIn ? 'Create account' : 'Sign in instead'}
                 <ArrowRight className="h-4 w-4" />
               </Link>
-               <Link
+              <Link
                 href="/"
                 className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/80 px-4 py-2.5 text-sm font-medium text-foreground shadow-sm backdrop-blur-sm transition hover:border-border hover:bg-muted/60"
               >
@@ -127,24 +93,8 @@ export default function AuthScreen({ mode }: AuthScreenProps) {
         </section>
 
         <section className="order-1 flex items-center justify-center lg:order-2">
-          <div className=" rounded-4xl border border-muted bg-white shadow-[0_24px_80px_rgba(15,23,42,0.1)] backdrop-blur-xl dark:shadow-[0_24px_80px_rgba(255,255,255,0.15)]">
-            {isSignIn ? (
-              <SignIn
-                appearance={clerkAppearance}
-                routing="path"
-                path="/sign-in"
-                signUpUrl="/sign-up"
-                forceRedirectUrl="/profile"
-              />
-            ) : (
-              <SignUp
-                appearance={clerkAppearance}
-                routing="path"
-                path="/sign-up"
-                signInUrl="/sign-in"
-                forceRedirectUrl="/profile"
-              />
-            )}
+          <div className="w-full max-w-md space-y-3">
+            <AuthForm mode={mode} />
           </div>
         </section>
       </div>

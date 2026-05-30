@@ -4,9 +4,8 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import SiteChrome from "@/components/layout/SiteChrome";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import ClerkProvider from "@/components/providers/clerk-provider";
+import { AuthProvider } from "@/components/providers/auth-provider";
 import ReduxProvider from "@/components/providers/redux-provider";
-import UserSync from "@/components/providers/user-sync";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 const geistSans = Geist({
@@ -29,7 +28,7 @@ export const metadata: Metadata = {
       { url: "/icon0.svg", type: "image/svg+xml" },
       { url: "/icon1.png", type: "image/png", sizes: "32x32" },
     ],
-    apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
+    apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
     shortcut: "/favicon.ico",
   },
   description:
@@ -40,7 +39,7 @@ export const metadata: Metadata = {
     "pdf sharing",
     "instant file share",
     "snap host",
-    
+
   ],
   authors: [{ name: "SnapHost" }],
   creator: "SnapHost",
@@ -79,7 +78,6 @@ export default function RootLayout({
       <head>
         <meta name="apple-mobile-web-app-title" content="Snaphost" />
         <meta name="application-name" content="Snaphost" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <script
           dangerouslySetInnerHTML={{
@@ -103,15 +101,14 @@ export default function RootLayout({
         className="min-h-screen bg-background text-foreground flex flex-col"
       >
         <ReduxProvider>
-          <ClerkProvider>
-            <UserSync />
+          <AuthProvider>
             <ThemeProvider>
               <TooltipProvider>
-              <Toaster position="top-right" closeButton duration={3000} />
-              <SiteChrome>{children}</SiteChrome>
+                <Toaster position="top-right" closeButton duration={3000} />
+                <SiteChrome>{children}</SiteChrome>
               </TooltipProvider>
             </ThemeProvider>
-          </ClerkProvider>
+          </AuthProvider>
         </ReduxProvider>
       </body>
     </html>
