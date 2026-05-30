@@ -10,12 +10,15 @@ export default function SiteChrome({ children }: SiteChromeProps) {
   const isFileViewRoute =
     pathname.startsWith('/f/') ||
     pathname.startsWith('/anon/') ||
-    /^\/[^/]+\/[^/]+$/.test(pathname);
+    (/^\/[^/]+\/[^/]+$/.test(pathname) && !pathname.startsWith('/company/'));
 
   if (
     isFileViewRoute ||
     pathname.startsWith('/sign-in') ||
     pathname.startsWith('/sign-up') ||
+    pathname.startsWith('/reset-password') ||
+    pathname.startsWith('/forgot-password') ||
+    pathname.startsWith('/check-email') ||
     pathname.startsWith('/auth/sync')
   ) {
     return <>{children}</>;
