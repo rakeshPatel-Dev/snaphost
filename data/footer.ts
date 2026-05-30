@@ -20,7 +20,13 @@ export const socialLinks = [
 
 export const supportLinks = [
     { name: "Contact", href: "mailto:hello@snaphost.cloud" },
-    { name: "Privacy Policy", href: "/privacy" },
+  { name: "Privacy Policy", href: "/company/privacy-policy" },
+  { name: "Terms of Service", href: "/company/terms-of-service" },
   ];
+
+export const companyLinks = [
+  { name: "Privacy Policy", href: "/company/privacy-policy" },
+  { name: "Terms of Service", href: "/company/terms-of-service" },
+];
 
 

@@ -1,8 +1,8 @@
 'use client';
 
-import { copyrightText, footerLinks } from "@/data/footer";
+import { copyrightText, footerLinks, companyLinks } from "@/data/footer";
 import Link from "next/link";
-import {    Heart, ArrowUpRight, } from "lucide-react";
+import { Heart, ArrowUpRight, } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import Logo from "./Logo";
 import FeaturePills from "./FeaturePills";
@@ -79,6 +79,13 @@ export default function Footer() {
               ))}
             </ul>
           </div>
+
+          <div className="md:col-span-3 flex flex-col gap-4">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+              Company
+            </p>
+
+          </div>
         </div>
 
         <Separator className="opacity-60" />
@@ -86,8 +93,22 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col items-center justify-between gap-3 py-5 sm:flex-row">
           <p className="text-xs text-muted-foreground">{copyrightText}</p>
+          <ul className="flex gap-2.5">
+            {companyLinks.map((link) => (
+              <li key={link.name}>
+                <Link
+                  href={link.href}
+                  className="group flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {link.name}
+                  <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 translate-x-0 transition-all group-hover:opacity-100 group-hover:-translate-y-1 group-hover:translate-x-0.5" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+
           <p className="flex items-center gap-1 text-xs text-muted-foreground">
-            Made with <Heart className="h-3 w-3 fill-primary text-primary" /> by the SnapHost team
+            Made with <Heart className="h-3 w-3 fill-primary text-primary" /> by <a href="https://rakeshpatel.me" target="_blank" rel="noopener noreferrer" className="underline">Rakesh Patel</a>
           </p>
         </div>
 
