@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -9,11 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/lib/supabase';
 import UsernameAvailability from '@/components/auth/UsernameAvailability';
+import PasswordRequirements, { evaluatePasswordRequirements } from '@/components/auth/PasswordRequirements';
+import PasswordField from '@/components/auth/PasswordField';
 import { useUsernameAvailability } from '@/lib/useUsernameAvailability';
 import { Field, FieldLabel } from '../ui/field';
 import {
     RiMailLine,
-    RiLockPasswordLine,
     RiUserLine,
     RiGoogleFill,
     RiGithubFill,
@@ -24,9 +25,6 @@ import {
 type AuthFormProps = {
     mode: 'sign-in' | 'sign-up';
 };
-
-const PASSWORD_POLICY_MESSAGE =
-    'Password should contain at least one character of each: abcdefghijklmnopqrstuvwxyz, ABCDEFGHIJKLMNOPQRSTUVWXYZ, 0123456789.';
 
 const OAUTH_ICONS: Record<'google' | 'github' | 'discord', React.ReactNode> = {
     google: <RiGoogleFill className="size-4" />,
@@ -43,32 +41,20 @@ export default function AuthForm({ mode }: AuthFormProps) {
     const [username, setUsername] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const oauthProviders = useMemo(() => {
-        const raw = process.env.NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS ?? 'google,github';
-        return raw
-            .split(',')
-            .map((s) => s.trim().toLowerCase())
-            .filter((s): s is 'google' | 'github' | 'discord' =>
-                s === 'google' || s === 'github' || s === 'discord'
-            );
-    }, []);
+    const oauthProviders = (process.env.NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS ?? 'google,github')
+        .split(',')
+        .map((s) => s.trim().toLowerCase())
+        .filter((s): s is 'google' | 'github' | 'discord' =>
+            s === 'google' || s === 'github' || s === 'discord'
+        );
 
     const { normalizedUsername, status: usernameStatus, isAvailable: isUsernameAvailable, isChecking: isUsernameChecking } =
         useUsernameAvailability({
             value: username,
             enabled: !isSignIn,
         });
-    const passwordPolicyMessage = useMemo(() => {
-        if (isSignIn || !password) {
-            return '';
-        }
-
-        const hasLowercase = /[a-z]/.test(password);
-        const hasUppercase = /[A-Z]/.test(password);
-        const hasDigit = /[0-9]/.test(password);
-
-        return hasLowercase && hasUppercase && hasDigit ? '' : PASSWORD_POLICY_MESSAGE;
-    }, [isSignIn, password]);
+    const passwordRequirements = evaluatePasswordRequirements(password);
+    const passwordIsStrong = passwordRequirements.isStrong;
 
     async function handleEmailAuth(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -80,6 +66,10 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 if (error) throw error;
                 toast.success('Signed in successfully');
                 router.push('/profile');
+                return;
+            }
+
+            if (!passwordIsStrong) {
                 return;
             }
 
@@ -110,6 +100,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
             } else {
                 // Redirect to check-email page with context
                 router.replace(`/check-email?type=signup&email=${encodeURIComponent(email)}`);
+                toast.info('Check your email for confirmation');
             }
         } catch (err) {
             toast.error(err instanceof Error ? err.message : 'Authentication failed');
@@ -193,25 +184,23 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
                 <Field>
                     <FieldLabel htmlFor="password">Password</FieldLabel>
-                    <div className="relative">
-                        <RiLockPasswordLine className="pointer-events-none absolute left-3 top-3.5 size-4 text-muted-foreground" />
-                        <Input
-                            id="password"
-                            type="password"
-                            placeholder={isSignIn ? 'Your password' : 'Min. 8 characters'}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            autoComplete={isSignIn ? 'current-password' : 'new-password'}
-                            required
-                            minLength={8}
-                            disabled={loading}
-                            className="h-10 pl-9"
-                            aria-invalid={!isSignIn && Boolean(passwordPolicyMessage)}
-                        />
-                    </div>
-                    {!isSignIn && passwordPolicyMessage && (
-                        <p className="text-xs text-rose-600 dark:text-rose-400">{passwordPolicyMessage}</p>
-                    )}
+                    <PasswordField
+                        id="password"
+                        placeholder={isSignIn ? 'Your password' : 'Min. 8 characters'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        autoComplete={isSignIn ? 'current-password' : 'new-password'}
+                        required
+                        minLength={8}
+                        disabled={loading}
+                        aria-invalid={!isSignIn && !passwordIsStrong}
+                    />
+                    <PasswordRequirements
+                        id="password-requirements"
+                        mode={isSignIn ? 'sign-in' : 'sign-up'}
+                        password={password}
+                        className="mt-3"
+                    />
                 </Field>
 
                 {isSignIn && (
@@ -228,7 +217,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 <Button
                     type="submit"
                     className="h-10 w-full rounded-xl font-semibold"
-                    disabled={loading || (!isSignIn && (!isUsernameAvailable || isUsernameChecking))}
+                    disabled={loading || (!isSignIn && (!isUsernameAvailable || isUsernameChecking || !passwordIsStrong))}
                 >
                     {loading ? 'Please wait…' : isSignIn ? 'Sign in' : 'Create account'}
                 </Button>

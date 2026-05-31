@@ -5,7 +5,7 @@ export const floatingFeatures = [
     icon: Globe,
     title: "Anonymous",
     description: "Share without any identity.",
-    tone: "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+    tone: "border-emerald-500/20 bg-emerald-500/5  text-emerald-900 dark:text-emerald-300",
     iconTone: "bg-emerald-500/10 text-emerald-500",
   },
   {
@@ -13,7 +13,7 @@ export const floatingFeatures = [
     icon: ShieldCheck,
     title: "No signup",
     description: "Zero friction, instant sharing.",
-    tone: "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+    tone: "border-emerald-500/20 bg-emerald-500/10 text-emerald-900 dark:text-emerald-300",
     iconTone: "bg-emerald-500/10 text-emerald-500",
   },
   {
@@ -21,7 +21,7 @@ export const floatingFeatures = [
     icon: Clock3,
     title: "Auto-delete",
     description: "Expires automatically after 24h.",
-    tone: "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+    tone: "border-emerald-500/20 bg-emerald-500/10 text-emerald-900 dark:text-emerald-300",
     iconTone: "bg-emerald-500/10 text-emerald-500",
   },
 ] as const;

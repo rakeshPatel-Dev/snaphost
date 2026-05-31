@@ -14,12 +14,9 @@ export default function HeaderActions() {
 
     return (
         <div className="hidden md:flex items-center gap-2">
-            <AnimatedThemeToggler />
+            <AnimatedThemeToggler className="h-8 w-8 text-muted-foreground hover:text-foreground cursor-pointer transition-all duration-300" />
+
             <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-muted-foreground hover:text-foreground" asChild>
-                <a href="https://github.com/snaphost" target="_blank" rel="noopener noreferrer">
-                    <BsGithub className="h-3.5 w-3.5" />
-                    <span className="text-xs">GitHub</span>
-                </a>
             </Button>
 
             <Separator orientation="vertical" className="h-4" />

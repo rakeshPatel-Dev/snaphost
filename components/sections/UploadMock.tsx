@@ -192,7 +192,7 @@ export function UploadMock() {
 
               <div className="min-w-0 space-y-0.5">
                 <p className="text-sm font-semibold leading-none">{title}</p>
-                <p className="text-[11px] leading-snug text-current/70">{description}</p>
+                <p className="text-[11px] leading-snug text-current/90">{description}</p>
               </div>
             </div>
           </div>

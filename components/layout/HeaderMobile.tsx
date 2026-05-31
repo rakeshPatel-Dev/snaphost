@@ -67,10 +67,6 @@ export default function HeaderMobile() {
                         <Separator className="my-2" />
 
                         <div className="flex items-center justify-between px-2">
-                            <a href="https://github.com/snaphost" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground">
-                                <BsGithub className="h-4 w-4" />
-                                GitHub
-                            </a>
                             <AnimatedThemeToggler className="hover:bg-accent rounded-lg" />
                         </div>
 

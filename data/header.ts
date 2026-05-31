@@ -7,7 +7,6 @@ export const headerNavs = [
 ];
 
 export const socialLinks = [
-    { name: "GitHub", href: "https://github.com/snap-host" },
     { name: "Twitter", href: "https://twitter.com/snap_host" },
   ];
 

@@ -25,6 +25,8 @@ export default function ForgotPasswordPage() {
 
             // Redirect to check-email page with context
             router.replace(`/check-email?type=forgot-password&email=${encodeURIComponent(email)}`);
+
+            toast.info('Check your email for password reset instructions.');
         } catch (err) {
             toast.error(err instanceof Error ? err.message : 'Failed to send reset email');
         } finally {
