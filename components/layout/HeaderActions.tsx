@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { BsGithub } from 'react-icons/bs';
 import { Upload } from 'lucide-react';
 import { AnimatedThemeToggler } from '../ui/animated-theme-toggler';
 import { useAuth } from '@/components/providers/auth-provider';

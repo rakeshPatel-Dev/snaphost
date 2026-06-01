@@ -33,8 +33,8 @@ export default function UserMenu() {
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <Avatar size="sm">
+                    <Button variant="ghost" size="lg" className="h-8 w-8 p-0">
+                        <Avatar size="lg">
                             {(() => {
                                 const meta: any = (user as any)?.user_metadata ?? {};
                                 const identities: any[] = (user as any)?.identities ?? [];
@@ -45,6 +45,7 @@ export default function UserMenu() {
                                 const usernameHint = (meta?.username as string) ?? (user?.email as string) ?? '';
                                 const initial = usernameHint ? usernameHint.charAt(0).toUpperCase() : '';
                                 return <AvatarFallback>{initial}</AvatarFallback>;
+                                return <span>{meta?.username as string}</span>
                             })()}
                         </Avatar>
                     </Button>
@@ -53,9 +54,6 @@ export default function UserMenu() {
                 <DropdownMenuContent sideOffset={8} align="end">
                     <DropdownMenuItem asChild>
                         <Link href="/profile">Profile</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                        <Link href="/profile">Settings</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onSelect={handleSignOut}>Sign out</DropdownMenuItem>
