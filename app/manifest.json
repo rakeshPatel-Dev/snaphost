@@ -1,5 +1,5 @@
 {
-  "name": "Snaphost - Instant Upload & Share",
+  "name": "Snaphost - Share Files Instantly",
   "short_name": "Snaphost",
   "icons": [
     {
@@ -16,6 +16,6 @@
     }
   ],
   "theme_color": "#ffffff",
-  "background_color": "#000000",
+  "background_color": "#ffffff",
   "display": "standalone"
 }
