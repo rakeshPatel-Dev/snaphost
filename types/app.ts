@@ -88,6 +88,14 @@ export type FilesPayload = {
   files: AppFile[];
 };
 
+export type UsernameAvailabilityPayload = {
+  username: string;
+  available: boolean;
+  exists: boolean;
+  valid: boolean;
+  message?: string;
+};
+
 export type UpdateFilePayload = {
   fileId: string;
   slug: string;
