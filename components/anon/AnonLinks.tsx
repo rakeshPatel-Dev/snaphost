@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Trash2, ExternalLink, File, Clock, AlertCircle, RefreshCw } from 'lucide-react';
 import type { AnonymousLink } from '@/types/app';
-import { deleteAnonymousLink, fetchAnonymousLinks } from '@/services/upload-mock';
+import { deleteAnonymousLink, fetchAnonymousLinks } from '@/services/anonymous-links';
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
 
 export default function AnonLinks() {
@@ -22,7 +22,7 @@ export default function AnonLinks() {
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to load links';
-      
+
       if (message.toLowerCase().includes('session')) {
         setFiles([]);
         toast.info('No active anonymous session found', {
@@ -30,7 +30,7 @@ export default function AnonLinks() {
         });
         return;
       }
-      
+
       console.error('anon links load', err);
       toast.error('Failed to load links');
     }
@@ -38,13 +38,13 @@ export default function AnonLinks() {
 
   useEffect(() => {
     let mounted = true;
-    
+
     async function load() {
       setLoading(true);
       await loadLinks(false);
       if (mounted) setLoading(false);
     }
-    
+
     load();
     return () => {
       mounted = false;
@@ -131,15 +131,15 @@ export default function AnonLinks() {
               <div className="hidden sm:flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-muted/30">
                 <File className="h-4 w-4 text-muted-foreground" />
               </div>
-              
+
               {/* File details */}
               <div className="min-w-0 flex-1 space-y-1">
                 <p className="truncate text-sm font-medium">{file.filename}</p>
                 <p className="truncate text-sm font-medium underline">
-                    <a href={file.url}>
-                        {file.url}
-                        </a>
-                        </p>
+                  <a href={file.url}>
+                    {file.url}
+                  </a>
+                </p>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                   <span>{file.fileSize}</span>
                   <span className="hidden sm:inline">•</span>
@@ -162,7 +162,7 @@ export default function AnonLinks() {
               >
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
-              
+
               <DeleteConfirmDialog
                 trigger={(
                   <button

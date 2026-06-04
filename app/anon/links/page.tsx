@@ -1,4 +1,4 @@
-import AnonLinks from '@/components/anon/AnonLinks';
+import { AnonLinks } from '@/features/upload';
 
 export const metadata = {
   title: 'Anonymous links',
