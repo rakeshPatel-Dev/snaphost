@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { 
-  Shield, 
-  Cpu, 
-  Globe, 
-  Zap, 
-  Clock, 
-  TrendingDown, 
+import {
+  Shield,
+  Cpu,
+  Globe,
+  Zap,
+  Clock,
+  TrendingDown,
   Code,
   FileCheck,
   Lock,
@@ -74,12 +74,12 @@ console.log(anonymous);`;
             Everything the new SnapHost release gives you
           </h2>
           <p className="mt-4 text-base md:text-lg text-muted-foreground">
-            Direct share links, automatic optimization, and a dashboard built for clean, fast file sharing.
+            Direct share links, original-file uploads, and a dashboard built for clean, fast file sharing.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
+
           {/* 1. Before/After Image Slider (Wider) */}
           <div className="md:col-span-2 rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between overflow-hidden group">
             <div>
@@ -87,15 +87,15 @@ console.log(anonymous);`;
                 <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
                   <Cpu className="h-4 w-4" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">Automatic optimization</h3>
+                <h3 className="text-lg font-bold text-foreground">Original file delivery</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
-                Images are optimized on upload so the share link stays fast without extra work.
+                Upload PNG, JPG, WEBP, or PDF and we keep your file format intact while generating a direct share link.
               </p>
             </div>
 
             {/* Draggable Slider Container */}
-            <div 
+            <div
               ref={sliderRef}
               className="relative h-64 w-full rounded-xl overflow-hidden cursor-ew-resize select-none border border-border"
               onMouseMove={handleMouseMove}
@@ -114,25 +114,25 @@ console.log(anonymous);`;
                 </div>
               </div>
 
-              {/* Optimized Image Container (Right Side / Clipped Overlay) */}
-              <div 
+              {/* Ready-to-share file container (Right Side / Clipped Overlay) */}
+              <div
                 className="absolute inset-0 bg-slate-950 flex items-center justify-center transition-all duration-75"
                 style={{ clipPath: `polygon(${sliderPosition}% 0, 100% 0, 100% 100%, ${sliderPosition}% 100%)` }}
               >
-                {/* Visual placeholder representation of optimized WebP image (stunning crisp abstract layout) */}
+                {/* Visual placeholder representation of direct-link ready file */}
                 <div className="absolute inset-0 bg-linear-to-tr from-rose-500 via-accent to-accent opacity-90" />
-                {/* Subtle grid pattern overlay only on the optimized side to show sharpness */}
+                {/* Subtle grid pattern overlay on the ready-to-share side */}
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:16px_16px]" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4">
-                  <span className="text-xl font-extrabold tracking-wider bg-clip-text text-transparent bg-linear-to-r from-emerald-400 to-teal-200">OPTIMIZED FILE</span>
+                  <span className="text-xl font-extrabold tracking-wider bg-clip-text text-transparent bg-linear-to-r from-emerald-400 to-teal-200">READY TO SHARE</span>
                   <span className="text-sm bg-emerald-500/20 text-emerald-300 backdrop-blur-md px-2.5 py-0.5 rounded-full mt-1 border border-emerald-500/30 font-semibold">
-                    450 KB (91% Saved)
+                    Same file format, direct URL
                   </span>
                 </div>
               </div>
 
               {/* Draggable Divider Line */}
-              <div 
+              <div
                 className="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize flex items-center justify-center"
                 style={{ left: `${sliderPosition}%` }}
               >
@@ -212,8 +212,8 @@ console.log(anonymous);`;
 
             {/* SDK Code Block */}
             <div className="relative rounded-xl border border-border/40 bg-slate-950 p-4 text-xs font-mono text-slate-300 overflow-x-auto">
-              <button 
-                onClick={copyCode} 
+              <button
+                onClick={copyCode}
                 className="absolute right-3 top-3 p-1.5 rounded-md border border-slate-800 bg-slate-900/60 hover:bg-slate-900 transition-colors text-slate-400 hover:text-white"
               >
                 {copiedCode ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
@@ -243,10 +243,10 @@ console.log(anonymous);`;
                   {isLocked ? <Lock className="h-3.5 w-3.5 text-amber-500" /> : <Unlock className="h-3.5 w-3.5 text-muted-foreground" />}
                   Anonymous upload mode
                 </span>
-                <button 
+                <button
                   onClick={() => setIsLocked(!isLocked)}
                   className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isLocked ? 'bg-accent' : 'bg-input'}`}>
-                
+
                   <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-background shadow ring-0 transition duration-200 ease-in-out ${isLocked ? 'translate-x-4' : 'translate-x-0'}`} />
                 </button>
               </div>
@@ -256,8 +256,8 @@ console.log(anonymous);`;
                   <Clock className="h-3.5 w-3.5 text-muted-foreground" />
                   Auto-Delete TTL
                 </span>
-                <select 
-                  value={expiry} 
+                <select
+                  value={expiry}
                   onChange={(e) => setExpiry(e.target.value)}
                   className="bg-background text-foreground text-xs font-medium border border-border rounded-md px-2 py-1 outline-none cursor-pointer"
                 >
@@ -334,7 +334,7 @@ console.log(anonymous);`;
                   <p className="text-[11px] text-muted-foreground mt-0.5">Upload once and copy the link instantly.</p>
                 </div>
               </div>
-                <div className="text-xs font-semibold bg-accent text-accent-foreground px-3 py-1.5 rounded-lg">
+              <div className="text-xs font-semibold bg-accent text-accent-foreground px-3 py-1.5 rounded-lg">
                 Active
               </div>
             </div>

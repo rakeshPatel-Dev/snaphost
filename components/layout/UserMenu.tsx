@@ -33,8 +33,8 @@ export default function UserMenu() {
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="lg" className="h-8 w-8 p-0">
-                        <Avatar size="lg">
+                    <Button variant="ghost" size="md" className="h-8 w-8 p-0">
+                        <Avatar size="md">
                             {(() => {
                                 const meta: any = (user as any)?.user_metadata ?? {};
                                 const identities: any[] = (user as any)?.identities ?? [];

@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
-import SiteChrome from "@/components/layout/SiteChrome";
+import { SiteChrome } from "@/features/layout";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import ReduxProvider from "@/components/providers/redux-provider";
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
       { url: "/icon0.svg", type: "image/svg+xml" },
       { url: "/icon1.png", type: "image/png", sizes: "32x32" },
     ],
-    apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
+    apple: "/apple-touch-icon.png",
     shortcut: "/favicon.ico",
   },
   description:
