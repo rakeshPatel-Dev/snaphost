@@ -2,7 +2,7 @@
 
 import { ArrowRight } from 'lucide-react';
 import AnonUpload from '@/components/icons/AnonUpload';
-import { getAnonymousUploadAcceptValue } from '@/services/upload-mock';
+import { getAnonymousUploadAcceptValue } from '@/services/anonymous-links';
 import type { UploadDropzoneProps } from '@/types/components';
 
 export default function UploadDropzone({

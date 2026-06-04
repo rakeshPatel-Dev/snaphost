@@ -1,4 +1,4 @@
-import UploadBox from "@/components/UploadBox";
+import { UploadBox } from '@/features/upload';
 import { Sparkles, Lock, Zap, Smartphone } from 'lucide-react';
 
 export default function UploadPage() {

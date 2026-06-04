@@ -14,7 +14,7 @@ import {
   fetchAnonymousLinks,
   getAutoCleanupIntervalMs,
   uploadAnonymousFile,
-} from "@/services/upload-mock";
+} from "@/services/anonymous-links";
 import { floatingFeatures } from "@/data/floatingFeatures"
 
 type TabType = "upload" | "links";

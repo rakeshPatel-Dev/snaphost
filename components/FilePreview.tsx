@@ -4,7 +4,7 @@ import { Loader2 } from 'lucide-react';
 import ImagePreview from './ImagePreview';
 import PdfPreview from './PdfPreview';
 import FloatingBadge from './Floating';
-import { useGetFileQuery } from '@/lib/api';
+import { useGetFileQuery } from '@/state/api';
 import { getApiErrorMessage } from '@/lib/api-error';
 import type { FilePreviewProps } from '@/types/components';
 
@@ -38,7 +38,7 @@ export default function FilePreview({ fileId }: FilePreviewProps) {
       ) : (
         <PdfPreview url={metadata.url} filename={metadata.filename} />
       )}
-      <FloatingBadge/>
+      <FloatingBadge />
     </div>
   );
 }

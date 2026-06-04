@@ -47,8 +47,11 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     updates.filename = body.filename.trim();
   }
 
-  if (typeof body.expiresAt === 'string') {
-    updates.expires_at = body.expiresAt || null;
+  if (body.expiresAt === null) {
+    updates.expires_at = null;
+  } else if (typeof body.expiresAt === 'string') {
+    const normalized = body.expiresAt.trim();
+    updates.expires_at = normalized ? normalized : null;
   }
 
   const updated = await updateFileForUser(fileId, user.id, updates);

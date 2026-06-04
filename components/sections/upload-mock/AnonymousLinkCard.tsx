@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { formatShortDate, getTimeRemaining } from '@/services/upload-mock';
+import { formatShortDate, getTimeRemaining } from '@/services/anonymous-links';
 import type { AnonymousLinkCardProps } from '@/types/components';
 
 export default function AnonymousLinkCard({

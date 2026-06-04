@@ -6,9 +6,9 @@ import UploadForm from './UploadForm';
 import UploadSuccessCard from './UploadSuccessCard';
 import { validateFile } from '@/lib/fileValidation';
 import { getApiErrorMessage } from '@/lib/api-error';
-import { useAppDispatch, useAppSelector } from '@/lib/store';
-import { resetUploadState, setDragging, setError, setSuccess } from '@/lib/uploadSlice';
-import { useUploadFileMutation } from '@/lib/api';
+import { useAppDispatch, useAppSelector } from '@/state/store';
+import { resetUploadState, setDragging, setError, setSuccess } from '@/state/slices/uploadSlice';
+import { useUploadFileMutation } from '@/state/api';
 
 export default function UploadBox() {
   const dispatch = useAppDispatch();
