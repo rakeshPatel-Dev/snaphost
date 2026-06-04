@@ -1,4 +1,6 @@
-import React from 'react'
+'use client';
+
+import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,7 +15,7 @@ import UsernameAvailability from '@/components/auth/UsernameAvailability';
 import ProfileLink from './ProfileLink';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useUsernameAvailability } from '@/lib/useUsernameAvailability';
-import { useUpdateMeUsernameMutation } from '@/lib/api';
+import { useUpdateMeUsernameMutation } from '@/state/api';
 
 
 type AccountInfoProps = {

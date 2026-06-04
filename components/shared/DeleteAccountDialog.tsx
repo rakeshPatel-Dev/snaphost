@@ -2,7 +2,7 @@
 
 import { toast } from 'sonner';
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
-import { useDeleteAccountMutation } from '@/lib/api';
+import { useDeleteAccountMutation } from '@/state/api';
 import type { DeleteAccountDialogProps } from '@/types/components';
 import { useAuth } from '@/components/providers/auth-provider';
 

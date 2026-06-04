@@ -1,6 +1,6 @@
 'use client';
 
-import { useGetMeFilesQuery, useGetMeQuery } from '@/lib/api';
+import { useGetMeFilesQuery, useGetMeQuery } from '@/state/api';
 import { useAuth } from '@/components/providers/auth-provider';
 import type { AppFile, AppUser } from '@/types/app';
 

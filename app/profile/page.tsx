@@ -1,4 +1,4 @@
-import ProfileGate from '@/components/profile/ProfileGate';
+import { ProfileGate } from '@/features/profile';
 
 export default async function ProfilePage() {
   return <ProfileGate />;

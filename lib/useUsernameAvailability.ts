@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { skipToken } from '@reduxjs/toolkit/query';
+import { useGetUsernameAvailabilityQuery } from '@/state/api';
 
 export type UsernameAvailabilityTone = 'neutral' | 'good' | 'warn' | 'bad';
 
@@ -49,85 +51,110 @@ export function useUsernameAvailability({
 }: UseUsernameAvailabilityOptions) {
   const normalizedUsername = useMemo(() => value.trim().toLowerCase(), [value]);
   const normalizedCurrentUsername = useMemo(() => currentUsername?.trim().toLowerCase() ?? '', [currentUsername]);
-  const [status, setStatus] = useState<UsernameAvailabilityStatus>(DEFAULT_STATUS);
+  const [debouncedUsername, setDebouncedUsername] = useState('');
 
   useEffect(() => {
-    if (!enabled) {
-      setStatus(DEFAULT_STATUS);
-      return;
-    }
+    setDebouncedUsername('');
 
-    if (!normalizedUsername) {
-      setStatus(DEFAULT_STATUS);
+    if (!enabled || !normalizedUsername) {
       return;
     }
 
     if (normalizedCurrentUsername && normalizedUsername === normalizedCurrentUsername) {
-      setStatus(SELF_STATUS);
       return;
     }
 
     if (normalizedUsername.length < 3 || normalizedUsername.length > 32 || !USERNAME_PATTERN.test(normalizedUsername)) {
-      setStatus(INVALID_STATUS);
       return;
     }
 
-    const controller = new AbortController();
     const timeout = window.setTimeout(async () => {
-      setStatus((previous) => ({ ...previous, checking: true }));
-
-      try {
-        const response = await fetch(`/api/username/availability?username=${encodeURIComponent(normalizedUsername)}`, {
-          signal: controller.signal,
-          cache: 'no-store',
-        });
-
-        if (!response.ok) {
-          throw new Error('Request failed');
-        }
-
-        const payload = (await response.json()) as {
-          username: string;
-          available: boolean;
-          valid: boolean;
-          message?: string;
-        };
-
-        if (!payload.valid) {
-          setStatus({
-            checking: false,
-            available: false,
-            text: payload.message ?? 'Invalid username format.',
-            tone: 'bad',
-          });
-          return;
-        }
-
-        setStatus({
-          checking: false,
-          available: payload.available,
-          text: payload.available ? `@${payload.username} is available.` : `@${payload.username} is already taken.`,
-          tone: payload.available ? 'good' : 'bad',
-        });
-      } catch {
-        if (controller.signal.aborted) {
-          return;
-        }
-
-        setStatus({
-          checking: false,
-          available: false,
-          text: 'Could not check username right now. Try again.',
-          tone: 'bad',
-        });
-      }
+      setDebouncedUsername(normalizedUsername);
     }, debounceMs);
 
     return () => {
       window.clearTimeout(timeout);
-      controller.abort();
     };
   }, [debounceMs, enabled, normalizedCurrentUsername, normalizedUsername]);
+
+  const shouldCheckAvailability =
+    enabled &&
+    Boolean(normalizedUsername) &&
+    normalizedUsername.length >= 3 &&
+    normalizedUsername.length <= 32 &&
+    USERNAME_PATTERN.test(normalizedUsername) &&
+    (!normalizedCurrentUsername || normalizedUsername !== normalizedCurrentUsername);
+
+  const queryArg = shouldCheckAvailability && debouncedUsername === normalizedUsername ? normalizedUsername : skipToken;
+
+  const { data, error, isFetching, isLoading } = useGetUsernameAvailabilityQuery(queryArg, {
+    refetchOnMountOrArgChange: false,
+  });
+
+  const status = useMemo<UsernameAvailabilityStatus>(() => {
+    if (!enabled) {
+      return DEFAULT_STATUS;
+    }
+
+    if (!normalizedUsername) {
+      return DEFAULT_STATUS;
+    }
+
+    if (normalizedCurrentUsername && normalizedUsername === normalizedCurrentUsername) {
+      return SELF_STATUS;
+    }
+
+    if (normalizedUsername.length < 3 || normalizedUsername.length > 32 || !USERNAME_PATTERN.test(normalizedUsername)) {
+      return INVALID_STATUS;
+    }
+
+    if (debouncedUsername !== normalizedUsername || isLoading || isFetching) {
+      return {
+        checking: true,
+        available: false,
+        text: 'Checking availability...',
+        tone: 'neutral',
+      };
+    }
+
+    if (error) {
+      return {
+        checking: false,
+        available: false,
+        text: 'Could not check username right now. Try again.',
+        tone: 'bad',
+      };
+    }
+
+    if (!data) {
+      return DEFAULT_STATUS;
+    }
+
+    if (!data.valid) {
+      return {
+        checking: false,
+        available: false,
+        text: data.message ?? 'Invalid username format.',
+        tone: 'bad',
+      };
+    }
+
+    return {
+      checking: false,
+      available: data.available,
+      text: data.available ? `@${data.username} is available.` : `@${data.username} is already taken.`,
+      tone: data.available ? 'good' : 'bad',
+    };
+  }, [
+    data,
+    debouncedUsername,
+    enabled,
+    error,
+    isFetching,
+    isLoading,
+    normalizedCurrentUsername,
+    normalizedUsername,
+  ]);
 
   return {
     normalizedUsername,
