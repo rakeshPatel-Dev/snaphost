@@ -5,25 +5,26 @@ import { Button } from '@/components/ui/button';
 import { UploadMock } from '../sections/UploadMock';
 import { Sparkles, ArrowRight, Play } from 'lucide-react';
 import Announcement from './Announcement';
+import DashedGrid from '@/components/shared/DashedGrid';
 
 export default function Hero() {
   return (
     <section className="relative overflow-hidden pt-20 pb-20 border-b border-border/20">
       {/* Background visual effects */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-40 -z-10" />
-      
+      <DashedGrid absolute zIndex={-10} opacity={0.6} />
+
       {/* Glowing decorative circles */}
-      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-125 h-125 rounded-full bg-linear-to-tr from-background/10 to-accent/10 blur-[80px] -z-10 animate-pulse-slow" />
-      
-      <div className="mx-auto max-w-6xl px-6 lg:flex lg:items-center lg:gap-16">
-        
+      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-125 h-125 rounded-full bg-accent/5 blur-[120px] -z-10 animate-pulse-slow" />
+
+      <div className="mx-auto max-w-6xl px-6 lg:flex lg:items-center lg:gap-16 ">
+
         {/* Left Column (Hero Content) */}
-        <div className="lg:w-1/2 flex flex-col justify-center text-left">
-          
+        <div className="lg:w-1/2 flex flex-col justify-center text-left relative z-10">
+
           {/* Announcement Pill */}
           <div className="inline-flex self-start items-center gap-1.5 rounded-full bg-muted/10 hover:bg-muted/20 border border-border/10 px-3 py-1 text-xs font-semibold text-foreground transition-all cursor-pointer mb-6">
             <Sparkles className="h-3.5 w-3.5 text-accent animate-pulse" />
-            <span><Announcement/> is live</span>   
+            <span><Announcement /> is live</span>
             <span className="h-1.5 w-1.5 rounded-full bg-border" />
             <span className="text-muted-foreground flex items-center gap-0.5">
               Upload fast <ArrowRight className="h-3 w-3" />
@@ -32,20 +33,20 @@ export default function Hero() {
 
           {/* Heading */}
           <h1 className="text-4xl font-extrabold leading-[1.1] text-foreground sm:text-5xl md:text-6xl tracking-tight">
-            Share files with clean links.{' '}
-            <span className="bg-clip-text text-transparent bg-linear-to-r from-background to-accent dark:from-accent dark:to-accent">
+            Share files Instantly{' '}
+            <span className="bg-clip-text block text-transparent bg-linear-to-r font-semibold from-foreground italic to-accent dark:from-foreground dark:to-accent">
               Upload, manage, and move on.
             </span>
           </h1>
 
           {/* Subtext */}
           <p className="mt-6 text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl">
-           Upload images and PDFs anonymously, and sign up for more uploads, and url customization with custom expiration controls. 
+            Upload images and PDFs anonymously, and sign up for more uploads, and url customization with custom expiration controls.
           </p>
 
           {/* CTAs */}
           <div className="mt-8 flex gap-3.5 flex-wrap">
-            <Button asChild size="lg" className="h-11 px-6 shadow-md shadow-accent/10 cursor-pointer font-semibold">
+            <Button asChild size="lg" className="h-11 px-6 shadow-md shadow-accent/10 cursor-pointer bg-accent font-semibold">
               <Link href="/upload">Upload anonymously</Link>
             </Button>
 

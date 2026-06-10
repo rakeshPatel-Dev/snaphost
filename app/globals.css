@@ -25,6 +25,7 @@
   --glow-color: rgba(15, 23, 42, 0.03);
   --glow-color-purple: rgba(99, 102, 241, 0.03);
   --glow-color-rose: rgba(244, 63, 94, 0.03);
+  --grid-dashed-line: #e7e5e4;
 }
 
 @theme inline {
@@ -51,28 +52,29 @@
 }
 
 .dark {
-  --background: #030712;
-  --foreground: #f9fafb;
-  --card: #0b0f19;
-  --card-foreground: #f9fafb;
-  --popover: #0b0f19;
-  --popover-foreground: #f9fafb;
-  --muted: #111827;
-  --muted-foreground: #9ca3af;
-  --accent: #003e9e;
-  --accent-foreground: #f9fafb;
+  --background: #09090b;
+  --foreground: #fafafa;
+  --card: #09090b;
+  --card-foreground: #fafafa;
+  --popover: #09090b;
+  --popover-foreground: #fafafa;
+  --muted: #18181b;
+  --muted-foreground: #a1a1aa;
+  --accent: #3b82f6;
+  --accent-foreground: #fafafa;
   --destructive: #ef4444;
-  --destructive-foreground: #030712;
-  --border: #1f2937;
-  --input: #1f2937;
-  --primary: #f9fafb;
-  --primary-foreground: #030712;
-  --secondary: #111827;
-  --secondary-foreground: #f9fafb;
-  --grid: rgba(243, 244, 246, 0.02);
-  --glow-color: rgba(0, 62, 158, 0.12);
-  --glow-color-purple: rgba(99, 102, 241, 0.08);
-  --glow-color-rose: rgba(244, 63, 94, 0.06);
+  --destructive-foreground: #09090b;
+  --border: #27272a;
+  --input: #27272a;
+  --primary: #fafafa;
+  --primary-foreground: #09090b;
+  --secondary: #18181b;
+  --secondary-foreground: #fafafa;
+  --grid: rgba(255, 255, 255, 0.02);
+  --glow-color: rgba(255, 255, 255, 0.015);
+  --glow-color-purple: rgba(139, 92, 246, 0.02);
+  --glow-color-rose: rgba(244, 63, 94, 0.01);
+  --grid-dashed-line: rgba(255, 255, 255, 0.08);
 }
 
 body {
@@ -91,6 +93,28 @@ body {
   background-image:
     linear-gradient(to right, var(--grid) 3px, transparent 3px),
     linear-gradient(to bottom, var(--grid) 3px, transparent 3px);
+}
+
+.bg-dashed-fade-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: 
+    linear-gradient(to right, var(--grid-dashed-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-dashed-line) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 0;
+  mask-image: 
+    repeating-linear-gradient(to right, black 0px, black 3px, transparent 3px, transparent 8px),
+    repeating-linear-gradient(to bottom, black 0px, black 3px, transparent 3px, transparent 8px),
+    radial-gradient(ellipse 100% 80% at 50% 100%, #000 50%, transparent 90%);
+  -webkit-mask-image: 
+    repeating-linear-gradient(to right, black 0px, black 3px, transparent 3px, transparent 8px),
+    repeating-linear-gradient(to bottom, black 0px, black 3px, transparent 3px, transparent 8px),
+    radial-gradient(ellipse 100% 80% at 50% 100%, #000 50%, transparent 90%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
 }
 
 .glow-radial {

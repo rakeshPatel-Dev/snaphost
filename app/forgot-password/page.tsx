@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
+import DashedGrid from '@/components/shared/DashedGrid';
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
@@ -35,8 +36,11 @@ export default function ForgotPasswordPage() {
     }
 
     return (
-        <main className="flex min-h-screen  justify-center items-center bg-background">
-            <div className="mx-auto max-w-md ">
+        <main className="flex min-h-screen justify-center items-center bg-background relative overflow-hidden">
+            {/* Background dashed grid */}
+            <DashedGrid absolute zIndex={-1} opacity={0.5} />
+
+            <div className="mx-auto max-w-md relative z-10">
                 <div className="w-full rounded-4xl border border-border bg-card p-7 shadow-xl dark:shadow-black/40 sm:p-8">
                     <h2 className="mb-2 text-xl font-bold tracking-tight text-foreground">Forgot your password?</h2>
                     <p className="mb-6 text-sm text-muted-foreground">Enter your account email and we&apos;ll send password reset instructions.</p>

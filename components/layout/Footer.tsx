@@ -79,13 +79,6 @@ export default function Footer() {
               ))}
             </ul>
           </div>
-
-          <div className="md:col-span-3 flex flex-col gap-4">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-              Company
-            </p>
-
-          </div>
         </div>
 
         <Separator className="opacity-60" />

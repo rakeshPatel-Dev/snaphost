@@ -139,7 +139,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 <p className="mt-1 text-sm text-muted-foreground">
                     {isSignIn
                         ? 'Sign in to continue to your dashboard.'
-                        : 'Get started — it only takes a minute.'}
+                        : ''}
                 </p>
             </div>
 
@@ -226,10 +226,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
             {/* OAuth */}
             {oauthProviders.length > 0 && (
                 <>
-                    <div className="my-5 flex items-center gap-3">
-                        <Separator className="flex-1" />
-                        <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">or</span>
-                        <Separator className="flex-1" />
+                    <div className="my-5 relative flex items-center bg-muted-foreground h-0.5 w-full rounded-full gap-3">
+                        <span className="text-[11px] uppercase tracking-widest text-muted-foreground bg-background px-2 font-semibold absolute left-1/2 -translate-x-1/2 select-none">or</span>
                     </div>
                     <div className="grid gap-2 sm:grid-cols-2">
                         {oauthProviders.map((provider) => (

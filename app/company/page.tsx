@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, Scale, ShieldCheck, Sparkles } from 'lucide-react';
 import { companyOverviewLinks } from '@/data/company';
+import DashedGrid from '@/components/shared/DashedGrid';
 
 export const metadata = {
     title: 'Company',
@@ -15,9 +16,12 @@ const iconMap = {
 export default function CompanyPage() {
     return (
         <main className="relative overflow-hidden">
-            <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-                <div className="bg-grid-pattern relative overflow-hidden rounded-4xl border border-border bg-card/90 p-8 shadow-xl sm:p-12">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,62,158,0.09),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(15,23,42,0.06),transparent_28%)]" />
+            {/* Background dashed grid */}
+            <DashedGrid absolute zIndex={-1} opacity={0.5} />
+
+            <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 relative z-10">
+                <div className="relative overflow-hidden rounded-4xl border border-border bg-card/80 p-8 shadow-xl sm:p-12 backdrop-blur-md">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.02),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.01),transparent_28%)]" />
 
                     <div className="relative">
                         <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">

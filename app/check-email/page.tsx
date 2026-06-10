@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { checkEmailContent } from '@/data/checkEmail';
+import DashedGrid from '@/components/shared/DashedGrid';
 
 type Props = {
     searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -16,8 +17,11 @@ export default async function CheckEmailPage({ searchParams }: Props) {
     const description = data.description.replace('{email}', email ?? 'your email');
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-background">
-            <div className="mx-auto w-full max-w-md">
+        <main className="flex min-h-screen items-center justify-center bg-background relative overflow-hidden">
+            {/* Background dashed grid */}
+            <DashedGrid absolute zIndex={-1} opacity={0.5} />
+
+            <div className="mx-auto w-full max-w-md relative z-10">
                 <div className="w-full rounded-4xl border border-border bg-card p-7 shadow-xl dark:shadow-black/40 sm:p-8">
                     <h1 className="text-2xl font-bold text-foreground">{data.heading}</h1>
                     <p className="mt-2 text-sm text-muted-foreground">{description}</p>

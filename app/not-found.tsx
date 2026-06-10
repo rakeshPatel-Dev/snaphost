@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { FileQuestion, Home, Upload, ArrowLeft, HelpCircle } from 'lucide-react';
+import DashedGrid from '@/components/shared/DashedGrid';
 
 export default function NotFound() {
   const pathname = usePathname();
@@ -11,10 +12,10 @@ export default function NotFound() {
   return (
     <div className="relative min-h-[70vh] flex flex-col items-center justify-center overflow-hidden px-6 py-12">
       {/* Background visual effects */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-30 -z-10" />
+      <DashedGrid absolute zIndex={-1} opacity={0.5} />
       
       {/* Glowing decorative circles */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] md:w-[600px] md:h-[600px] rounded-full bg-gradient-to-tr from-accent/15 to-indigo-500/5 blur-[100px] -z-10 animate-pulse-slow" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] md:w-[600px] md:h-[600px] rounded-full bg-accent/5 blur-[120px] -z-10 animate-pulse-slow" />
       
       <div className="mx-auto max-w-xl text-center flex flex-col items-center">
         

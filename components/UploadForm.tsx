@@ -19,11 +19,11 @@ export default function UploadForm({
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
-      className={`border-2 border-dashed rounded-lg p-12 text-center transition-all cursor-pointer ${
-        isDragging
+      onClick={onFileInputClick}
+      className={`border-2 border-dashed rounded-lg p-12 text-center transition-all cursor-pointer ${isDragging
           ? 'border-border bg-muted/20'
           : 'border-border hover:border-border/50 hover:bg-muted/30'
-      }`}
+        }`}
     >
       <input
         ref={fileInputRef}

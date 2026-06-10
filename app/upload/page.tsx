@@ -1,10 +1,14 @@
 import { UploadBox } from '@/features/upload';
 import { Sparkles, Lock, Zap, Smartphone } from 'lucide-react';
+import DashedGrid from '@/components/shared/DashedGrid';
 
 export default function UploadPage() {
   return (
-    <div className="min-h-[calc(100vh-14rem)] flex flex-col">
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-[calc(100vh-14rem)] flex flex-col relative overflow-hidden">
+      {/* Background dashed grid */}
+      <DashedGrid absolute zIndex={-1} opacity={0.5} />
+
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 relative z-10">
         <div className="w-full max-w-2xl">
           {/* Header Section */}
           <div className="text-center mb-12">

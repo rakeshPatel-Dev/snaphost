@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import PasswordRequirements, { evaluatePasswordRequirements } from '@/components/auth/PasswordRequirements';
 import PasswordField from '@/components/auth/PasswordField';
+import DashedGrid from '@/components/shared/DashedGrid';
 
 export default function ResetPasswordPage() {
     const [password, setPassword] = useState('');
@@ -48,8 +49,11 @@ export default function ResetPasswordPage() {
     }
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-background">
-            <div className="mx-auto w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-xl">
+        <main className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
+            {/* Background dashed grid */}
+            <DashedGrid absolute zIndex={-1} opacity={0.5} />
+
+            <div className="mx-auto w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-xl relative z-10">
                 <h1 className="text-2xl font-bold text-foreground">Reset your password</h1>
                 <p className="mt-2 text-sm text-muted-foreground">Enter a new password for your account.</p>
 

@@ -1,4 +1,5 @@
 import { termsOfServiceSections } from '@/data/company';
+import DashedGrid from '@/components/shared/DashedGrid';
 
 export const metadata = {
     title: 'Terms of Service',
@@ -8,8 +9,12 @@ export const metadata = {
 export default function TermsOfServicePage() {
     return (
         <main className="relative overflow-hidden">
-            <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
-                <div className="bg-grid-pattern rounded-4xl border border-border bg-card/90 p-8 shadow-xl sm:p-12">
+            {/* Background dashed grid */}
+            <DashedGrid absolute zIndex={-1} opacity={0.5} />
+
+            <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 relative z-10">
+                <div className="relative overflow-hidden rounded-4xl border border-border bg-card/80 p-8 shadow-xl sm:p-12 backdrop-blur-md">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.02),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.01),transparent_28%)]" />
                     <div className="mb-5 inline-flex items-center rounded-full border border-border bg-background/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                         Terms of Service
                     </div>
