@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import Logo from "./Logo";
 import FeaturePills from "./FeaturePills";
 import SocialButtons from "./SocialButtons";
+import FeedbackDialog from "../shared/FeedbackDialog";
 
 
 export default function Footer() {
@@ -78,6 +79,9 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
+            <div className="mt-2">
+              <FeedbackDialog />
+            </div>
           </div>
         </div>
 
