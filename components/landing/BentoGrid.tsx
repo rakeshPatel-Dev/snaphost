@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   Shield,
   Cpu,
@@ -13,15 +13,14 @@ import {
   Lock,
   Unlock,
   Check,
-  Copy
+  Copy,
+  User,
+  UserX,
+  ExternalLink,
 } from 'lucide-react';
+import FileDeliverySlider from './FileDeliverySlider';
 
 export default function BentoGrid() {
-  // Before/After Slider State
-  const [sliderPosition, setSliderPosition] = useState(50);
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const [isSliding, setIsSliding] = useState(false);
-
   // Security Widget States
   const [isLocked, setIsLocked] = useState(true);
   const [expiry, setExpiry] = useState('24h');
@@ -29,31 +28,14 @@ export default function BentoGrid() {
   // Copy API state
   const [copiedCode, setCopiedCode] = useState(false);
 
-  const handleSliderMove = (clientX: number) => {
-    if (!sliderRef.current) return;
-    const rect = sliderRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setSliderPosition(percentage);
-  };
+  const codeSnippet = `// Signed-in user upload
+const userLink = 'https://snaphost.cloud/jane/hero-banner.png';
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length > 0) {
-      handleSliderMove(e.touches[0].clientX);
-    }
-  };
+// Anonymous upload
+const anonLink = 'https://snaphost.cloud/anon/sh_7y2b1x';
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (e.buttons === 1 || isSliding) {
-      handleSliderMove(e.clientX);
-    }
-  };
-
-  const codeSnippet = `const signedIn = 'https://snaphost.cloud/jane/project-cover.png';
-const anonymous = 'https://snaphost.cloud/anon/sh_7y2b1x';
-
-console.log(signedIn);
-console.log(anonymous);`;
+console.log(userLink);   // → direct, clean, permanent
+console.log(anonLink);   // → compact, auto-expires`;
 
   const copyCode = () => {
     navigator.clipboard.writeText(codeSnippet);
@@ -80,8 +62,8 @@ console.log(anonymous);`;
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-          {/* 1. Before/After Image Slider (Wider) */}
-          <div className="md:col-span-2 rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between overflow-hidden group">
+          {/* 1. Before/After File Delivery Slider (Wider) */}
+          <div className="md:col-span-2 rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col gap-5 overflow-hidden">
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
@@ -89,62 +71,17 @@ console.log(anonymous);`;
                 </div>
                 <h3 className="text-lg font-bold text-foreground">Original file delivery</h3>
               </div>
-              <p className="text-sm text-muted-foreground mb-6">
-                Upload PNG, JPG, WEBP, or PDF and we keep your file format intact while generating a direct share link.
+              <p className="text-sm text-muted-foreground">
+                Upload PNG, JPG, WEBP, or PDF and we keep your file format intact — no compression, no conversion. Drag the handle to compare.
               </p>
             </div>
 
-            {/* Draggable Slider Container */}
-            <div
-              ref={sliderRef}
-              className="relative h-64 w-full rounded-xl overflow-hidden cursor-ew-resize select-none border border-border"
-              onMouseMove={handleMouseMove}
-              onTouchMove={handleTouchMove}
-              onMouseDown={() => setIsSliding(true)}
-              onMouseUp={() => setIsSliding(false)}
-              onMouseLeave={() => setIsSliding(false)}
-            >
-              {/* Original Image Container (Left Side / Underneath) */}
-              <div className="absolute inset-0 bg-slate-900 flex items-center justify-center">
-                {/* Visual placeholder representation of original image (vibrant abstract layout) */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-rose-500/80 via-accent/80 to-accent/80 opacity-70 blur-[1px]" />
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white/90 p-4">
-                  <span className="text-xl font-bold tracking-wider">ORIGINAL FILE</span>
-                  <span className="text-sm bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-full mt-1 border border-white/10">4.8 MB</span>
-                </div>
-              </div>
-
-              {/* Ready-to-share file container (Right Side / Clipped Overlay) */}
-              <div
-                className="absolute inset-0 bg-slate-950 flex items-center justify-center transition-all duration-75"
-                style={{ clipPath: `polygon(${sliderPosition}% 0, 100% 0, 100% 100%, ${sliderPosition}% 100%)` }}
-              >
-                {/* Visual placeholder representation of direct-link ready file */}
-                <div className="absolute inset-0 bg-linear-to-tr from-rose-500 via-accent to-accent opacity-90" />
-                {/* Subtle grid pattern overlay on the ready-to-share side */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:16px_16px]" />
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4">
-                  <span className="text-xl font-extrabold tracking-wider bg-clip-text text-transparent bg-linear-to-r from-emerald-400 to-teal-200">READY TO SHARE</span>
-                  <span className="text-sm bg-emerald-500/20 text-emerald-300 backdrop-blur-md px-2.5 py-0.5 rounded-full mt-1 border border-emerald-500/30 font-semibold">
-                    Same file format, direct URL
-                  </span>
-                </div>
-              </div>
-
-              {/* Draggable Divider Line */}
-              <div
-                className="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize flex items-center justify-center"
-                style={{ left: `${sliderPosition}%` }}
-              >
-                <div className="h-8 w-8 rounded-full bg-white shadow-lg border border-border flex items-center justify-center text-slate-800 pointer-events-none hover:scale-105 transition-transform">
-                  <span className="text-xs font-bold font-mono">↔</span>
-                </div>
-              </div>
-            </div>
+            {/* Extracted slider component */}
+            <FileDeliverySlider />
           </div>
 
-          {/* 2. Global Edge CDN Network */}
-          <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between group">
+          {/* 2. Direct public links — real URL anatomy */}
+          <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 rounded-lg bg-accent/10 text-accent">
@@ -152,52 +89,60 @@ console.log(anonymous);`;
                 </div>
                 <h3 className="text-lg font-bold text-foreground">Direct public links</h3>
               </div>
-              <p className="text-sm text-muted-foreground mb-6">
-                Signed-in uploads resolve to baseurl/username/filename, while anonymous uploads use a compact anon path.
+              <p className="text-sm text-muted-foreground mb-5">
+                Every upload gets an instant, permanent public URL. Signed-in users get a clean username path. Anonymous uploads get a compact hash link.
               </p>
             </div>
 
-            {/* CDN Speed Metric Widget */}
-            <div className="space-y-3 bg-muted/40 p-4 rounded-xl border border-border/40 font-mono text-xs">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
-                  Public: jane/project-cover.png
-                </span>
-                <span className="font-semibold text-emerald-500">Clean URL</span>
+            {/* URL anatomy cards */}
+            <div className="space-y-3">
+              {/* Signed-in URL */}
+              <div className="rounded-xl border border-border/60 bg-muted/30 p-3.5 space-y-2">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <User className="h-3.5 w-3.5 text-accent" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-accent">Signed-in</span>
+                </div>
+                <div className="font-mono text-[11px] leading-relaxed break-all">
+                  <span className="text-muted-foreground">snaphost.cloud/</span>
+                  <span className="text-foreground font-semibold bg-accent/10 px-0.5 rounded">jane</span>
+                  <span className="text-muted-foreground">/</span>
+                  <span className="text-foreground font-semibold">hero-banner.png</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  <span className="text-[9px] font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-1.5 py-0.5 rounded-full">Username path</span>
+                  <span className="text-[9px] font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-1.5 py-0.5 rounded-full">Original filename</span>
+                  <span className="text-[9px] font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-1.5 py-0.5 rounded-full">User-set expiry</span>
+                </div>
               </div>
-              <div className="h-1 bg-border rounded-full overflow-hidden">
-                <div className="h-full bg-emerald-500 w-[90%]" />
+
+              {/* Anonymous URL */}
+              <div className="rounded-xl border border-border/60 bg-muted/30 p-3.5 space-y-2">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <UserX className="h-3.5 w-3.5 text-zinc-400" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Anonymous</span>
+                </div>
+                <div className="font-mono text-[11px] leading-relaxed break-all">
+                  <span className="text-muted-foreground">snaphost.cloud/</span>
+                  <span className="text-zinc-400 font-semibold bg-zinc-500/10 px-0.5 rounded">anon</span>
+                  <span className="text-muted-foreground">/</span>
+                  <span className="text-zinc-300 font-semibold">sh_7y2b1x</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  <span className="text-[9px] font-semibold bg-zinc-500/10 text-zinc-400 border border-zinc-500/20 px-1.5 py-0.5 rounded-full">No account needed</span>
+                  <span className="text-[9px] font-semibold bg-amber-500/10 text-amber-500 border border-amber-500/20 px-1.5 py-0.5 rounded-full">Auto-expires 24h</span>
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                  Public: anon/sh_7y2b1x
-                </span>
-                <span className="font-semibold text-emerald-500">Short URL</span>
-              </div>
-              <div className="h-1 bg-border rounded-full overflow-hidden">
-                <div className="h-full bg-emerald-500 w-[85%]" />
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                  Public: profile-ready
-                </span>
-                <span className="font-semibold text-emerald-500">Managed</span>
-              </div>
-              <div className="h-1 bg-border rounded-full overflow-hidden">
-                <div className="h-full bg-emerald-500 w-[70%]" />
-              </div>
-              <div className="border-t border-border/40 pt-2 flex justify-between items-center font-sans text-xs mt-1">
-                <span className="text-muted-foreground">Direct link share rate</span>
-                <span className="font-extrabold text-foreground">100%</span>
+
+              {/* CTA hint */}
+              <div className="flex items-center justify-between pt-1 text-xs text-muted-foreground border-t border-border/30">
+                <span>Both links are instantly copyable and shareable.</span>
+                <ExternalLink className="h-3.5 w-3.5" />
               </div>
             </div>
           </div>
 
-          {/* 3. Link formats and dashboard */}
-          <div className="md:col-span-2 rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between overflow-hidden group">
+          {/* 3. Link formats code block (Wider) */}
+          <div className="md:col-span-2 rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col gap-5 overflow-hidden">
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 rounded-lg bg-accent/10 text-accent">
@@ -205,25 +150,37 @@ console.log(anonymous);`;
                 </div>
                 <h3 className="text-lg font-bold text-foreground">Link formats</h3>
               </div>
-              <p className="text-sm text-muted-foreground mb-6">
-                Signed-in users get direct username URLs, anonymous uploads stay compact, and the profile dashboard keeps everything editable.
+              <p className="text-sm text-muted-foreground">
+                Signed-in users get direct username URLs. Anonymous uploads stay compact with a short hash. Both are immediately ready to paste anywhere.
               </p>
             </div>
 
-            {/* SDK Code Block */}
-            <div className="relative rounded-xl border border-border/40 bg-slate-950 p-4 text-xs font-mono text-slate-300 overflow-x-auto">
+            {/* Code Block */}
+            <div className="relative rounded-xl border border-border/40 bg-zinc-950 p-4 text-xs font-mono text-zinc-300 overflow-x-auto">
               <button
                 onClick={copyCode}
-                className="absolute right-3 top-3 p-1.5 rounded-md border border-slate-800 bg-slate-900/60 hover:bg-slate-900 transition-colors text-slate-400 hover:text-white"
+                className="absolute right-3 top-3 p-1.5 rounded-md border border-zinc-800 bg-zinc-900/60 hover:bg-zinc-900 transition-colors text-zinc-400 hover:text-white"
+                aria-label="Copy code"
               >
                 {copiedCode ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
               </button>
-              <pre className="pr-10">{codeSnippet}</pre>
+              <pre className="pr-10 leading-relaxed whitespace-pre-wrap break-all">
+                <span className="text-zinc-600">{'// Signed-in user upload\n'}</span>
+                <span className="text-zinc-400">{'const userLink = '}</span>
+                <span className="text-emerald-400">{'\'https://snaphost.cloud/jane/hero-banner.png\''}</span>
+                <span className="text-zinc-400">{';\n\n'}</span>
+                <span className="text-zinc-600">{'// Anonymous upload\n'}</span>
+                <span className="text-zinc-400">{'const anonLink = '}</span>
+                <span className="text-amber-400">{'\'https://snaphost.cloud/anon/sh_7y2b1x\''}</span>
+                <span className="text-zinc-400">{';\n\n'}</span>
+                <span className="text-zinc-600">{'// userLink → direct, clean, permanent\n'}</span>
+                <span className="text-zinc-600">{'// anonLink → compact, auto-expires in 24h'}</span>
+              </pre>
             </div>
           </div>
 
           {/* 4. Expiration controls */}
-          <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between group">
+          <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
@@ -231,8 +188,8 @@ console.log(anonymous);`;
                 </div>
                 <h3 className="text-lg font-bold text-foreground">Expiration controls</h3>
               </div>
-              <p className="text-sm text-muted-foreground mb-6">
-                Anonymous uploads expire automatically, and signed-in users can choose how long a file stays live.
+              <p className="text-sm text-muted-foreground mb-5">
+                Anonymous uploads expire automatically after 24 hours. Signed-in users can choose how long a file stays live — or keep it forever.
               </p>
             </div>
 
@@ -245,8 +202,8 @@ console.log(anonymous);`;
                 </span>
                 <button
                   onClick={() => setIsLocked(!isLocked)}
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isLocked ? 'bg-accent' : 'bg-input'}`}>
-
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isLocked ? 'bg-accent' : 'bg-input'}`}
+                >
                   <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-background shadow ring-0 transition duration-200 ease-in-out ${isLocked ? 'translate-x-4' : 'translate-x-0'}`} />
                 </button>
               </div>
@@ -276,7 +233,7 @@ console.log(anonymous);`;
           </div>
 
           {/* 5. File activity */}
-          <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between group">
+          <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 rounded-lg bg-rose-500/10 text-rose-500">
@@ -284,16 +241,16 @@ console.log(anonymous);`;
                 </div>
                 <h3 className="text-lg font-bold text-foreground">File activity</h3>
               </div>
-              <p className="text-sm text-muted-foreground mb-6">
+              <p className="text-sm text-muted-foreground mb-5">
                 Keep an eye on upload volume, file status, and what needs attention from the profile dashboard.
               </p>
             </div>
 
-            {/* Custom Mini Graph & Stat */}
+            {/* Mini bar chart */}
             <div className="bg-muted/40 p-4 rounded-xl border border-border/40">
               <div className="flex items-end justify-between gap-1 h-16 mb-2">
                 {[30, 45, 35, 60, 40, 75, 90, 65, 80, 95].map((val, idx) => (
-                  <div key={idx} className="flex-1 bg-gradient-to-t from-accent to-accent/60 rounded-t-[2px] transition-all hover:opacity-80" style={{ height: `${val}%` }} />
+                  <div key={idx} className="flex-1 bg-linear-to-t from-accent to-accent/60 rounded-t-sm transition-all hover:opacity-80" style={{ height: `${val}%` }} />
                 ))}
               </div>
               <div className="flex justify-between items-center text-[11px] font-medium mt-3 border-t border-border/40 pt-2">
@@ -310,7 +267,7 @@ console.log(anonymous);`;
           </div>
 
           {/* 6. Direct upload flow (Wider) */}
-          <div className="md:col-span-2 rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col justify-between overflow-hidden group">
+          <div className="md:col-span-2 rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex flex-col gap-5 overflow-hidden">
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 rounded-lg bg-teal-500/10 text-teal-500">
@@ -318,12 +275,12 @@ console.log(anonymous);`;
                 </div>
                 <h3 className="text-lg font-bold text-foreground">Direct upload flow</h3>
               </div>
-              <p className="text-sm text-muted-foreground mb-6">
-                Drop a file, get a share URL, and keep moving. The app handles storage, validation, and cleanup in the background.
+              <p className="text-sm text-muted-foreground">
+                Drop a file, get a share URL, and keep moving. The app handles storage, validation, and cleanup automatically in the background.
               </p>
             </div>
 
-            {/* Interactive Upload Box Placeholder visual representation */}
+            {/* Upload flow visual */}
             <div className="border border-dashed border-border rounded-xl bg-muted/20 p-5 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-lg bg-background flex items-center justify-center border border-border shadow-sm">
