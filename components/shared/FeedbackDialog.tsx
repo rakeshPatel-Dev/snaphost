@@ -27,7 +27,7 @@ import { toast } from 'sonner';
 
 export default function FeedbackDialog() {
   const [open, setOpen] = useState(false);
-  const [state, handleSubmit] = useForm(process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT_ID || '');
+  const [state, handleSubmit] = useForm(process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT_ID || 'missing-id');
   const [category, setCategory] = useState('');
 
   const onOpenChange = (newOpen: boolean) => {
