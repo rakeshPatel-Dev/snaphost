@@ -1,28 +1,53 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useRef } from 'react';
+import { motion, useDragControls } from 'framer-motion';
+import { GripVertical } from 'lucide-react';
 
 export default function FloatingBadge() {
-  const [baseUrl, setBaseUrl] = useState('');
-
-  useEffect(() => {
-    setBaseUrl(typeof window !== 'undefined' ? window.location.origin : '');
-  }, []);
+  const dragControls = useDragControls();
+  const constraintsRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 animate-in slide-in-from-bottom-4 duration-300">
-      <a
-        href={baseUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group inline-flex items-center gap-2 rounded-full bg-background/80 backdrop-blur-md border border-border/50 px-3 py-1.5 text-xs font-medium text-foreground shadow-lg transition-all hover:bg-background/95 hover:border-border hover:shadow-xl hover:scale-105 active:scale-95"
-      >
-        <span className="relative flex items-center justify-center h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-          <span className="relative  inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-        </span>
-        <span>Uploaded to Snaphost</span>
-      </a>
+    <div 
+      className="fixed inset-0 z-50 pointer-events-none overflow-hidden" 
+      ref={constraintsRef}
+    >
+      <div className="absolute inset-x-0 bottom-4 flex justify-center pointer-events-none">
+        <motion.div
+          drag
+          dragControls={dragControls}
+          dragListener={false}
+          dragMomentum={false}
+          dragConstraints={constraintsRef}
+          className="pointer-events-auto"
+          style={{ touchAction: 'none' }}
+        >
+          <div className="group flex items-center rounded-full bg-background/80 backdrop-blur-md border border-border/50 p-1 pr-4 text-xs font-medium text-foreground shadow-lg transition-all hover:bg-background/95 hover:border-border hover:shadow-xl">
+            {/* Drag Handle */}
+            <div 
+              className="cursor-grab active:cursor-grabbing p-1.5 rounded-full hover:bg-muted/50 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground flex items-center justify-center mr-1"
+              onPointerDown={(e) => dragControls.start(e)}
+              title="Drag to move"
+            >
+              <GripVertical className="h-3.5 w-3.5" />
+            </div>
+
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 outline-none"
+            >
+              <span className="relative flex items-center justify-center h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span>Uploaded to Snaphost</span>
+            </a>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 }
