@@ -31,7 +31,10 @@ export default function FileDeliverySlider() {
       className="relative h-64 w-full rounded-xl overflow-hidden cursor-ew-resize select-none border border-border"
       onMouseMove={handleMouseMove}
       onTouchMove={handleTouchMove}
-      onMouseDown={() => setIsSliding(true)}
+      onMouseDown={(e) => {
+        setIsSliding(true);
+        e.preventDefault();
+      }}
       onMouseUp={() => setIsSliding(false)}
       onMouseLeave={() => setIsSliding(false)}
     >

@@ -31,7 +31,8 @@ export default function ImagePreview({ url, filename }: ImagePreviewProps) {
           alt={filename}
           fill
           sizes="100vw"
-          className="object-contain"
+          className="object-contain select-none"
+          draggable={false}
           onLoad={() => setIsLoading(false)}
           onError={() => {
             setIsLoading(false);
