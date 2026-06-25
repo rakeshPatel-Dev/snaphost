@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 import { toast } from 'sonner';
@@ -25,10 +25,16 @@ export default function ProfileDashboard({
   files: initialFiles,
 }: ProfileDashboardProps) {
   const [files, setFiles] = useState<AppFile[]>(initialFiles);
+  const [savedFiles, setSavedFiles] = useState<AppFile[]>(initialFiles);
   const [editingFileId, setEditingFileId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [updateFile] = useUpdateFileMutation();
   const [deleteFileMutation] = useDeleteFileMutation();
+
+  useEffect(() => {
+    setFiles(initialFiles);
+    setSavedFiles(initialFiles);
+  }, [initialFiles]);
 
   const isPremium = tier === 'premium';
 
@@ -57,6 +63,7 @@ export default function ProfileDashboard({
         .unwrap()
         .then((data) => {
           setFiles((c) => c.map((item) => (item.id === file.id ? data.file : item)));
+          setSavedFiles((c) => c.map((item) => (item.id === file.id ? data.file : item)));
           return true;
         });
 
@@ -79,6 +86,7 @@ export default function ProfileDashboard({
         .unwrap()
         .then(() => {
           setFiles((c) => c.filter((item) => item.id !== fileId));
+          setSavedFiles((c) => c.filter((item) => item.id !== fileId));
           return true;
         });
 
@@ -105,6 +113,7 @@ export default function ProfileDashboard({
       <LinkCard
         username={initialUsername}
         files={files}
+        savedFiles={savedFiles}
         isPremium={isPremium}
         editingFileId={editingFileId}
         copiedId={copiedId}

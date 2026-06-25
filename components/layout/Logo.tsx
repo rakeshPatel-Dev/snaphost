@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function Logo({ className }: { className?: string }) {
   return (
-    <Link href="/" className={`group flex shrink-0 items-center gap-2.5 ${className ?? ''}`}>
+    <Link href="/" className={`group flex shrink-0 items-center  gap-2.5 ${className ?? ''}`}>
       <Image
         src="/images/snaphost-light.png"
         alt="logo"

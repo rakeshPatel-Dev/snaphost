@@ -11,12 +11,13 @@ export default function Header() {
         <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl supports-backdrop-filter:bg-background/60">
             <HeaderAnnouncement />
 
-            <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
+            <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 py-5 px-4">
                 <Logo />
                 <HeaderNav />
                 <HeaderActions />
                 <HeaderMobile />
             </nav>
         </header>
+        
     );
 }

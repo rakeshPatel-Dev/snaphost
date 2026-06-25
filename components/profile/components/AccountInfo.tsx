@@ -65,7 +65,12 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
 
   return (
     <div>
-      <Card className="shadow-sm border-border/40 overflow-hidden">
+      <Card className={cn(
+        "shadow-sm overflow-hidden transition-all duration-200",
+        editing && value !== displayUsername
+          ? "border-orange-500 ring-1 ring-orange-500"
+          : "border-border/40"
+      )}>
         <CardHeader className="pb-4 border-b border-border/40 bg-muted/5">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">

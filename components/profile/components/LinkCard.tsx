@@ -39,6 +39,7 @@ function getExpiresAtFromPreset(preset: ExpirationPreset): string | null {
 type LinkCardProps = {
   username: string;
   files: AppFile[];
+  savedFiles: AppFile[];
   isPremium: boolean;
   editingFileId: string | null;
   copiedId: string | null;
@@ -51,6 +52,7 @@ type LinkCardProps = {
 const LinkCard = ({
   username,
   files,
+  savedFiles,
   isPremium,
   editingFileId,
   copiedId,
@@ -59,9 +61,30 @@ const LinkCard = ({
   onSaveFile,
   onDeleteFile,
 }: LinkCardProps) => {
+  const hasFileChanges = (file: AppFile, savedFile?: AppFile) => {
+    if (!savedFile) return false;
+    const savedPreset = getExpirationPreset(savedFile.expires_at);
+    const currentPreset = getExpirationPreset(file.expires_at);
+    return (
+      savedFile.filename !== file.filename ||
+      savedFile.slug !== file.slug ||
+      savedPreset !== currentPreset
+    );
+  };
+
+  const hasAnyUnsavedChanges = files.some((file) => {
+    const savedFile = savedFiles.find((f) => f.id === file.id);
+    return hasFileChanges(file, savedFile);
+  });
+
   return (
     <div className="font-sans">
-      <Card className="shadow-none border border-border/60 rounded-[18px] overflow-hidden">
+      <Card className={cn(
+        "shadow-none border rounded-[18px] overflow-hidden transition-all duration-200",
+        hasAnyUnsavedChanges
+          ? "border-orange-500 ring-1 ring-orange-500"
+          : "border-border/60"
+      )}>
 
         {/* ── Header ── */}
         <CardHeader className="pb-3 pt-4 px-5 bg-muted/40 border-b border-border/50">
@@ -135,10 +158,18 @@ const LinkCard = ({
                 );
               }
 
+              const savedFile = savedFiles.find((f) => f.id === file.id);
+              const isModified = hasFileChanges(file, savedFile);
+
               return (
                 <div
                   key={file.id}
-                  className="rounded-[14px] border border-border/70 bg-card overflow-hidden transition-all duration-150 hover:border-border hover:shadow-sm"
+                  className={cn(
+                    "rounded-[14px] border bg-card overflow-hidden transition-all duration-200 hover:shadow-sm",
+                    isModified
+                      ? "border-orange-500 ring-1 ring-orange-500/30"
+                      : "border-border/70 hover:border-border"
+                  )}
                 >
 
                   {/* ── File header row ── */}
