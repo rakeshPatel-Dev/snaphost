@@ -5,7 +5,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import { BsGithub } from 'react-icons/bs';
 import { AnimatedThemeToggler } from '../ui/animated-theme-toggler';
 import { Upload, UserRound, LogOut, Trash2 } from 'lucide-react';
 import DeleteAccountDialog from '@/components/shared/DeleteAccountDialog';

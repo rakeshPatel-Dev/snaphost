@@ -2,7 +2,6 @@
 
 import { SeparatorVertical } from 'lucide-react';
 import React, { useState, useRef } from 'react';
-import { Badge } from '../ui/badge';
 
 export default function FileDeliverySlider() {
   const [sliderPosition, setSliderPosition] = useState(50);

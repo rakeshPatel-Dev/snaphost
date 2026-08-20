@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { Trash2, ExternalLink, File, Clock, AlertCircle, RefreshCw } from 'lucide-react';
+import { Trash2, ExternalLink, File, Clock, RefreshCw } from 'lucide-react';
 import type { AnonymousLink } from '@/types/app';
 import { deleteAnonymousLink, fetchAnonymousLinks } from '@/services/anonymous-links';
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';

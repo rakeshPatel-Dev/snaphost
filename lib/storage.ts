@@ -57,7 +57,7 @@ export async function fileExistsInStorage(storagePath: string): Promise<boolean>
   try {
     const { data } = await bucket.list('uploads');
     return data?.some((file) => file.name === storagePath.split('/').pop()) || false;
-  } catch (err) {
+  } catch {
     return false;
   }
 }

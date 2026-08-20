@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/lib/supabase';
 import UsernameAvailability from '@/components/auth/UsernameAvailability';
 import PasswordRequirements, { evaluatePasswordRequirements } from '@/components/auth/PasswordRequirements';

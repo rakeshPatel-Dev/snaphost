@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
       if (cookieValue) {
         try {
           const tokenHash = crypto.createHash('sha256').update(cookieValue).digest('hex');
-          const { data: existing, error: existingErr } = await supabaseAdmin
+          const { data: existing } = await supabaseAdmin
             .from('anon_sessions')
             .select('id, expires_at, revoked_at')
             .eq('token_hash', tokenHash)
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
           } else {
             anonSessionId = existing.id;
           }
-        } catch (e) {
+        } catch {
           // ignore and create new session
         }
       }

@@ -37,7 +37,7 @@ export default function ResetPasswordPage() {
 
         setLoading(true);
         try {
-            const { data, error } = await supabase.auth.updateUser({ password });
+            const { error } = await supabase.auth.updateUser({ password });
             if (error) throw error;
             toast.success('Password updated - you are signed in');
             router.replace('/profile');
