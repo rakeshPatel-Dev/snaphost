@@ -1,9 +1,11 @@
-import React from 'react'
+'use client';
+
+import React, { useState } from 'react'
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Check, Clock, Copy, ExternalLink, File, FileImage, Link2, Save, Trash2, Zap } from 'lucide-react';
+import { Check, Clock, Copy, ExternalLink, File, FileImage, Link2, Save, Share2, Trash2, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
@@ -61,6 +63,22 @@ const LinkCard = ({
   onSaveFile,
   onDeleteFile,
 }: LinkCardProps) => {
+  const [sharedId, setSharedId] = useState<string | null>(null);
+
+  const handleShare = async (url: string, id: string) => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ url });
+      } catch {
+        // user dismissed – do nothing
+        return;
+      }
+    } else {
+      await navigator.clipboard.writeText(url);
+    }
+    setSharedId(id);
+    setTimeout(() => setSharedId(null), 2000);
+  };
   const hasFileChanges = (file: AppFile, savedFile?: AppFile) => {
     if (!savedFile) return false;
     const savedPreset = getExpirationPreset(savedFile.expires_at);
@@ -323,6 +341,25 @@ const LinkCard = ({
                         <><Check className="h-3 w-3" /> Copied</>
                       ) : (
                         <><Copy className="h-3 w-3" /> Copy link</>
+                      )}
+                    </Button>
+
+                    {/* Share */}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className={cn(
+                        'h-7 gap-1.5 text-xs font-medium rounded-lg border-border/60',
+                        sharedId === file.id
+                          ? 'bg-violet-500/10 border-violet-500/25 text-violet-600 dark:text-violet-400 hover:bg-violet-500/15'
+                          : 'bg-background hover:bg-muted/50'
+                      )}
+                      onClick={() => handleShare(resolvedPublicUrl, file.id)}
+                    >
+                      {sharedId === file.id ? (
+                        <><Check className="h-3 w-3" /> Shared!</>
+                      ) : (
+                        <><Share2 className="h-3 w-3" /> Share</>
                       )}
                     </Button>
 
