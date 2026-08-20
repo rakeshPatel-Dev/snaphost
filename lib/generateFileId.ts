@@ -34,9 +34,4 @@ export function createFileIdSync(): string {
   return generateRandomId(CONFIG.FILE_ID_LENGTH);
 }
 
-/**
- * Generate multiple unique file IDs
- */
-export function generateMultipleFileIds(count: number): string[] {
-  return Array.from({ length: count }, () => createFileIdSync());
-}
+
