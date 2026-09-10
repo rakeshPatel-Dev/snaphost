@@ -1,0 +1,48 @@
+SnapHost — Product Overview
+============================
+A clean, fast file-sharing app. Upload an image or PDF and get a shareable
+link in seconds. No sign-up required. Think of it like Imgur for any file.
+
+How It Works
+------------
+1. Go to snaphost.cloud
+2. Drag a file onto the page (PNG, JPG, WEBP, or PDF — max 10 MB)
+3. Instantly get a short link to share with anyone
+4. Done. That's it.
+
+Anonymous Mode
+--------------
+- No account needed
+- Links expire in 24 hours (auto-cleanup)
+- View and manage your recent anonymous uploads on a dedicated page
+
+Signed-In Mode
+--------------
+- Create a free account with email, Google, or GitHub
+- All your uploads live in a personal dashboard
+- Customize the URL (e.g. snaphost.cloud/yourname/my-image)
+- Set custom expiration dates per file
+- Rename or delete files anytime
+
+Pricing Tiers
+-------------
+• Free (Anonymous) — upload & share, auto-expire in 24h
+• Starter (Free, with account) — dashboard, custom slugs, no expiration
+• Pro ($7/mo — coming soon) — password-protected links, analytics, etc.
+
+Who It's For
+------------
+Anyone who needs to share a file quickly:
+- Casual users sharing screenshots or documents
+- Designers & devs sharing work-in-progress
+- People who don't want to mess with Drive or Dropbox for a one-off file
+
+Planned Features (Coming Soon)
+-------------------------------
+- Password-protected links
+- View/download analytics
+- Custom domains
+- API & CLI tool for programmatic uploads
+- Browser extension & mobile app
+
+Built by the SnapHost team. Questions? hello@snaphost.cloud
