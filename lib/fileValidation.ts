@@ -6,7 +6,7 @@ export interface ValidationError {
   message: string;
 }
 
-export interface FileValidationResult {
+interface FileValidationResult {
   valid: boolean;
   errors: ValidationError[];
 }

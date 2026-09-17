@@ -39,12 +39,3 @@ export function getFileExtension(filename: string): string {
   if (lastDot === -1) return '';
   return filename.substring(lastDot);
 }
-
-/**
- * Get filename without extension
- */
-export function getFilenameWithoutExtension(filename: string): string {
-  const lastDot = filename.lastIndexOf('.');
-  if (lastDot === -1) return filename;
-  return filename.substring(0, lastDot);
-}

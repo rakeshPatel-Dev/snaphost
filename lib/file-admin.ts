@@ -83,20 +83,6 @@ export async function getFileForUser(fileId: string, userId: string) {
   return data as AdminFileRow | null;
 }
 
-export async function getFileById(fileId: string) {
-  const { data, error } = await supabaseAdmin
-    .from('files')
-    .select('*, user:users(username)')
-    .eq('id', fileId)
-    .maybeSingle();
-
-  if (error) {
-    throw error;
-  }
-
-  return data as AdminFileRow | null;
-}
-
 export async function listFilesForAnonSession(anonSessionId: string) {
   const { data, error } = await supabaseAdmin
     .from('files')
@@ -170,21 +156,6 @@ export async function getFileBySlug(slug: string) {
   return data as AdminFileRow | null;
 }
 
-export async function deleteFileById(fileId: string) {
-  const { data, error } = await supabaseAdmin
-    .from('files')
-    .delete()
-    .eq('id', fileId)
-    .select('id, storage_path, upload_type')
-    .single();
-
-  if (error) {
-    throw error;
-  }
-
-  return data as { id: string; storage_path: string; upload_type: UploadType };
-}
-
 export async function deleteFileBySlug(slug: string) {
   const { data, error } = await supabaseAdmin
     .from('files')
@@ -218,22 +189,6 @@ export async function updateFileForUser(
   }
 
   return data as AdminFileRow;
-}
-
-export async function softDeleteFileForUser(fileId: string, userId: string) {
-  const { data, error } = await supabaseAdmin
-    .from('files')
-    .update({ deleted_at: new Date().toISOString() })
-    .eq('id', fileId)
-    .eq('user_id', userId)
-    .select('id, storage_path')
-    .single();
-
-  if (error) {
-    throw error;
-  }
-
-  return data as { id: string; storage_path: string };
 }
 
 export async function deleteFileForUser(fileId: string, userId: string) {

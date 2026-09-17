@@ -1,6 +1,7 @@
 import { supabase } from './supabase';
 import { supabaseAdmin } from './supabase-admin';
 import { CONFIG } from './config';
+import { getFileExtension } from './sanitizeFilename';
 
 /**
  * Upload file to Supabase Storage
@@ -12,7 +13,7 @@ export async function uploadFileToStorage(
   const bucket = supabase.storage.from(CONFIG.STORAGE_BUCKET);
 
   // Store in format: uploads/{fileId}.{extension}
-  const ext = getFileExtension(file.name);
+  const ext = getFileExtension(file.name).toLowerCase();
   const storagePath = `uploads/${fileId}${ext}`;
 
   try {
@@ -48,25 +49,3 @@ export async function deleteFileFromStorage(storagePath: string): Promise<boolea
   }
 }
 
-/**
- * Check if file exists in storage
- */
-export async function fileExistsInStorage(storagePath: string): Promise<boolean> {
-  const bucket = supabase.storage.from(CONFIG.STORAGE_BUCKET);
-
-  try {
-    const { data } = await bucket.list('uploads');
-    return data?.some((file) => file.name === storagePath.split('/').pop()) || false;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Get file extension including the dot
- */
-function getFileExtension(filename: string): string {
-  const lastDot = filename.lastIndexOf('.');
-  if (lastDot === -1) return '';
-  return filename.substring(lastDot).toLowerCase();
-}

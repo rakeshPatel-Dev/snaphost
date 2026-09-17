@@ -2,7 +2,7 @@ import { supabase } from './supabase';
 import { CONFIG } from './config';
 import type { AdminFileRow, FileMetadata } from '@/types/app';
 
-export type FileRecord = AdminFileRow;
+type FileRecord = AdminFileRow;
 
 /**
  * Fetch public file metadata by slug.
@@ -41,6 +41,6 @@ export async function getFileMetadata(slug: string): Promise<FileMetadata | null
 /**
  * Generate the storage URL used for previews.
  */
-export function getStoragePublicUrl(storagePath: string): string {
+function getStoragePublicUrl(storagePath: string): string {
   return supabase.storage.from(CONFIG.STORAGE_BUCKET).getPublicUrl(storagePath).data.publicUrl;
 }

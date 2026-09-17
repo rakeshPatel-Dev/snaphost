@@ -16,5 +16,3 @@ export const checkEmailContent = {
     buttonHref: '/sign-in',
   },
 };
-
-export type CheckEmailType = keyof typeof checkEmailContent;

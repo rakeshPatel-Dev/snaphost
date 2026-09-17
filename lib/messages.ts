@@ -102,14 +102,6 @@ export const FILE_ERRORS = {
   failedToDeleteFromStorage: 'File was removed from the database but couldn\'t be deleted from storage. Contact support.',
 } as const;
 
-// ─── Username availability ─────────────────────────────────
-export const USERNAME_ERRORS = {
-  /** Username param missing from request */
-  usernameRequired: 'A username is required.',
-  /** Server error while checking */
-  failedToCheckUsername: 'Couldn\'t check username availability right now. Please try again.',
-} as const;
-
 // ─── API / server-side generics ────────────────────────────
 export const SERVER_ERRORS = {
   /** 500 catch-all */

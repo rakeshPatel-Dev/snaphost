@@ -1,4 +1,3 @@
-import { headers } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
 type AuthUser = {
@@ -44,11 +43,5 @@ async function getAuthUserByToken(token: string | null): Promise<AuthUser | null
 
 export async function getAuthUserFromRequest(request: Request): Promise<AuthUser | null> {
   const token = getBearerTokenFromAuthorization(request.headers.get('authorization'));
-  return getAuthUserByToken(token);
-}
-
-export async function getAuthUserFromHeaders(): Promise<AuthUser | null> {
-  const requestHeaders = await headers();
-  const token = getBearerTokenFromAuthorization(requestHeaders.get('authorization'));
   return getAuthUserByToken(token);
 }

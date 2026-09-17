@@ -1,19 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import crypto from 'crypto';
-import { listFilesForAnonSession } from '@/lib/file-admin';
-import { buildFileUrl } from '@/lib/file-admin';
+import { listFilesForAnonSession, buildFileUrl } from '@/lib/file-admin';
+import { formatFileSize } from '@/shared/utils/file-format';
 import type { AnonymousLink } from '@/types/app';
-
-function formatFileSize(bytes: number) {
-  const megabytes = bytes / (1024 * 1024);
-  if (megabytes >= 1) {
-    return `${megabytes.toFixed(1)} MB`;
-  }
-
-  const kilobytes = bytes / 1024;
-  return `${kilobytes.toFixed(0)} KB`;
-}
 
 export async function GET(request: NextRequest) {
   try {
