@@ -1,6 +1,6 @@
 import React from "react";
 
-export interface SnaphostLogoProps {
+interface SnaphostLogoProps {
     /** Rendered width of the logo (px or any CSS width value). */
     width?: number | string;
     /** Rendered height of the logo (px or any CSS height value). */

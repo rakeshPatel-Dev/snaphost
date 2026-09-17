@@ -5,7 +5,7 @@ import { LoaderCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-export type UsernameAvailabilityState = {
+type UsernameAvailabilityState = {
     id: string;
     value: string;
     isChecking: boolean;

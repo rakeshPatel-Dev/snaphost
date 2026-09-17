@@ -8,7 +8,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export type PasswordRequirementsMode = 'sign-in' | 'sign-up' | 'reset-password';
+type PasswordRequirementsMode = 'sign-in' | 'sign-up' | 'reset-password';
 
 export function evaluatePasswordRequirements(password: string, confirmPassword = '') {
     const hasLength = password.length >= 8;

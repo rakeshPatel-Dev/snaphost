@@ -15,7 +15,7 @@ export function getAnonymousUploadAcceptValue() {
   return 'image/png,image/jpeg,image/webp,.pdf,application/pdf';
 }
 
-export function validateAnonymousFile(file: File): string | null {
+function validateAnonymousFile(file: File): string | null {
   const validation = validateFile(file);
 
   if (!validation.valid) {

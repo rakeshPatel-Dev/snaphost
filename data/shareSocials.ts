@@ -7,7 +7,7 @@ import {
   FaTelegram
 } from 'react-icons/fa';
 
-export interface ShareOption {
+interface ShareOption {
   id: string;
   name: string;
   icon: any;

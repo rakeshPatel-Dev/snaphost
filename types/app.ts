@@ -1,4 +1,4 @@
-export type UserTier = 'free' | 'premium';
+type UserTier = 'free' | 'premium';
 export type UploadType = 'anonymous' | 'custom';
 export type FileType = 'image' | 'pdf';
 

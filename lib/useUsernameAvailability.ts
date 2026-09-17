@@ -4,16 +4,16 @@ import { useEffect, useMemo, useState } from 'react';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useGetUsernameAvailabilityQuery } from '@/state/api';
 
-export type UsernameAvailabilityTone = 'neutral' | 'good' | 'warn' | 'bad';
+type UsernameAvailabilityTone = 'neutral' | 'good' | 'warn' | 'bad';
 
-export type UsernameAvailabilityStatus = {
+type UsernameAvailabilityStatus = {
   checking: boolean;
   available: boolean;
   text: string;
   tone: UsernameAvailabilityTone;
 };
 
-export type UseUsernameAvailabilityOptions = {
+type UseUsernameAvailabilityOptions = {
   value: string;
   enabled?: boolean;
   currentUsername?: string;
