@@ -14,7 +14,7 @@ export default function SocialButtons({ className }: { className?: string }) {
     <div className={className}>
       <div className="flex items-center gap-1 mt-1">
         {socials.map(({ icon: Icon, href, label }) => (
-          <Button key={label} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" asChild>
+          <Button key={label} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:bg-muted/60 hover:text-foreground" asChild>
             <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
               <Icon className="h-4 w-4" />
             </a>

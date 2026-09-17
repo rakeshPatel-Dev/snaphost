@@ -21,8 +21,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "SnapHost - Instantly upload and share images and PDFs.",
-    template: "%s | SnapHost",
+    default: "Snaphost — Instant file sharing",
+    template: "%s | Snaphost",
   },
   icons: {
     icon: [
@@ -32,36 +32,38 @@ export const metadata: Metadata = {
     apple: "/apple-icon.png",
   },
   description:
-    "Instantly upload and share images and PDFs with clean, fast links. No login required. Simple, secure file hosting in seconds.",
+    "Upload images and PDFs and get a clean, shareable link in seconds. No account needed, and links expire automatically.",
   keywords: [
     "file hosting",
     "image upload",
     "pdf sharing",
     "instant file share",
-    "snap host",
-
+    "anonymous file upload",
   ],
-  authors: [{ name: "SnapHost" }],
-  creator: "SnapHost",
+  authors: [{ name: "Snaphost" }],
+  creator: "Snaphost",
   metadataBase: new URL("https://snaphost.cloud"),
   openGraph: {
-    title: "SnapHost.cloud",
+    title: "Snaphost — Instant file sharing",
     description:
-      "Instantly upload and share images and PDFs with clean, fast links. No login required. Simple, secure file hosting in seconds.",
+      "Upload images and PDFs and get a clean, shareable link in seconds. No account needed, and links expire automatically.",
     url: "https://snaphost.cloud",
-    siteName: "SnapHost",
+    siteName: "Snaphost",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SnapHost.cloud",
+    title: "Snaphost — Instant file sharing",
     description:
-      "Instantly upload and share images and PDFs with clean, fast links. No login required. Simple, secure file hosting in seconds.",
+      "Upload images and PDFs and get a clean, shareable link in seconds. No account needed, and links expire automatically.",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
+  ],
 };
 
 export default function RootLayout({

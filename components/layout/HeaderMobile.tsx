@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Menu, Upload, UserRound, LogOut, Trash2 } from 'lucide-react';
+import { Menu, UserRound, LogOut, Trash2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { AnimatedThemeToggler } from '../ui/animated-theme-toggler';
 import DeleteAccountDialog from '@/components/shared/DeleteAccountDialog';
