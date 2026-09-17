@@ -1,13 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-
 import { toast } from 'sonner';
 import { useDeleteFileMutation, useUpdateFileMutation } from '@/state/api';
 import { getApiErrorMessage } from '@/lib/api-error';
 import { FILE_ERRORS, TOAST_LABELS } from '@/lib/messages';
 import type { AppFile } from '@/types/app';
+import Container from '@/components/shared/Container';
 import AccountInfo from './components/AccountInfo';
 import TierBanner from './components/TierBanner';
 import LinkCard from './components/LinkCard';
@@ -104,25 +103,25 @@ export default function ProfileDashboard({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-10">
+    <Container className="py-12 sm:py-16">
+      <div className="space-y-6">
+        <TierBanner isPremium={isPremium} />
 
-      <TierBanner isPremium={isPremium} />
+        <AccountInfo isPremium={isPremium} username={initialUsername} email={email} tier={tier} />
 
-      {/* --- Profile Card --- */}
-      <AccountInfo isPremium={isPremium} username={initialUsername} email={email} tier={tier} />
-
-      <LinkCard
-        username={initialUsername}
-        files={files}
-        savedFiles={savedFiles}
-        isPremium={isPremium}
-        editingFileId={editingFileId}
-        copiedId={copiedId}
-        setFiles={setFiles}
-        onCopyLink={copyLink}
-        onSaveFile={saveFile}
-        onDeleteFile={deleteFile}
-      />
-    </div>
+        <LinkCard
+          username={initialUsername}
+          files={files}
+          savedFiles={savedFiles}
+          isPremium={isPremium}
+          editingFileId={editingFileId}
+          copiedId={copiedId}
+          setFiles={setFiles}
+          onCopyLink={copyLink}
+          onSaveFile={saveFile}
+          onDeleteFile={deleteFile}
+        />
+      </div>
+    </Container>
   );
-} 
+}
