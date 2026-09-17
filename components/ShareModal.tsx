@@ -9,12 +9,14 @@ import {
   CheckCircle2,
   ExternalLink,
   Copy,
+  Mail,
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import QRCode from 'react-qr-code';
 import { shareSocials } from '@/data/shareSocials';
+import { SocialIcon } from '@/components/ui/SocialIcon';
 import type { ShareModalProps } from '@/types/components';
 
 export default function ShareModal({
@@ -118,6 +120,7 @@ export default function ShareModal({
                 <Button
                   size="sm"
                   variant="ghost"
+                  aria-label="Copy shareable link"
                   onClick={() => {
                     navigator.clipboard.writeText(fileUrl);
                     toast.success('Link copied!');
@@ -129,9 +132,11 @@ export default function ShareModal({
               </div>
             </div>
 
-            <button
+            <Button
+              variant="outline"
               onClick={() => setShowQR(true)}
-              className="w-full flex items-center justify-between p-4 rounded-2xl bg-accent/5 border border-accent/20 hover:border-accent/30 hover:shadow-md transition-all group"
+              aria-label="Show QR code for this file"
+              className="w-full flex items-center justify-between p-4 rounded-2xl bg-accent/5 border border-accent/20 hover:border-accent/30 hover:shadow-md transition-all group h-auto"
             >
               <div className="flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent/10">
@@ -145,7 +150,7 @@ export default function ShareModal({
                 </div>
               </div>
               <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-accent transition-colors" />
-            </button>
+            </Button>
 
             <div className="space-y-2">
               <label className="text-xs font-semibold text-muted-foreground flex items-center gap-2 uppercase tracking-wide">
@@ -154,16 +159,24 @@ export default function ShareModal({
               </label>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                 {shareSocials.map((option) => (
-                  <button
+                  <Button
                     key={option.id}
+                    type="button"
+                    aria-label={`Share via ${option.name}`}
                     onClick={() => handleShare(option)}
-                    className={`flex flex-col items-center justify-center gap-1.5 py-3 px-2 rounded-2xl transition-all font-medium hover:shadow-md active:scale-95 ${option.className}`}
+                    className={`flex flex-col items-center justify-center gap-1.5 py-3 px-2 rounded-2xl transition-all font-medium hover:shadow-md active:scale-95 h-auto ${option.className}`}
                   >
-                    <option.icon className={`h-5 w-5 ${option.iconColor}`} />
+                    {option.platform ? (
+                      <SocialIcon platform={option.platform} className={`h-5 w-5 ${option.iconColor}`} />
+                    ) : (
+                      <div className={`h-5 w-5 flex items-center justify-center ${option.iconColor}`}>
+                        {option.id === 'copy' ? <Copy className="h-4 w-4" /> : <Mail className="h-4 w-4" />}
+                      </div>
+                    )}
                     <span className="text-xs leading-tight text-center line-clamp-2">
                       {option.name}
                     </span>
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>

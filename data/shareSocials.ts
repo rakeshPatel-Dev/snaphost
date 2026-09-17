@@ -1,16 +1,10 @@
-import { Copy, Mail } from 'lucide-react';
-import {
-  FaTwitter,
-  FaLinkedin,
-  FaFacebook,
-  FaWhatsapp,
-  FaTelegram
-} from 'react-icons/fa';
+import { SocialPlatform } from '@/components/ui/SocialIcon';
 
 interface ShareOption {
   id: string;
   name: string;
-  icon: any;
+  platform?: SocialPlatform;
+  icon?: any; // Kept for backward compatibility if needed, but we prefer platform
   className: string;
   iconColor: string;
   shareUrl?: (fileUrl: string, filename: string, fileSize?: string) => string;
@@ -20,14 +14,14 @@ export const shareSocials: ShareOption[] = [
   {
     id: 'copy',
     name: 'Copy Link',
-    icon: Copy,
     className: 'bg-muted hover:bg-muted/80 text-foreground border border-border/50 hover:border-border',
     iconColor: 'text-muted-foreground',
+    // Copy doesn't have a platform, it's a utility
   },
   {
     id: 'twitter',
     name: 'X (Twitter)',
-    icon: FaTwitter,
+    platform: 'twitter',
     className: 'bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 hover:border-accent/30',
     iconColor: 'text-accent',
     shareUrl: (fileUrl, filename) => {
@@ -38,7 +32,7 @@ export const shareSocials: ShareOption[] = [
   {
     id: 'linkedin',
     name: 'LinkedIn',
-    icon: FaLinkedin,
+    platform: 'linkedin',
     className: 'bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 hover:border-accent/30',
     iconColor: 'text-accent',
     shareUrl: (fileUrl) => {
@@ -48,7 +42,7 @@ export const shareSocials: ShareOption[] = [
   {
     id: 'facebook',
     name: 'Facebook',
-    icon: FaFacebook,
+    platform: 'facebook',
     className: 'bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 hover:border-accent/30',
     iconColor: 'text-accent',
     shareUrl: (fileUrl) => {
@@ -58,7 +52,7 @@ export const shareSocials: ShareOption[] = [
   {
     id: 'whatsapp',
     name: 'WhatsApp',
-    icon: FaWhatsapp,
+    platform: 'whatsapp',
     className: 'bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 hover:border-accent/30',
     iconColor: 'text-accent',
     shareUrl: (fileUrl, filename) => {
@@ -69,7 +63,7 @@ export const shareSocials: ShareOption[] = [
   {
     id: 'telegram',
     name: 'Telegram',
-    icon: FaTelegram,
+    platform: 'telegram',
     className: 'bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 hover:border-accent/30',
     iconColor: 'text-accent',
     shareUrl: (fileUrl, filename) => {
@@ -79,7 +73,6 @@ export const shareSocials: ShareOption[] = [
   {
     id: 'email',
     name: 'Email',
-    icon: Mail,
     className: 'bg-destructive/10 hover:bg-destructive/20 text-destructive border border-destructive/20 hover:border-destructive/30',
     iconColor: 'text-destructive',
   },
