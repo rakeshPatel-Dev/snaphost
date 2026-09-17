@@ -12,25 +12,25 @@ export default function FileDetailsCard({
     : 'pending';
 
   return (
-    <div className="p-4 rounded-lg bg-muted/40 border border-border">
+    <div className="rounded-2xl bg-muted/20 border border-border/60 p-4">
       <div className="space-y-3">
         <div className="flex justify-between items-start">
-          <div>
+          <div className="min-w-0 flex-1">
             <p className="text-xs text-muted-foreground mb-1">Filename</p>
             <p className="text-sm font-medium text-foreground truncate">
               {filename}
             </p>
           </div>
         </div>
-        <div className="flex justify-between items-start">
+        <div className="flex justify-between items-start gap-4">
           <div>
-            <p className="text-xs text-muted-foreground mb-1">File Size</p>
+            <p className="text-xs text-muted-foreground mb-1">File size</p>
             <p className="text-sm font-medium text-foreground">{fileSizeMB} MB</p>
           </div>
           {optimizedSize && (
             <div className="text-right">
               <p className="text-xs text-muted-foreground mb-1">Optimized</p>
-              <p className="text-sm font-medium text-emerald-600">
+              <p className="text-sm font-medium text-accent">
                 {optimization} saved
               </p>
             </div>

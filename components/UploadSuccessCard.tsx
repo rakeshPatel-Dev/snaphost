@@ -26,23 +26,20 @@ export default function UploadSuccessCard({
         filename={filename}
       />
 
-      <div className="border border-border rounded-lg p-8 bg-card">
-        {/* Success Icon */}
+      <div className="rounded-4xl border border-border/60 bg-card/80 backdrop-blur-xl p-8 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)]">
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-            <Check className="w-8 h-8 text-emerald-500" />
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accent/10 border border-accent/20">
+            <Check className="h-6 w-6 text-accent" />
           </div>
         </div>
 
-        {/* Success Message */}
-        <h3 className="text-center text-xl font-semibold text-foreground mb-1">
-          File Uploaded!
+        <h3 className="text-center text-xl font-semibold tracking-tight text-foreground mb-1">
+          File uploaded
         </h3>
         <p className="text-center text-sm text-muted-foreground mb-6">
           Your file is ready to share
         </p>
 
-        {/* File Details */}
         <div className="mb-4">
           <FileDetailsCard
             filename={filename}
@@ -51,27 +48,27 @@ export default function UploadSuccessCard({
           />
         </div>
 
-        {/* Share Link */}
         <div className="mb-6">
           <ShareLinkInput fileUrl={fileUrl} />
         </div>
 
-        {/* Action Buttons */}
         <div className="flex gap-3">
           <Button
+            size="lg"
             onClick={() => setShareModalOpen(true)}
-            className="flex-1 gap-2"
+            className="flex-1 h-11 px-6 gap-2 cursor-pointer"
           >
             <Share2 className="h-4 w-4" />
             Share
           </Button>
           <Button
+            size="lg"
             onClick={onUploadMore}
             variant="outline"
-            className="flex-1 gap-2"
+            className="flex-1 h-11 px-6 gap-2 cursor-pointer"
           >
             <RotateCcw className="h-4 w-4" />
-            Upload More
+            Upload more
           </Button>
         </div>
       </div>

@@ -97,28 +97,24 @@ export default function UploadBox() {
     }
   };
 
-  // Success State
   if (uploadSuccess) {
     return (
-      <div className="w-full max-w-md mx-auto">
-        <UploadSuccessCard
-          fileId={uploadSuccess.fileId}
-          filename={uploadSuccess.filename}
-          fileUrl={uploadSuccess.fileUrl}
-          fileSize={uploadSuccess.fileSize}
-          optimizedSize={uploadSuccess.optimizedSize}
-          onUploadMore={resetUpload}
-        />
-      </div>
+      <UploadSuccessCard
+        fileId={uploadSuccess.fileId}
+        filename={uploadSuccess.filename}
+        fileUrl={uploadSuccess.fileUrl}
+        fileSize={uploadSuccess.fileSize}
+        optimizedSize={uploadSuccess.optimizedSize}
+        onUploadMore={resetUpload}
+      />
     );
   }
 
-  // Upload State
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full">
       {error && (
-        <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-          <p className="text-sm text-destructive">{error}</p>
+        <div className="mb-4 rounded-2xl border border-destructive/20 bg-destructive/10 px-4 py-2.5 text-sm text-destructive">
+          {error}
         </div>
       )}
       <UploadForm

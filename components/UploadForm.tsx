@@ -20,10 +20,11 @@ export default function UploadForm({
       onDragLeave={onDragLeave}
       onDrop={onDrop}
       onClick={onFileInputClick}
-      className={`border-2 border-dashed rounded-lg p-12 text-center transition-all cursor-pointer ${isDragging
-          ? 'border-border bg-muted/20'
-          : 'border-border hover:border-border/50 hover:bg-muted/30'
-        }`}
+      className={`rounded-4xl border-2 border-dashed p-12 text-center transition-all cursor-pointer ${
+        isDragging
+          ? 'border-accent/40 bg-accent/5'
+          : 'border-border/60 bg-card/80 backdrop-blur-xl hover:border-border hover:bg-muted/20'
+      }`}
     >
       <input
         ref={fileInputRef}
@@ -37,33 +38,34 @@ export default function UploadForm({
       />
 
       <div className="flex flex-col items-center gap-4">
-        <div className="p-3 rounded-lg bg-muted/10">
-          <Upload className="w-6 h-6 text-foreground" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10">
+          <Upload className="h-5 w-5 text-accent" />
         </div>
         <div>
-          <p className="text-lg font-semibold text-foreground">
-            {isUploading ? 'Uploading...' : 'Drop file or click to select'}
+          <p className="text-base font-semibold text-foreground">
+            {isUploading ? 'Uploading...' : 'Drop a file or click to select'}
           </p>
-          <p className="text-sm text-muted-foreground mt-1">
-            PNG, JPG, WEBP, PDF (up to 10MB)
+          <p className="mt-1 text-sm text-muted-foreground">
+            PNG, JPG, WebP, or PDF up to 10 MB
           </p>
         </div>
       </div>
 
       <Button
+        size="lg"
         onClick={onFileInputClick}
         disabled={isUploading}
-        className="mt-6 w-full"
+        className="mt-6 h-11 px-6 w-full cursor-pointer"
       >
         {isUploading ? (
           <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
             Uploading...
           </>
         ) : (
           <>
-            <Upload className="w-4 h-4 mr-2" />
-            Choose File
+            <Upload className="h-4 w-4 mr-2" />
+            Choose file
           </>
         )}
       </Button>

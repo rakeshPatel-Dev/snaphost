@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Copy } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import type { ShareLinkInputProps } from '@/types/components';
@@ -17,8 +17,8 @@ export default function ShareLinkInput({ fileUrl }: ShareLinkInputProps) {
   };
 
   return (
-    <div className="p-4 rounded-lg bg-muted/40 border border-border">
-      <p className="text-xs text-muted-foreground mb-2 font-medium">Share Link</p>
+    <div className="rounded-2xl bg-muted/20 border border-border/60 p-4">
+      <p className="text-xs text-muted-foreground mb-2 font-medium">Share link</p>
       <div className="flex items-center gap-2">
         <input
           type="text"
@@ -26,15 +26,19 @@ export default function ShareLinkInput({ fileUrl }: ShareLinkInputProps) {
           readOnly
           title="Share link"
           aria-label="Share link"
-          className="flex-1 text-xs bg-background rounded px-3 py-2 border border-border truncate font-mono"
+          className="flex-1 text-xs bg-background rounded-full px-3 py-2 border border-border/60 truncate font-mono text-foreground"
         />
         <Button
           size="sm"
           variant={copied ? 'default' : 'outline'}
           onClick={copyLink}
-          className="shrink-0"
+          className="shrink-0 rounded-full"
         >
-          <Copy className="h-4 w-4" />
+          {copied ? (
+            <Check className="h-4 w-4 text-accent" />
+          ) : (
+            <Copy className="h-4 w-4" />
+          )}
         </Button>
       </div>
     </div>
