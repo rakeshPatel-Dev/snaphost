@@ -17,15 +17,15 @@ export default function FilePreview({ fileId }: FilePreviewProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+        <Loader2 className="h-6 w-6 animate-spin text-accent" />
       </div>
     );
   }
 
   if (error || !metadata) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <p className="text-muted-foreground">
+      <div className="flex flex-col items-center justify-center min-h-screen px-6">
+        <p className="text-sm text-muted-foreground">
           {getApiErrorMessage(error, FILE_ERRORS.fileNotFound)}
         </p>
       </div>

@@ -53,6 +53,7 @@ export default function DeleteConfirmDialog({
           <AlertDialogAction
             onClick={handleConfirm}
             disabled={isDeleting}
+            variant="destructive"
             className={destructiveClassName}
           >
             {isDeleting ? 'Deleting…' : confirmLabel}

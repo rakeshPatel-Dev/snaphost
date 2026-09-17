@@ -14,18 +14,11 @@ export default function FilePage() {
   useEffect(() => {
     if (showSuccess) {
       toast.success('File uploaded! Share this link with others.');
-      // Clear the success flag from URL
       window.history.replaceState({}, '', `/f/${fileId}`);
     }
   }, [showSuccess, fileId]);
 
-  if (!fileId) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-muted-foreground">Invalid file ID</p>
-      </div>
-    );
-  }
+  if (!fileId) return null;
 
   return <FilePreview fileId={fileId} />;
 }

@@ -17,13 +17,13 @@ export default function ImagePreview({ url, filename }: ImagePreviewProps) {
     <div className="relative w-full min-h-screen bg-background flex items-center justify-center">
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-background">
-          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+          <Loader2 className="h-6 w-6 animate-spin text-accent" />
         </div>
       )}
 
       {error ? (
-        <div className="text-center">
-          <p className="text-muted-foreground">Failed to load image</p>
+        <div className="text-center px-6">
+          <p className="text-sm text-muted-foreground">Failed to load image</p>
         </div>
       ) : (
         <Image

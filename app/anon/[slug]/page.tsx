@@ -7,13 +7,7 @@ export default async function AnonymousFilePage({
 }) {
   const { slug } = await params;
 
-  if (!slug) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-muted-foreground">Invalid file link</p>
-      </div>
-    );
-  }
+  if (!slug) return null;
 
   return <FilePreview fileId={slug} />;
 }

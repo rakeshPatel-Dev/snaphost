@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Trash2, ExternalLink, File, Clock, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import type { AnonymousLink } from '@/types/app';
 import { deleteAnonymousLink, fetchAnonymousLinks } from '@/services/anonymous-links';
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
@@ -77,8 +78,8 @@ export default function AnonLinks() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          <p className="text-sm text-muted-foreground">Loading your links...</p>
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+          <p className="text-sm text-muted-foreground">Loading your links…</p>
         </div>
       </div>
     );
@@ -86,14 +87,12 @@ export default function AnonLinks() {
 
   if (files.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-border bg-muted/20 py-12 px-4 text-center">
-        <div className="rounded-full bg-muted/50 p-3">
-          <File className="h-6 w-6 text-muted-foreground" />
-        </div>
+      <div className="flex flex-col items-center justify-center gap-3 py-12 px-4 text-center">
+        <File className="h-5 w-5 text-muted-foreground" />
         <div className="space-y-1">
-          <p className="text-sm font-medium text-foreground">No anonymous links yet</p>
+          <p className="text-sm font-medium text-foreground">No links yet</p>
           <p className="text-xs text-muted-foreground">
-            Upload a file anonymously to see it here
+            Upload a file anonymously to see it here.
           </p>
         </div>
       </div>
@@ -101,85 +100,78 @@ export default function AnonLinks() {
   }
 
   return (
-    <div className="space-y-4">
-      {/* Header with refresh */}
+    <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
-          <h3 className="text-sm font-semibold">Anonymous Links</h3>
           <p className="text-xs text-muted-foreground">
-            {files.length} active link{files.length === 1 ? '' : 's'} • Auto-deletes in 24h
+            {files.length} active link{files.length === 1 ? '' : 's'} · expires in 24h
           </p>
         </div>
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={handleRefresh}
           disabled={refreshing}
-          className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50"
+          className="gap-1.5 text-xs"
         >
           <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           Refresh
-        </button>
+        </Button>
       </div>
 
-      {/* Links list */}
       <div className="space-y-2">
         {files.map((file) => (
           <div
             key={file.id}
-            className="group relative flex items-center justify-between rounded-lg border border-border bg-card p-3 transition-all hover:border-border/80 hover:shadow-sm"
+            className="group flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-full border border-border/60 bg-muted/20 px-4 py-3 transition-colors hover:bg-muted/30"
           >
-            <div className="flex min-w-0 flex-1 items-start gap-3">
-              {/* File icon */}
-              <div className="hidden sm:flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-muted/30">
-                <File className="h-4 w-4 text-muted-foreground" />
+            <div className="flex min-w-0 flex-1 items-center gap-3">
+              <div className="hidden sm:flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <File className="h-4 w-4" />
               </div>
 
-              {/* File details */}
-              <div className="min-w-0 flex-1 space-y-1">
-                <p className="truncate text-sm font-medium">{file.filename}</p>
-                <p className="truncate text-sm font-medium underline">
-                  <a href={file.url}>
-                    {file.url}
-                  </a>
-                </p>
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium text-foreground">{file.filename}</p>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground mt-0.5">
                   <span>{file.fileSize}</span>
-                  <span className="hidden sm:inline">•</span>
-                  <div className="flex items-center gap-1">
+                  <span className="hidden sm:inline">·</span>
+                  <span className="inline-flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    <span>Expires in {file.expiresAt ? new Date(file.expiresAt).toLocaleDateString() : '24h'}</span>
-                  </div>
+                    {file.expiresAt ? new Date(file.expiresAt).toLocaleDateString() : '24h'}
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Actions */}
             <div className="flex shrink-0 items-center gap-1">
               <a
                 href={file.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                title="Open link"
+                aria-label="Open link"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
-                <ExternalLink className="h-3.5 w-3.5" />
+                <ExternalLink className="h-4 w-4" />
               </a>
 
               <DeleteConfirmDialog
-                trigger={(
-                  <button
+                trigger={
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="icon"
                     disabled={deleting === file.id}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
-                    title="Delete link"
+                    aria-label="Delete link"
+                    className="text-muted-foreground hover:text-destructive"
                   >
                     {deleting === file.id ? (
-                      <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-destructive border-t-transparent" />
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-destructive border-t-transparent" />
                     ) : (
-                      <Trash2 className="h-3.5 w-3.5" />
+                      <Trash2 className="h-4 w-4" />
                     )}
-                  </button>
-                )}
+                  </Button>
+                }
                 title="Delete this anonymous link?"
                 description={`This will permanently remove "${file.filename}" and its link. This action cannot be undone.`}
                 confirmLabel="Delete link"

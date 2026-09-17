@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { MessageSquarePlus } from 'lucide-react';
+import { MessageSquarePlus, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function FeedbackDialog() {
@@ -46,27 +46,25 @@ export default function FeedbackDialog() {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="default" size="sm" className="gap-2 font-medium">
-          <MessageSquarePlus className="w-4 h-4" />
-          Give Feedback
+        <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
+          <MessageSquarePlus className="h-4 w-4" />
+          Feedback
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Send us Feedback</DialogTitle>
+          <DialogTitle>Send us feedback</DialogTitle>
           <DialogDescription>
-            Have a suggestion, found a bug, or just want to say hi? Let us know!
+            Have a suggestion, found a bug, or just want to say hi?
           </DialogDescription>
         </DialogHeader>
 
         {state.succeeded ? (
           <div className="flex flex-col items-center justify-center py-6 text-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
+            <div className="h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center text-accent">
+              <Check className="h-6 w-6" />
             </div>
-            <p className="text-sm text-muted-foreground">Thanks for your feedback! We appreciate it.</p>
+            <p className="text-sm text-muted-foreground">Thanks for your feedback!</p>
             <Button variant="outline" onClick={() => setOpen(false)}>Close</Button>
           </div>
         ) : (
@@ -96,8 +94,8 @@ export default function FeedbackDialog() {
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="feature">Feature Request</SelectItem>
-                  <SelectItem value="bug">Bug Report</SelectItem>
+                  <SelectItem value="feature">Feature request</SelectItem>
+                  <SelectItem value="bug">Bug report</SelectItem>
                   <SelectItem value="suggestion">Suggestion</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
@@ -114,12 +112,12 @@ export default function FeedbackDialog() {
 
             <div className="space-y-2">
               <Label htmlFor="message">Message</Label>
-              <Textarea 
-                id="message" 
-                name="message" 
-                placeholder="Tell us more about it..." 
+              <Textarea
+                id="message"
+                name="message"
+                placeholder="Tell us more…"
                 className="min-h-[100px]"
-                required 
+                required
               />
               <ValidationError prefix="Message" field="message" errors={state.errors} />
             </div>
@@ -129,7 +127,7 @@ export default function FeedbackDialog() {
                 Cancel
               </Button>
               <Button type="submit" disabled={state.submitting}>
-                {state.submitting ? 'Sending...' : 'Send Feedback'}
+                {state.submitting ? 'Sending…' : 'Send feedback'}
               </Button>
             </DialogFooter>
           </form>

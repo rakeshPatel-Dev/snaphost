@@ -15,7 +15,7 @@ export default function PdfPreview({ url, filename }: PdfPreviewProps) {
     <div className="w-full min-h-screen">
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-background z-10">
-          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+          <Loader2 className="h-6 w-6 animate-spin text-accent" />
         </div>
       )}
 
