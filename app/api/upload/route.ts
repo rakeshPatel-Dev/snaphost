@@ -8,6 +8,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import crypto from 'crypto';
 import { getCurrentAppUser } from '@/lib/auth-user';
 import { getAuthUserFromRequest } from '@/lib/auth-server';
+import { UPLOAD_ERRORS, ANON_ERRORS, SERVER_ERRORS } from '@/lib/messages';
 
 export const maxDuration = 60; // 60 seconds for file upload
 
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     if (!file) {
       return NextResponse.json(
-        { error: 'No file provided' },
+        { error: UPLOAD_ERRORS.noFileProvided },
         { status: 400 }
       );
     }
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
     if (!validation.valid) {
       return NextResponse.json(
         {
-          error: 'File validation failed',
+          error: UPLOAD_ERRORS.fileValidationFailed,
           details: validation.errors.map((e) => e.message),
         },
         { status: 400 }
@@ -45,7 +46,7 @@ export async function POST(request: NextRequest) {
 
     if (fileType === 'unknown') {
       return NextResponse.json(
-        { error: 'Unsupported file type' },
+        { error: UPLOAD_ERRORS.unsupportedFileType },
         { status: 400 }
       );
     }
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
     if (userRecord && userRecord.tier === 'free') {
       const currentCount = await countActiveFilesForUser(userRecord.id);
       if (currentCount >= 5) {
-        return NextResponse.json({ error: 'Free plan limit reached: maximum 5 links' }, { status: 403 });
+        return NextResponse.json({ error: UPLOAD_ERRORS.freePlanLimitReached }, { status: 403 });
       }
     }
 
@@ -86,7 +87,7 @@ export async function POST(request: NextRequest) {
 
     if (storageError) {
       return NextResponse.json(
-        { error: 'Failed to upload file', details: storageError },
+        { error: UPLOAD_ERRORS.storageFailed, details: storageError },
         { status: 500 }
       );
     }
@@ -172,7 +173,7 @@ export async function POST(request: NextRequest) {
           await deleteFileFromStorage(uploadedStoragePath);
         }
         return NextResponse.json(
-          { error: 'Anon session link limit reached', details: 'Anon links limit reached: Maximum 3 links.' },
+          { error: ANON_ERRORS.linkLimitReached, details: ANON_ERRORS.linkLimitReached },
           { status: 403 }
         );
       }
@@ -223,7 +224,7 @@ export async function POST(request: NextRequest) {
         }
 
         return NextResponse.json(
-          { error: 'Anon session link limit reached', details: 'Maximum 3 anon links per session' },
+          { error: ANON_ERRORS.linkLimitReached, details: ANON_ERRORS.linkLimitReached },
           { status: 403 }
         );
       }
@@ -231,7 +232,7 @@ export async function POST(request: NextRequest) {
 
     console.error('Upload route error:', error);
     return NextResponse.json(
-      { error: 'Internal server error', details: String(error) },
+      { error: SERVER_ERRORS.internalError, details: String(error) },
       { status: 500 }
     );
   }

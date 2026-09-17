@@ -1,4 +1,5 @@
 import { CONFIG } from './config';
+import { UPLOAD_ERRORS } from './messages';
 
 export interface ValidationError {
   field: string;
@@ -20,7 +21,7 @@ export function validateFile(file: File): FileValidationResult {
   if (!isImage && !isPdf) {
     errors.push({
       field: 'type',
-      message: `Unsupported file type: ${file.type}. Allowed: PNG, JPG, JPEG, WEBP, PDF`,
+      message: UPLOAD_ERRORS.unsupportedFileType,
     });
   }
 
@@ -28,14 +29,20 @@ export function validateFile(file: File): FileValidationResult {
   if (isImage && file.size > CONFIG.MAX_IMAGE_SIZE) {
     errors.push({
       field: 'size',
-      message: `Image too large. Max size: ${CONFIG.MAX_IMAGE_SIZE / 1024 / 1024}MB, Got: ${(file.size / 1024 / 1024).toFixed(2)}MB`,
+      message: UPLOAD_ERRORS.imageTooLarge(
+        CONFIG.MAX_IMAGE_SIZE / 1024 / 1024,
+        (file.size / 1024 / 1024).toFixed(2)
+      ),
     });
   }
 
   if (isPdf && file.size > CONFIG.MAX_PDF_SIZE) {
     errors.push({
       field: 'size',
-      message: `PDF too large. Max size: ${CONFIG.MAX_PDF_SIZE / 1024 / 1024}MB, Got: ${(file.size / 1024 / 1024).toFixed(2)}MB`,
+      message: UPLOAD_ERRORS.pdfTooLarge(
+        CONFIG.MAX_PDF_SIZE / 1024 / 1024,
+        (file.size / 1024 / 1024).toFixed(2)
+      ),
     });
   }
 

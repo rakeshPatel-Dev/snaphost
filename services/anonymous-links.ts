@@ -3,6 +3,7 @@ import { store } from '@/state/store';
 import { snaphostApi } from '@/state/api';
 import { formatFileSize } from '@/shared/utils/file-format';
 import type { AnonymousLink } from '@/types/app';
+import { UPLOAD_ERRORS } from '@/lib/messages';
 
 const AUTO_CLEANUP_INTERVAL_MS = 60 * 1000;
 
@@ -18,7 +19,7 @@ export function validateAnonymousFile(file: File): string | null {
   const validation = validateFile(file);
 
   if (!validation.valid) {
-    return validation.errors[0]?.message || 'Invalid file';
+    return validation.errors[0]?.message || UPLOAD_ERRORS.fileValidationFailed;
   }
 
   return null;

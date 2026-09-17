@@ -1,3 +1,5 @@
+import { SERVER_ERRORS } from './messages';
+
 type ApiErrorShape = {
   status?: number | string;
   data?:
@@ -10,7 +12,7 @@ type ApiErrorShape = {
   message?: string;
 };
 
-export function getApiErrorMessage(error: unknown, fallback = 'Request failed'): string {
+export function getApiErrorMessage(error: unknown, fallback: string = SERVER_ERRORS.requestFailed): string {
   if (!error) {
     return fallback;
   }
