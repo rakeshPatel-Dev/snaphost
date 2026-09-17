@@ -6,11 +6,11 @@ import { BsGithub } from 'react-icons/bs';
 export default function LogoCloud() {
   return (
     <section className="py-12 border-y border-border/40 bg-muted/20 backdrop-blur-sm">
-      <div className="mx-auto max-w-6xl px-6">
-        <p className="text-center text-xs font-semibold tracking-wider uppercase text-muted-foreground/80">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <p className="text-left text-xs font-medium tracking-wider uppercase text-muted-foreground/80">
           Built on a modern stack for fast, reliable file sharing
         </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-6 md:gap-x-16 lg:gap-x-20">
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-8 md:gap-12">
           
           {/* Vercel */}
           <div className="flex items-center gap-2 text-foreground/50 hover:text-foreground grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default">

@@ -16,18 +16,18 @@ export default function FAQ() {
   };
 
   return (
-    <section className="py-24 border-t border-border/20 relative">
-      <div className="mx-auto max-w-4xl px-6">
+    <section id="faq" className="py-24 border-t border-border/20 relative scroll-mt-16">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
         
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-muted/10 border border-border/10 px-2.5 py-0.5 text-xs font-semibold text-foreground mb-4">
+        <div className="text-left max-w-3xl mb-14">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/20 px-3.5 py-1 text-xs font-medium text-foreground mb-5">
             <HelpCircle className="h-3.5 w-3.5 text-accent" />
-            Common questions
+            <span>Common questions</span>
           </div>
-          <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-foreground leading-[1.1]">
             Frequently asked questions
           </h2>
-          <p className="mt-3 text-sm md:text-base text-muted-foreground">
+          <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
             Everything you need to know about SnapHost&apos;s new upload flow, link formats, and account tools.
           </p>
         </div>

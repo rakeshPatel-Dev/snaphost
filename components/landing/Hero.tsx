@@ -1,88 +1,113 @@
 'use client';
 
 import Link from 'next/link';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { UploadMock } from '../sections/UploadMock';
-import { Sparkles, ArrowRight, Play } from 'lucide-react';
-import Announcement from './Announcement';
+import { ArrowRight } from 'lucide-react';
 import DashedGrid from '@/components/shared/DashedGrid';
 
 export default function Hero() {
+  const consoleRef = useRef<HTMLDivElement>(null);
+
+  // Track scroll progress relative to the console container
+  const { scrollYProgress } = useScroll({
+    target: consoleRef,
+    offset: ['start end', 'center center'],
+  });
+
+  // Map scroll progress -> scale (starts slightly smaller, grows to full size)
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [0.9, 1]);
+
   return (
-    <section className="relative overflow-hidden pt-20 pb-20 border-b border-border/20">
+    <section className="relative overflow-hidden pt-16 sm:pt-24 pb-20 sm:pb-32 border-b border-border/30">
       {/* Background visual effects */}
-      <DashedGrid absolute zIndex={-10} opacity={0.6} />
+      <DashedGrid absolute zIndex={-10} opacity={0.4} />
 
-      {/* Glowing decorative circles */}
-      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-125 h-125 rounded-full bg-accent/5 blur-[120px] -z-10 animate-pulse-slow" />
+      {/* Glowing ambient background light */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-150 bg-radial from-muted/20 via-transparent to-transparent blur-3xl -z-10 pointer-events-none" />
 
-      <div className="mx-auto max-w-6xl px-6 lg:flex lg:items-center lg:gap-16 ">
-
-        {/* Left Column (Hero Content) */}
-        <div className="lg:w-1/2 flex flex-col justify-center text-left relative z-10">
-
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        {/* Top Text Content */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="flex flex-col items-start text-left max-w-3xl"
+        >
           {/* Announcement Pill */}
-          <div className="inline-flex self-start items-center gap-1.5 rounded-full bg-muted/10 hover:bg-muted/20 border border-border/10 px-3 py-1 text-xs font-semibold text-foreground transition-all cursor-pointer mb-6">
-            <Sparkles className="h-3.5 w-3.5 text-accent animate-pulse" />
-            <span><Announcement /> is live</span>
-            <span className="h-1.5 w-1.5 rounded-full bg-border" />
-            <span className="text-muted-foreground flex items-center gap-0.5">
-              Upload fast <ArrowRight className="h-3 w-3" />
+          <Link
+            href="/upload"
+            className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/20 hover:bg-muted/40 px-3.5 py-1.5 text-xs font-medium text-foreground transition-all mb-8 group"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
-          </div>
+            <span>Snaphost 2.0 is live</span>
+            <span className="text-muted-foreground">•</span>
+            <span className="text-muted-foreground group-hover:text-foreground transition-colors flex items-center gap-1">
+              Upload files fast <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </Link>
 
           {/* Heading */}
-          <h1 className="text-4xl font-extrabold leading-[1.1] text-foreground sm:text-5xl md:text-6xl tracking-tight">
-            Share files Instantly{' '}
-            <span className="bg-clip-text block text-transparent bg-linear-to-r font-semibold from-foreground italic to-accent dark:from-foreground dark:to-accent">
-              Upload, manage, and move on.
-            </span>
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-semibold tracking-tight text-foreground leading-[1.06]">
+            Instant file sharing <br className="hidden sm:inline" />
+            <span className="text-foreground/90">for modern workflows</span>
           </h1>
 
           {/* Subtext */}
-          <p className="mt-6 text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl">
-            Upload images and PDFs anonymously, and sign up for more uploads, and url customization with custom expiration controls.
+          <p className="mt-6 text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
+            <strong className="font-semibold text-foreground">
+              Snaphost offers the fastest rails
+            </strong>{' '}
+            to move images and PDFs anywhere. Zero sign-up friction, instant short links, and automatic 24-hour expiration.
           </p>
 
           {/* CTAs */}
-          <div className="mt-8 flex gap-3.5 flex-wrap">
-            <Button asChild size="lg" className="h-11 px-6 shadow-md shadow-accent/10 cursor-pointer bg-accent font-semibold">
-              <Link href="/upload">Upload anonymously</Link>
+          <div className="mt-8 flex items-center gap-3.5 flex-wrap">
+
+            <Button
+              asChild
+              size="lg"
+              className="rounded-full h-11 px-6 font-medium text-sm cursor-pointer border-border/80 hover:bg-muted/40"
+            >
+              <Link href="/sign-up">Create account</Link>
             </Button>
 
-            <Button variant="outline" asChild size="lg" className="h-11 px-6 cursor-pointer font-semibold">
-              <Link href="/sign-up" className="flex items-center gap-2">
-                <Play className="h-3.5 w-3.5 fill-current" />
-                Create account
-              </Link>
+            <Button
+            variant="outline"
+              asChild
+              size="lg"
+              className=" h-11 px-7 "
+            >
+              <a href="#dropzone">Upload anonymously</a>
             </Button>
+
+          
           </div>
+        </motion.div>
 
-          {/* Feature highlights */}
-          <div className="mt-8 pt-6 border-t border-border/40 flex items-center gap-x-6 gap-y-2 flex-wrap text-xs text-muted-foreground font-medium">
-            <div className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              Anonymous uploads
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              Username-based links
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              Expiration controls
-            </div>
-          </div>
-
-        </div>
-
-        {/* Right Column (Interactive upload dashboard preview) */}
-        <div className="mt-12 lg:mt-0 lg:w-1/2 flex items-center justify-center relative">
-          {/* Subtle decoration frame */}
-          <div className="absolute inset-0 bg-linear-to-tr from-accent/5 via-transparent to-accent/5 rounded-3xl blur-xl -z-10" />
-          <UploadMock />
-        </div>
-
+        {/* Showcase Container: Anonymous Upload Console */}
+        <motion.div
+          ref={consoleRef}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
+          id="dropzone"
+          className="mt-14 sm:mt-20 w-full scroll-mt-24"
+          style={{ willChange: 'transform' }}
+        >
+          <motion.div
+            style={{ scale, opacity, transformOrigin: 'center top' }}
+            className="relative rounded-4xl border border-border/80 bg-card/60 backdrop-blur-xl p-3 sm:p-6 ring-1 ring-border/20 shadow-xl shadow-black/5"
+          >
+            <UploadMock showFloatingFeatures={false} showInlineFeatures={true} />
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

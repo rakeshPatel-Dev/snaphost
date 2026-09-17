@@ -44,18 +44,22 @@ console.log(anonLink);   // → compact, auto-expires`;
   };
 
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section id="features" className="py-24 relative overflow-hidden scroll-mt-16">
       {/* Background glow overlay */}
       <div className="absolute inset-0 bg-grid-pattern opacity-60 -z-10" />
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-80 h-80 rounded-full bg-accent/5 blur-3xl -z-10" />
       <div className="absolute bottom-10 right-1/4 w-96 h-96 rounded-full bg-accent/5 blur-3xl -z-10" />
 
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="text-left max-w-3xl mb-14">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/20 px-3.5 py-1 text-xs font-medium text-foreground mb-5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span>Platform Capabilities</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-foreground leading-[1.1]">
             Everything the new SnapHost release gives you
           </h2>
-          <p className="mt-4 text-base md:text-lg text-muted-foreground">
+          <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
             Direct share links, original-file uploads, and a dashboard built for clean, fast file sharing.
           </p>
         </div>

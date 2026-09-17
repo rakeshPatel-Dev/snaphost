@@ -98,23 +98,23 @@ export default function Pricing() {
   const [billing, setBilling] = useState<BillingCycle>('monthly');
 
   return (
-    <section className="py-24 relative overflow-hidden border-t border-border/20">
+    <section id="pricing" className="py-24 relative overflow-hidden border-t border-border/20 scroll-mt-16">
       {/* Background */}
       <div className="absolute inset-0 bg-grid-pattern opacity-40 -z-10" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-accent/5 blur-[100px] -z-10" />
 
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
 
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/40 bg-muted/10 mb-5">
-            <Sparkles className="h-3.5 w-3.5 text-accent" />
-            <span className="text-xs font-semibold text-muted-foreground tracking-wide uppercase">Pricing</span>
+        <div className="text-left max-w-3xl mb-14">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/20 px-3.5 py-1 text-xs font-medium text-foreground mb-5">
+            <Sparkles className="h-3 w-3 text-accent" />
+            <span>Pricing</span>
           </div>
-          <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-foreground leading-[1.1]">
             Simple, transparent pricing
           </h2>
-          <p className="mt-4 text-base text-muted-foreground">
+          <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
             Start sharing instantly for free. Upgrade when you need custom links, dashboards, and more control.
           </p>
 
