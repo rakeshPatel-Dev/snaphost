@@ -1,9 +1,30 @@
 import React from 'react';
-import { Crown } from 'lucide-react';
+import { Crown, ArrowRight } from 'lucide-react';
 import { PREMIUM_FEATURES } from '@/data/PremiumFeatures';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 const TierBanner = ({ isPremium }: { isPremium: boolean }) => {
-  if (!isPremium) return null;
+  if (!isPremium) {
+    return (
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-4xl border border-accent/30 bg-accent/5 px-4 py-3.5 backdrop-blur-xl">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent/10">
+            <Crown className="h-4 w-4 text-accent" />
+          </div>
+          <p className="text-sm font-semibold tracking-tight text-foreground">
+            Want more control? Upgrade to Pro
+          </p>
+        </div>
+        <Button asChild size="sm" className="h-8 rounded-full px-4 text-xs font-medium transition-all hover:bg-accent hover:text-background">
+          <Link href="/getpro" className="flex items-center gap-1.5">
+            Get Pro access
+            <ArrowRight className="h-3 w-3" />
+          </Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-4xl border border-border/60 bg-card/80 px-4 py-3.5 backdrop-blur-xl">
