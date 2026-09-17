@@ -59,7 +59,7 @@ console.log(anonLink);   // → compact, auto-expires`;
                 <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
                   <Cpu className="h-4 w-4" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">Original file delivery</h3>
+                <h3 className="text-lg font-semibold text-foreground">Original file delivery</h3>
               </div>
               <p className="text-sm text-muted-foreground">
                 Upload PNG, JPG, WEBP, or PDF and we keep your file format intact — no compression, no conversion. Drag the handle to compare.
@@ -76,7 +76,7 @@ console.log(anonLink);   // → compact, auto-expires`;
                 <div className="p-1.5 rounded-lg bg-accent/10 text-accent">
                   <Globe className="h-4 w-4" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">Direct public links</h3>
+                <h3 className="text-lg font-semibold text-foreground">Direct public links</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-5">
                 Every upload gets an instant public URL. Signed-in users get a clean username path. Anonymous uploads get a compact hash link.
@@ -88,7 +88,7 @@ console.log(anonLink);   // → compact, auto-expires`;
               <div className="rounded-xl border border-border/60 bg-muted/20 p-3.5 space-y-2">
                 <div className="flex items-center gap-1.5 mb-2">
                   <User className="h-3.5 w-3.5 text-accent" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-accent">Signed-in</span>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-accent">Signed-in</span>
                 </div>
                 <div className="font-mono text-xs leading-relaxed break-all">
                   <span className="text-muted-foreground">snaphost.cloud/</span>
@@ -107,7 +107,7 @@ console.log(anonLink);   // → compact, auto-expires`;
               <div className="rounded-xl border border-border/60 bg-muted/20 p-3.5 space-y-2">
                 <div className="flex items-center gap-1.5 mb-2">
                   <UserX className="h-3.5 w-3.5 text-muted-foreground" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Anonymous</span>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Anonymous</span>
                 </div>
                 <div className="font-mono text-xs leading-relaxed break-all">
                   <span className="text-muted-foreground">snaphost.cloud/</span>
@@ -135,7 +135,7 @@ console.log(anonLink);   // → compact, auto-expires`;
                 <div className="p-1.5 rounded-lg bg-accent/10 text-accent">
                   <Code className="h-4 w-4" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">Link formats</h3>
+                <h3 className="text-lg font-semibold text-foreground">Link formats</h3>
               </div>
               <p className="text-sm text-muted-foreground">
                 Signed-in users get direct username URLs. Anonymous uploads stay compact with a short hash. Both are immediately ready to paste anywhere.
@@ -172,7 +172,7 @@ console.log(anonLink);   // → compact, auto-expires`;
                 <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
                   <Shield className="h-4 w-4" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">Expiration controls</h3>
+                <h3 className="text-lg font-semibold text-foreground">Expiration controls</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-5">
                 Anonymous uploads expire after 24 hours. Signed-in users can set custom expiry or keep files live indefinitely.
@@ -224,7 +224,7 @@ console.log(anonLink);   // → compact, auto-expires`;
                 <div className="p-1.5 rounded-lg bg-rose-500/10 text-rose-500">
                   <TrendingDown className="h-4 w-4" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">File activity</h3>
+                <h3 className="text-lg font-semibold text-foreground">File activity</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-5">
                 Monitor upload volume, file status, and what needs attention from your profile dashboard.
@@ -240,11 +240,11 @@ console.log(anonLink);   // → compact, auto-expires`;
               <div className="flex justify-between items-center text-xs font-medium mt-3 border-t border-border/40 pt-2">
                 <div className="flex flex-col">
                   <span className="text-muted-foreground text-xs uppercase">Files this week</span>
-                  <span className="text-foreground font-bold">142</span>
+                  <span className="text-foreground font-semibold">142</span>
                 </div>
                 <div className="flex flex-col items-end">
                   <span className="text-muted-foreground text-xs uppercase">Anonymous share rate</span>
-                  <span className="text-emerald-500 font-bold">68%</span>
+                  <span className="text-emerald-500 font-semibold">68%</span>
                 </div>
               </div>
             </div>
@@ -257,7 +257,7 @@ console.log(anonLink);   // → compact, auto-expires`;
                 <div className="p-1.5 rounded-lg bg-teal-500/10 text-teal-500">
                   <Zap className="h-4 w-4" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground">Direct upload flow</h3>
+                <h3 className="text-lg font-semibold text-foreground">Direct upload flow</h3>
               </div>
               <p className="text-sm text-muted-foreground">
                 Drop a file, get a share URL, and keep moving. Storage, validation, and cleanup run in the background.

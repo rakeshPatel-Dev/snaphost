@@ -131,7 +131,7 @@ export default function Pricing() {
               )}
             >
               Yearly
-              <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
+              <span className="text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
                 −30%
               </span>
             </button>
@@ -156,7 +156,7 @@ export default function Pricing() {
                 {/* Badge */}
                 {plan.badge && (
                   <div className={cn(
-                    'absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border',
+                    'absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border',
                     plan.highlight
                       ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
                       : 'bg-muted/30 text-muted-foreground border-border/60'
@@ -171,7 +171,7 @@ export default function Pricing() {
                     <div className={cn('p-2 rounded-xl', plan.iconBg)}>
                       <Icon className={cn('h-4 w-4', plan.iconColor)} />
                     </div>
-                    <h3 className="text-base font-bold text-foreground">{plan.name}</h3>
+                    <h3 className="text-base font-semibold text-foreground">{plan.name}</h3>
                   </div>
 
                   <p className="text-sm text-muted-foreground mb-6 leading-relaxed">{plan.description}</p>
@@ -180,14 +180,14 @@ export default function Pricing() {
                   <div className="mb-6">
                     {plan.monthlyPrice === 0 ? (
                       <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-bold text-foreground">Free</span>
+                        <span className="text-4xl font-semibold text-foreground">Free</span>
                         {plan.name === 'Starter' && (
                           <span className="text-sm text-muted-foreground ml-1">forever</span>
                         )}
                       </div>
                     ) : (
                       <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-bold text-foreground">${price}</span>
+                        <span className="text-4xl font-semibold text-foreground">${price}</span>
                         <span className="text-sm text-muted-foreground">/mo</span>
                         {billing === 'yearly' && (
                           <span className="ml-2 text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
@@ -239,12 +239,12 @@ export default function Pricing() {
         {/* Feature comparison table */}
         <div className="rounded-4xl border border-border/60 bg-card/80 overflow-hidden">
           <div className="grid grid-cols-1 sm:grid-cols-4 border-b border-border/60 bg-muted/20">
-            <div className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">Feature</div>
+            <div className="p-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Feature</div>
             {plans.map((plan) => (
               <div
                 key={plan.key}
                 className={cn(
-                  'p-4 sm:text-center text-xs font-bold uppercase tracking-widest',
+                  'p-4 sm:text-center text-xs font-semibold uppercase tracking-widest',
                   plan.highlight ? 'text-accent' : 'text-muted-foreground'
                 )}
               >

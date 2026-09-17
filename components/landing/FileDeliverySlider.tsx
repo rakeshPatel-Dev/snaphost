@@ -47,7 +47,7 @@ export default function FileDeliverySlider() {
         <div className="relative z-10 flex justify-between items-start">
           <div>
             <span className="text-xs font-semibold text-zinc-600 uppercase tracking-widest">Before upload</span>
-            <h4 className="text-sm font-bold text-zinc-300 mt-0.5 truncate max-w-40">hero-banner-v3.png</h4>
+            <h4 className="text-sm font-semibold text-zinc-300 mt-0.5 truncate max-w-40">hero-banner-v3.png</h4>
           </div>
           <span className="shrink-0 text-xs font-medium bg-zinc-800 text-zinc-400 border border-zinc-700/80 px-2 py-0.5 rounded-full">
             LOCAL
@@ -92,9 +92,9 @@ export default function FileDeliverySlider() {
         <div className="relative z-10 flex justify-between items-start">
           <div>
             <span className="text-xs font-semibold text-emerald-500/70 uppercase tracking-widest">After upload</span>
-            <h4 className="text-sm font-bold text-white mt-0.5 truncate max-w-45">snaphost.cloud/jane/hero-banner-v3.png</h4>
+            <h4 className="text-sm font-semibold text-white mt-0.5 truncate max-w-45">snaphost.cloud/jane/hero-banner-v3.png</h4>
           </div>
-          <span className="shrink-0 text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+          <span className="shrink-0 text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
             LIVE
           </span>
