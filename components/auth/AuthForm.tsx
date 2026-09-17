@@ -136,19 +136,19 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 {!isSignIn && (
                     <Field>
                         <FieldLabel htmlFor="username">Username</FieldLabel>
-                        <div className="relative">
-                            <User className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                            <UsernameAvailability
-                                id="username"
-                                value={username}
-                                isChecking={isUsernameChecking}
-                                statusText={usernameStatus.text}
-                                statusTone={usernameStatus.tone}
-                                onChange={setUsername}
-                                disabled={loading}
-                                className={`${FIELD_INPUT_CLASS} pl-9`}
-                            />
-                        </div>
+                        <UsernameAvailability
+                            id="username"
+                            value={username}
+                            isChecking={isUsernameChecking}
+                            statusText={usernameStatus.text}
+                            statusTone={usernameStatus.tone}
+                            onChange={setUsername}
+                            disabled={loading}
+                            icon={
+                                <User className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                            }
+                            className={`${FIELD_INPUT_CLASS} pl-9`}
+                        />
                     </Field>
                 )}
 
@@ -182,7 +182,6 @@ export default function AuthForm({ mode }: AuthFormProps) {
                         minLength={8}
                         disabled={loading}
                         aria-invalid={!isSignIn && !passwordIsStrong}
-                        className={FIELD_INPUT_CLASS}
                     />
                     <PasswordRequirements
                         id="password-requirements"

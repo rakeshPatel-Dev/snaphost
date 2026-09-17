@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -16,6 +17,7 @@ export type UsernameAvailabilityState = {
 type UsernameAvailabilityProps = UsernameAvailabilityState & {
     disabled?: boolean;
     className?: string;
+    icon?: ReactNode;
 };
 
 export default function UsernameAvailability({
@@ -27,22 +29,26 @@ export default function UsernameAvailability({
     onChange,
     disabled,
     className,
+    icon,
 }: UsernameAvailabilityProps) {
     return (
         <div className="space-y-2">
-            <Input
-                id={id}
-                type="text"
-                placeholder="Username"
-                value={value}
-                onChange={(event) => onChange(event.target.value)}
-                autoComplete="username"
-                required
-                minLength={3}
-                maxLength={32}
-                disabled={disabled}
-                className={cn('h-10', className)}
-            />
+            <div className="relative">
+                {icon}
+                <Input
+                    id={id}
+                    type="text"
+                    placeholder="Username"
+                    value={value}
+                    onChange={(event) => onChange(event.target.value)}
+                    autoComplete="username"
+                    required
+                    minLength={3}
+                    maxLength={32}
+                    disabled={disabled}
+                    className={cn('h-11', className)}
+                />
+            </div>
             <p
                 className={cn(
                     'flex min-h-5 items-center gap-1.5 text-xs',

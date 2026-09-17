@@ -13,8 +13,6 @@ import DashedGrid from '@/components/shared/DashedGrid';
 import Logo from '@/components/layout/Logo';
 import { PASSWORD_ERRORS } from '@/lib/messages';
 
-const FIELD_INPUT_CLASS = 'h-11 rounded-full border-border/60 bg-muted/20';
-
 export default function ResetPasswordPage() {
     const [password, setPassword] = useState('');
     const [confirm, setConfirm] = useState('');
@@ -88,7 +86,6 @@ export default function ResetPasswordPage() {
                                     autoComplete="new-password"
                                     aria-invalid={!passwordRequirements.isStrong}
                                     aria-describedby="reset-password-feedback"
-                                    className={FIELD_INPUT_CLASS}
                                 />
                             </Field>
 
@@ -103,7 +100,6 @@ export default function ResetPasswordPage() {
                                     autoComplete="new-password"
                                     aria-invalid={confirm.length > 0 && confirm !== password}
                                     aria-describedby="reset-password-feedback"
-                                    className={FIELD_INPUT_CLASS}
                                 />
                             </Field>
 
