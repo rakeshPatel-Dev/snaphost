@@ -37,16 +37,24 @@ export default function UserMenu() {
                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                         <Avatar size="sm">
                             {(() => {
-                                const meta: any = (user as any)?.user_metadata ?? {};
-                                const identities: any[] = (user as any)?.identities ?? [];
-                                const avatarUrl = meta?.avatar_url ?? identities?.[0]?.identity_data?.avatar_url ?? null;
+                                const meta = (user?.user_metadata ?? {}) as Record<string, unknown>;
+                                const identities = (user?.identities ?? []) as Array<{
+                                    identity_data?: Record<string, unknown>;
+                                }>;
+                                const avatarUrl = (meta.avatar_url ??
+                                    identities[0]?.identity_data?.avatar_url ??
+                                    null) as string | null;
                                 if (avatarUrl) {
-                                    return <AvatarImage src={String(avatarUrl)} alt={String(meta?.full_name ?? user?.email ?? 'Profile')} />;
+                                    return (
+                                        <AvatarImage
+                                            src={avatarUrl}
+                                            alt={String(meta.full_name ?? user?.email ?? 'Profile')}
+                                        />
+                                    );
                                 }
-                                const usernameHint = (meta?.username as string) ?? (user?.email as string) ?? '';
+                                const usernameHint = (meta.username as string) ?? user?.email ?? '';
                                 const initial = usernameHint ? usernameHint.charAt(0).toUpperCase() : '';
                                 return <AvatarFallback>{initial}</AvatarFallback>;
-                                return <span>{meta?.username as string}</span>
                             })()}
                         </Avatar>
                     </Button>

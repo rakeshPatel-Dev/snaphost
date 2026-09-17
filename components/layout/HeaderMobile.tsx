@@ -52,7 +52,7 @@ export default function HeaderMobile() {
                     </SheetHeader>
 
                     <div className="flex flex-col gap-1 p-4">
-                        <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70">Navigation</p>
+                        <p className="px-3 py-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">Navigation</p>
                         {navLinks.map((item) => (
                             <Link
                                 key={item.name}
