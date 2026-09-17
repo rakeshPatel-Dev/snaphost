@@ -46,7 +46,7 @@ export default function FeedbackDialog() {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="default" size="sm" className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
+        <Button variant="default" size="sm" className="gap-2 font-medium">
           <MessageSquarePlus className="w-4 h-4" />
           Give Feedback
         </Button>

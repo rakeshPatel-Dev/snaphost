@@ -31,7 +31,7 @@ export default async function CheckEmailPage({ searchParams }: Props) {
                             href="https://mail.google.com"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white"
+                            className="inline-flex items-center rounded-full bg-gradient-to-b from-blue-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_4px_14px_-2px_rgba(37,99,235,0.45)] transition-all hover:from-blue-600 hover:to-blue-700"
                         >
                             Open Gmail
                         </Link>
