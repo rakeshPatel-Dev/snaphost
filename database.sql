@@ -44,6 +44,24 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- ============================================
+-- ANON SESSIONS TABLE
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS anon_sessions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- random token stored only as its sha256 hash
+  token_hash TEXT UNIQUE NOT NULL,
+
+  -- session lifetime (24h, matching anon file expiry)
+  expires_at TIMESTAMP NOT NULL,
+
+  revoked_at TIMESTAMP NULL,
+
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- ============================================
 -- FILES TABLE
 -- ============================================
 
@@ -52,6 +70,9 @@ CREATE TABLE IF NOT EXISTS files (
 
   -- owner (nullable for anonymous uploads)
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+
+  -- anonymous session owner (nullable for signed-in uploads)
+  anon_session_id UUID REFERENCES anon_sessions(id) ON DELETE CASCADE,
 
   -- upload type: anonymous (anon 24h) or custom (user-controlled)
   upload_type upload_type_enum NOT NULL DEFAULT 'anonymous',
@@ -108,12 +129,19 @@ ALTER TABLE files
     )
   );
 
+-- Migration guard for existing databases that are missing the column
+ALTER TABLE files
+  ADD COLUMN IF NOT EXISTS anon_session_id UUID REFERENCES anon_sessions(id) ON DELETE CASCADE;
+
 -- ============================================
 -- INDEXES
 -- ============================================
 
 CREATE INDEX IF NOT EXISTS idx_files_user_id
 ON files(user_id);
+
+CREATE INDEX IF NOT EXISTS idx_files_anon_session_id
+ON files(anon_session_id);
 
 CREATE INDEX IF NOT EXISTS idx_files_slug
 ON files(slug);
@@ -172,12 +200,49 @@ FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
 
 -- ============================================
+-- ANON SESSION LINK LIMIT TRIGGER
+-- ============================================
+
+-- Caps each anonymous session at 3 active links. The raised message must stay
+-- in sync with the check in app/api/upload/route.ts.
+CREATE OR REPLACE FUNCTION enforce_anon_session_link_limit()
+RETURNS TRIGGER AS $$
+DECLARE
+  active_links INTEGER;
+BEGIN
+  IF NEW.anon_session_id IS NULL THEN
+    RETURN NEW;
+  END IF;
+
+  SELECT COUNT(*)
+    INTO active_links
+    FROM files
+   WHERE anon_session_id = NEW.anon_session_id
+     AND deleted_at IS NULL
+     AND (expires_at IS NULL OR expires_at > NOW());
+
+  IF active_links >= 3 THEN
+    RAISE EXCEPTION 'anon session link limit reached';
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS enforce_anon_session_link_limit ON files;
+CREATE TRIGGER enforce_anon_session_link_limit
+BEFORE INSERT ON files
+FOR EACH ROW
+EXECUTE FUNCTION enforce_anon_session_link_limit();
+
+-- ============================================
 -- ROW LEVEL SECURITY (RLS) POLICIES
 -- ============================================
 
 -- Enable RLS on tables
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE files ENABLE ROW LEVEL SECURITY;
+ALTER TABLE anon_sessions ENABLE ROW LEVEL SECURITY;
 
 -- ============ USERS TABLE POLICIES ============
 
@@ -283,6 +348,21 @@ BEGIN
   WHERE expires_at IS NOT NULL
     AND expires_at < NOW()
     AND deleted_at IS NULL;
+
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  RETURN deleted_count;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Deletes expired anonymous sessions. File rows are removed via ON DELETE CASCADE;
+-- storage objects are cleaned up by the worker script before calling this via rpc().
+CREATE OR REPLACE FUNCTION purge_expired_anon_sessions()
+RETURNS INTEGER AS $$
+DECLARE
+  deleted_count INTEGER := 0;
+BEGIN
+  DELETE FROM anon_sessions
+  WHERE expires_at < NOW();
 
   GET DIAGNOSTICS deleted_count = ROW_COUNT;
   RETURN deleted_count;
