@@ -70,20 +70,11 @@ export default function Hero() {
           {/* CTAs */}
           <div className="mt-8 flex items-center gap-3.5 flex-wrap">
 
-            <Button
-              asChild
-              size="lg"
-              className="rounded-full h-11 px-6 font-medium text-sm cursor-pointer border-border/80 hover:bg-muted/40"
-            >
+            <Button asChild size="lg" className="h-11 px-6 cursor-pointer">
               <Link href="/sign-up">Create account</Link>
             </Button>
 
-            <Button
-            variant="outline"
-              asChild
-              size="lg"
-              className=" h-11 px-7 "
-            >
+            <Button variant="outline" asChild size="lg" className="h-11 px-6 cursor-pointer">
               <a href="#dropzone">Upload anonymously</a>
             </Button>
 

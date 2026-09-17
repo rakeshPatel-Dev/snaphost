@@ -4,6 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Check, Minus, Zap, User, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Container from '@/components/shared/Container';
+import SectionHeading from '@/components/shared/SectionHeading';
+import { Button } from '@/components/ui/button';
 
 type BillingCycle = 'monthly' | 'yearly';
 
@@ -36,9 +39,9 @@ const plans = [
     key: 'free',
     name: 'Anonymous',
     icon: Zap,
-    iconColor: 'text-zinc-400',
-    iconBg: 'bg-zinc-400/10',
-    description: 'Quick and zero-friction. No account needed.',
+    iconColor: 'text-muted-foreground',
+    iconBg: 'bg-muted/30',
+    description: 'No account needed. Upload and share instantly.',
     monthlyPrice: 0,
     yearlyPrice: 0,
     cta: 'Upload now',
@@ -52,7 +55,7 @@ const plans = [
     icon: User,
     iconColor: 'text-accent',
     iconBg: 'bg-accent/10',
-    description: 'For individuals who want clean links and control.',
+    description: 'Clean links plus control over names and expiry.',
     monthlyPrice: 0,
     yearlyPrice: 0,
     cta: 'Create account',
@@ -64,9 +67,9 @@ const plans = [
     key: 'pro',
     name: 'Pro',
     icon: Sparkles,
-    iconColor: 'text-amber-400',
-    iconBg: 'bg-amber-400/10',
-    description: 'For power users who need advanced controls.',
+    iconColor: 'text-muted-foreground',
+    iconBg: 'bg-muted/30',
+    description: 'Advanced controls, domains, analytics, and API.',
     monthlyPrice: 7,
     yearlyPrice: 5,
     cta: 'Get Pro',
@@ -98,32 +101,19 @@ export default function Pricing() {
   const [billing, setBilling] = useState<BillingCycle>('monthly');
 
   return (
-    <section id="pricing" className="py-24 relative overflow-hidden border-t border-border/20 scroll-mt-16">
-      {/* Background */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-40 -z-10" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-accent/5 blur-[100px] -z-10" />
+    <section id="pricing" className="py-20 sm:py-24 relative overflow-hidden border-t border-border/50 scroll-mt-16">
+      <Container>
+        <div className="mb-14">
+          <SectionHeading
+            title="Simple, transparent pricing"
+            description="Upload and share anonymously for free. Upgrade when you need custom links, a dashboard, and more control."
+          />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
-
-        {/* Header */}
-        <div className="text-left max-w-3xl mb-14">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/20 px-3.5 py-1 text-xs font-medium text-foreground mb-5">
-            <Sparkles className="h-3 w-3 text-accent" />
-            <span>Pricing</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-foreground leading-[1.1]">
-            Simple, transparent pricing
-          </h2>
-          <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
-            Start sharing instantly for free. Upgrade when you need custom links, dashboards, and more control.
-          </p>
-
-          {/* Billing toggle */}
-          <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-border/50 bg-muted/20 p-1">
+          <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/20 p-1">
             <button
               onClick={() => setBilling('monthly')}
               className={cn(
-                'px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200',
+                'px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer',
                 billing === 'monthly'
                   ? 'bg-background text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
@@ -134,21 +124,20 @@ export default function Pricing() {
             <button
               onClick={() => setBilling('yearly')}
               className={cn(
-                'px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-1.5',
+                'px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-1.5 cursor-pointer',
                 billing === 'yearly'
                   ? 'bg-background text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
               Yearly
-              <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
+              <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
                 −30%
               </span>
             </button>
           </div>
         </div>
 
-        {/* Pricing cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-16">
           {plans.map((plan) => {
             const Icon = plan.icon;
@@ -158,24 +147,19 @@ export default function Pricing() {
               <div
                 key={plan.key}
                 className={cn(
-                  'relative rounded-2xl border p-7 flex flex-col transition-all duration-300',
+                  'relative rounded-4xl border bg-card/80 backdrop-blur-xl p-7 flex flex-col transition-all duration-300',
                   plan.highlight
-                    ? 'border-accent/60 bg-card shadow-[0_0_40px_rgba(0,0,0,0.2),inset_0_0_0_1px_rgba(255,255,255,0.04)] scale-[1.02]'
-                    : 'border-border/60 bg-card/60 hover:border-border hover:bg-card'
+                    ? 'border-accent/60 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)] md:scale-[1.02]'
+                    : 'border-border/60 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)] hover:border-border'
                 )}
               >
-                {/* Highlight glow */}
-                {plan.highlight && (
-                  <div className="absolute inset-0 rounded-2xl bg-accent/3 pointer-events-none" />
-                )}
-
                 {/* Badge */}
                 {plan.badge && (
                   <div className={cn(
-                    'absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border',
+                    'absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border',
                     plan.highlight
-                      ? 'bg-accent text-accent-foreground border-accent'
-                      : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                      ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+                      : 'bg-muted/30 text-muted-foreground border-border/60'
                   )}>
                     {plan.badge}
                   </div>
@@ -196,14 +180,14 @@ export default function Pricing() {
                   <div className="mb-6">
                     {plan.monthlyPrice === 0 ? (
                       <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-black text-foreground">Free</span>
+                        <span className="text-4xl font-bold text-foreground">Free</span>
                         {plan.name === 'Starter' && (
                           <span className="text-sm text-muted-foreground ml-1">forever</span>
                         )}
                       </div>
                     ) : (
                       <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-black text-foreground">${price}</span>
+                        <span className="text-4xl font-bold text-foreground">${price}</span>
                         <span className="text-sm text-muted-foreground">/mo</span>
                         {billing === 'yearly' && (
                           <span className="ml-2 text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
@@ -220,21 +204,13 @@ export default function Pricing() {
                   </div>
 
                   {/* CTA */}
-                  <Link
-                    href={plan.ctaHref}
-                    className={cn(
-                      'block w-full text-center py-2.5 rounded-xl text-sm font-semibold transition-all duration-200',
-                      plan.highlight
-                        ? 'bg-accent text-accent-foreground hover:opacity-90'
-                        : plan.key === 'pro'
-                        ? 'bg-muted/40 text-muted-foreground border border-border/60 cursor-not-allowed'
-                        : 'bg-muted/40 text-foreground border border-border/60 hover:bg-muted/60'
-                    )}
-                    aria-disabled={plan.key === 'pro'}
-                    onClick={(e) => plan.key === 'pro' && e.preventDefault()}
+                  <Button
+                    asChild
+                    disabled={plan.key === 'pro'}
+                    className="w-full h-11 px-6 rounded-full font-medium text-sm cursor-pointer"
                   >
-                    {plan.cta}
-                  </Link>
+                    <Link href={plan.ctaHref}>{plan.cta}</Link>
+                  </Button>
 
                   {/* Key features */}
                   <ul className="mt-6 space-y-2.5">
@@ -261,14 +237,14 @@ export default function Pricing() {
         </div>
 
         {/* Feature comparison table */}
-        <div className="rounded-2xl border border-border/60 bg-card/60 overflow-hidden">
-          <div className="grid grid-cols-4 border-b border-border/60 bg-muted/20">
+        <div className="rounded-4xl border border-border/60 bg-card/80 overflow-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-4 border-b border-border/60 bg-muted/20">
             <div className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">Feature</div>
             {plans.map((plan) => (
               <div
                 key={plan.key}
                 className={cn(
-                  'p-4 text-center text-xs font-bold uppercase tracking-widest',
+                  'p-4 sm:text-center text-xs font-bold uppercase tracking-widest',
                   plan.highlight ? 'text-accent' : 'text-muted-foreground'
                 )}
               >
@@ -281,21 +257,23 @@ export default function Pricing() {
             <div
               key={feature.label}
               className={cn(
-                'grid grid-cols-4 border-b border-border/30 last:border-0 transition-colors',
+                'grid grid-cols-1 sm:grid-cols-4 border-b border-border/30 last:border-0 transition-colors md:items-center',
                 i % 2 === 0 ? 'bg-transparent' : 'bg-muted/10'
               )}
             >
-              <div className="p-3.5 text-xs text-foreground font-medium flex items-center">
-                {feature.label}
-              </div>
-              {(['free', 'starter', 'pro'] as const).map((planKey) => (
+              <div className="p-3.5 text-xs text-foreground font-medium">{feature.label}</div>
+              {(['free', 'starter', 'pro'] as const).map((planKey, j) => (
                 <div
                   key={planKey}
                   className={cn(
-                    'p-3.5 flex items-center justify-center',
-                    plans.find(p => p.key === planKey)?.highlight && 'bg-accent/3'
+                    'p-3.5 flex items-center justify-between sm:justify-center gap-3',
+                    j === 0 ? 'border-t border-border/30 sm:border-0' : '',
+                    plans.find(p => p.key === planKey)?.highlight && 'sm:bg-accent/3'
                   )}
                 >
+                  <span className="sm:hidden text-xs text-muted-foreground">
+                    {plans.find(p => p.key === planKey)?.name}
+                  </span>
                   <FeatureValue value={feature[planKey]} />
                 </div>
               ))}
@@ -303,7 +281,6 @@ export default function Pricing() {
           ))}
         </div>
 
-        {/* FAQ nudge */}
         <p className="text-center text-sm text-muted-foreground mt-8">
           Questions about pricing?{' '}
           <Link href="#faq" className="text-foreground font-medium underline-offset-4 hover:underline">
@@ -316,7 +293,7 @@ export default function Pricing() {
           .
         </p>
 
-      </div>
+      </Container>
     </section>
   );
 }
