@@ -20,7 +20,9 @@ export default function UploadDropzone({
       onDrop={onDrop}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
-      className={`group rounded-xl border border-dashed px-6 py-10 text-center cursor-pointer transition-all duration-200 ${isDragging ? 'border-accent bg-accent/5' : 'border-border bg-muted/20 hover:bg-muted/40'}`}
+      className={`group rounded-2xl border border-dashed px-4 py-10 text-center cursor-pointer transition-all duration-200 sm:px-6 sm:py-16 ${
+        isDragging ? 'border-accent bg-accent/10 scale-[0.99]' : 'border-border/70 bg-muted/15 hover:bg-muted/30 hover:border-border'
+      }`}
     >
       <input
         ref={fileInputRef}
@@ -30,14 +32,11 @@ export default function UploadDropzone({
         accept={getAnonymousUploadAcceptValue()}
         className="hidden"
       />
-      <div className="mx-auto mb-3 flex h-18 w-18 items-center justify-center rounded-full bg-background border border-border group-hover:border-accent/40 group-hover:scale-105 transition-all text-muted-foreground group-hover:text-accent">
-        <AnonUpload className="h-15 w-15" />
+      <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-background border border-border group-hover:border-accent/40 group-hover:scale-105 transition-all text-muted-foreground group-hover:text-accent sm:h-18 sm:w-18">
+        <AnonUpload className="h-13 w-13 sm:h-15 sm:w-15" />
       </div>
-      <p className="text-sm font-semibold text-foreground">Drop a file or click to create an anonymous link</p>
-      <p className="mt-1 text-xs text-muted-foreground">PNG, JPG, WEBP, and PDF only. Anonymous links expire automatically in 24 hours.</p>
-      <span className="mt-3.5 inline-flex items-center gap-1 text-[11px] font-medium text-foreground bg-muted/10 border border-border/10 px-2 py-0.5 rounded-full">
-        Try it now <ArrowRight className="h-3 w-3" />
-      </span>
+      <p className="text-base font-bold text-foreground sm:text-lg">Drag and drop or click to upload</p>
+      <p className="mt-1 text-xs text-muted-foreground">PNG, JPG, WEBP, and PDF only.</p>
     </div>
   );
 }

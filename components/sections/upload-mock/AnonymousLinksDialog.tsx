@@ -21,7 +21,7 @@ export default function AnonymousLinksDialog({
 }: AnonymousLinksDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className=" max-w-[30vw]!">
+      <DialogContent className="rounded-3xl sm:max-w-lg!">
         <DialogHeader className="pb-2">
           <DialogTitle className="text-xl">Anonymous Links</DialogTitle>
           <DialogDescription>
@@ -29,7 +29,7 @@ export default function AnonymousLinksDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="max-h-[65vh] space-y-3 overflow-y-auto pr-1 scrollbar-thin">
+        <div className="max-h-[65vh] space-y-3 overflow-y-auto pr-1">
           {links.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <p className="text-sm text-muted-foreground">No anonymous links yet</p>

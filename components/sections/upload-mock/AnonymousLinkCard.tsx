@@ -4,20 +4,7 @@ import { useState } from 'react';
 import ShareModal from '@/components/ShareModal';
 import { Button } from '@/components/ui/button';
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
-import {
-  Check,
-  Copy,
-  ExternalLink,
-  MoreVertical,
-  Share2,
-  Trash2,
-} from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Check, Copy, ExternalLink, Share2, Trash2, Clock } from 'lucide-react';
 import { formatShortDate, getTimeRemaining } from '@/services/anonymous-links';
 import type { AnonymousLinkCardProps } from '@/types/components';
 
@@ -45,90 +32,92 @@ export default function AnonymousLinkCard({
         filename={filename}
       />
 
-      <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/20">
-                <span className="text-[10px] font-bold text-foreground">
-                  {fileType === 'pdf' ? 'PDF' : 'IMG'}
-                </span>
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-foreground">{filename}</p>
-                <p className="text-[11px] text-muted-foreground">
-                  Created {new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(createdAt))} • {fileSize}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-3 rounded-lg border border-border/60 bg-muted/20 px-3 py-2">
-              <p className="truncate font-mono text-[11px] text-foreground">{url}</p>
-            </div>
-
-            <div className="mt-2 flex items-center gap-2 text-[11px] text-muted-foreground">
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded-full bg-accent/60" />
-                Created {formatShortDate(createdAt)}
-              </span>
-              <span className="h-1 w-1 rounded-full bg-border" />
-              <span>{getTimeRemaining(expiresAt)}</span>
-            </div>
+      <div className="rounded-4xl border border-border/60 bg-card/80 p-4 shadow-[0_10px_30px_-20px_rgba(0,0,0,0.2)] backdrop-blur-xl sm:p-5">
+        {/* Header: file info + actions */}
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted/40 text-[10px] font-semibold tracking-wide text-foreground sm:h-11 sm:w-11 sm:text-[11px]">
+            {fileType === 'pdf' ? 'PDF' : 'IMG'}
           </div>
 
-          <div className="flex shrink-0 flex-col gap-2">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium tracking-tight text-foreground">
+              {filename}
+            </p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
+              {fileSize} · {formatShortDate(createdAt)}
+            </p>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-0.5">
             <Button
               size="sm"
-              variant="outline"
-              className="h-8 gap-1.5"
-              onClick={() => onCopy(url, id)}
+              variant="secondary"
+              className="shrink-0 border border-border px-2.5 sm:px-3"
+              onClick={() => onOpen(url)}
+              aria-label="Open in new tab"
+              title="Open"
             >
-              {copied ? (
-                <Check className="h-3.5 w-3.5 text-emerald-500" />
-              ) : (
-                <Copy className="h-3.5 w-3.5" />
-              )}
-              {copied ? 'Copied' : 'Copy'}
+              <ExternalLink className="h-4 w-4" />
+              <span className="hidden sm:inline">Open</span>
             </Button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="sm" variant="outline" className="h-8 gap-1.5">
-                  <MoreVertical className="h-3.5 w-3.5" />
-                  Actions
-                </Button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent align="end" className="w-20">
-                <DropdownMenuItem onClick={() => onOpen(url)}>
-                  <ExternalLink className="h-4 w-4" />
-                  Open
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setShareModalOpen(true)}>
-                  <Share2 className="h-4 w-4" />
-                  Share
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8 rounded-full text-muted-foreground hover:bg-muted/40 hover:text-foreground"
+              onClick={() => setShareModalOpen(true)}
+              aria-label="Share link"
+              title="Share"
+            >
+              <Share2 className="h-4 w-4" />
+            </Button>
 
             <DeleteConfirmDialog
-              trigger={(
+              trigger={
                 <Button
-                  size="sm"
+                  size="icon"
                   variant="ghost"
-                  className="h-8 gap-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                  className="h-8 w-8 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                  aria-label="Delete link"
+                  title="Delete"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  Delete
+                  <Trash2 className="h-4 w-4" />
                 </Button>
-              )}
-              title="Delete this anonymous link?"
-              description="This will remove the file from storage, delete the database record, and remove it from this browser's local history."
-              confirmLabel="Delete link"
-              destructiveClassName="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              }
+              title="Delete this link?"
+              description="The file will be removed from storage and this browser's history."
+              confirmLabel="Delete"
+              destructiveClassName="rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onConfirm={() => onDelete(id)}
             />
           </div>
+        </div>
+
+        {/* URL row */}
+        <div className="mt-3 flex items-center gap-2 rounded-full border border-border/60 bg-muted/20 py-2 pl-3.5 pr-1.5 sm:mt-3.5">
+          <p className="min-w-0 flex-1 truncate font-mono text-[11px] text-foreground">
+            {url}
+          </p>
+          <button
+            type="button"
+            onClick={() => onCopy(url, id)}
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-background/60 hover:text-foreground"
+            aria-label={copied ? 'Copied' : 'Copy link'}
+          >
+            {copied ? (
+              <Check className="h-3.5 w-3.5 text-emerald-500" />
+            ) : (
+              <Copy className="h-3.5 w-3.5" />
+            )}
+          </button>
+        </div>
+
+        {/* Footer meta */}
+        <div className="mt-2.5 flex items-center gap-2 px-1 text-[11px] text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5">
+            <Clock className="h-3 w-3" />
+            {getTimeRemaining(expiresAt)}
+          </span>
         </div>
       </div>
     </>
