@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Loader2, FilePlus, Link2, Copy, Check, RefreshCcw } from "lucide-react";
+import { Loader2, Link2, Copy, Check, RefreshCcw } from "lucide-react";
 import UploadMockTabs from "./upload-mock/UploadMockTabs";
 import UploadDropzone from "./upload-mock/UploadDropzone";
 import AnonymousLinksDialog from "./upload-mock/AnonymousLinksDialog";
