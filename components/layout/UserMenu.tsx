@@ -20,6 +20,22 @@ export default function UserMenu() {
     const { user, signOut } = useAuth();
     const [accountDeleteOpen, setAccountDeleteOpen] = useState(false);
 
+    const meta = (user?.user_metadata ?? {}) as Record<string, unknown>;
+    const identityData = ((user?.identities ?? []) as Array<{
+        identity_data?: Record<string, unknown>;
+    }>).map((identity) => identity.identity_data ?? {});
+
+    const avatarUrl =
+        (meta.avatar_url as string | undefined) ??
+        (meta.picture as string | undefined) ??
+        (identityData.flatMap((data) => [data.avatar_url, data.picture]).find(
+            (value): value is string => typeof value === 'string' && value.length > 0
+        ) ??
+        null);
+
+    const displayName = String(meta.full_name ?? meta.name ?? meta.username ?? user?.email ?? 'Profile');
+    const initial = displayName.trim().charAt(0).toUpperCase();
+
     async function handleSignOut() {
         try {
             await signOut();
@@ -36,26 +52,8 @@ export default function UserMenu() {
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                         <Avatar size="sm">
-                            {(() => {
-                                const meta = (user?.user_metadata ?? {}) as Record<string, unknown>;
-                                const identities = (user?.identities ?? []) as Array<{
-                                    identity_data?: Record<string, unknown>;
-                                }>;
-                                const avatarUrl = (meta.avatar_url ??
-                                    identities[0]?.identity_data?.avatar_url ??
-                                    null) as string | null;
-                                if (avatarUrl) {
-                                    return (
-                                        <AvatarImage
-                                            src={avatarUrl}
-                                            alt={String(meta.full_name ?? user?.email ?? 'Profile')}
-                                        />
-                                    );
-                                }
-                                const usernameHint = (meta.username as string) ?? user?.email ?? '';
-                                const initial = usernameHint ? usernameHint.charAt(0).toUpperCase() : '';
-                                return <AvatarFallback>{initial}</AvatarFallback>;
-                            })()}
+                            {avatarUrl ? <AvatarImage src={avatarUrl} alt={displayName} /> : null}
+                            <AvatarFallback>{initial}</AvatarFallback>
                         </Avatar>
                     </Button>
                 </DropdownMenuTrigger>
