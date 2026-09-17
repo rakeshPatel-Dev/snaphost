@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import { checkEmailContent } from '@/data/checkEmail';
+import { Button } from '@/components/ui/button';
+import Container from '@/components/shared/Container';
 import DashedGrid from '@/components/shared/DashedGrid';
+import Logo from '@/components/layout/Logo';
 
 type Props = {
     searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -17,27 +20,33 @@ export default async function CheckEmailPage({ searchParams }: Props) {
     const description = data.description.replace('{email}', email ?? 'your email');
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-background relative overflow-hidden">
+        <div className="relative isolate overflow-hidden bg-background text-foreground">
             {/* Background dashed grid */}
-            <DashedGrid absolute zIndex={-1} opacity={0.5} />
+            <DashedGrid absolute zIndex={-1} opacity={0.4} />
 
-            <div className="mx-auto w-full max-w-md relative z-10">
-                <div className="w-full rounded-4xl border border-border bg-card p-7 shadow-xl dark:shadow-black/40 sm:p-8">
-                    <h1 className="text-2xl font-bold text-foreground">{data.heading}</h1>
-                    <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+            {/* Ambient glow */}
+            <div className="pointer-events-none absolute left-1/2 top-0 h-150 w-full max-w-5xl -translate-x-1/2 rounded-full bg-accent/5 blur-3xl" />
 
-                    <div className="mt-6">
-                        <Link
-                            href="https://mail.google.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center rounded-full bg-gradient-to-b from-blue-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_4px_14px_-2px_rgba(37,99,235,0.45)] transition-all hover:from-blue-600 hover:to-blue-700"
-                        >
-                            Open Gmail
-                        </Link>
+            <Container className="relative flex min-h-screen items-center justify-center py-16">
+                <div className="w-full max-w-md space-y-6">
+                    <div className="flex justify-center">
+                        <Logo />
+                    </div>
+
+                    <div className="w-full rounded-4xl border border-border/60 bg-card/80 p-7 backdrop-blur-xl shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)] sm:p-8">
+                        <h1 className="text-3xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-4xl">
+                            {data.heading}
+                        </h1>
+                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
+
+                        <div className="mt-6">
+                            <Button asChild size="lg" className="h-11 w-full cursor-pointer">
+                                <Link href={data.buttonHref}>{data.buttonLabel}</Link>
+                            </Button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </main>
+            </Container>
+        </div>
     );
 }

@@ -46,9 +46,9 @@ export default function UsernameAvailability({
             <p
                 className={cn(
                     'flex min-h-5 items-center gap-1.5 text-xs',
-                    statusTone === 'good' && 'text-emerald-600 dark:text-emerald-400',
+                    statusTone === 'good' && 'text-accent',
                     statusTone === 'warn' && 'text-amber-600 dark:text-amber-400',
-                    statusTone === 'bad' && 'text-rose-600 dark:text-rose-400',
+                    statusTone === 'bad' && 'text-destructive',
                     statusTone === 'neutral' && 'text-muted-foreground'
                 )}
             >

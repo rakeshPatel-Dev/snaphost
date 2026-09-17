@@ -23,17 +23,17 @@ export default function PasswordField({
     const inputType = isVisible ? 'text' : 'password';
 
     return (
-        <InputGroup className={cn('h-10 rounded-xl bg-background', wrapperClassName)}>
+        <InputGroup className={cn('h-11 rounded-full border-border/60 bg-muted/20', wrapperClassName)}>
             <InputGroupAddon align="inline-start" className="px-2.5 text-muted-foreground">
                 <LockKeyhole className="h-4 w-4" />
             </InputGroupAddon>
             <InputGroupInput
                 id={inputId}
                 type={type === 'password' ? inputType : type}
-                className={cn('h-10 px-0', className)}
+                className={cn('h-11 px-0', className)}
                 {...props}
             />
-            <InputGroupAddon align="inline-end" className="px-1.5">
+            <InputGroupAddon align="inline-end" className="px-1">
                 <InputGroupButton
                     size="icon-xs"
                     variant="ghost"
@@ -41,7 +41,7 @@ export default function PasswordField({
                     onClick={() => setIsVisible((current) => !current)}
                     aria-label={isVisible ? 'Hide password' : 'Show password'}
                     aria-pressed={isVisible}
-                    className="text-muted-foreground hover:text-foreground"
+                    className="rounded-full text-muted-foreground hover:text-foreground"
                 >
                     {isVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </InputGroupButton>

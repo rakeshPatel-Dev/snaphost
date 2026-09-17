@@ -4,6 +4,8 @@ import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { Mail, User } from 'lucide-react';
+import { RiGoogleFill, RiGithubFill, RiDiscordFill } from 'react-icons/ri';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/lib/supabase';
@@ -13,18 +15,12 @@ import PasswordField from '@/components/auth/PasswordField';
 import { useUsernameAvailability } from '@/lib/useUsernameAvailability';
 import { AUTH_ERRORS } from '@/lib/messages';
 import { Field, FieldLabel } from '../ui/field';
-import {
-    RiMailLine,
-    RiUserLine,
-    RiGoogleFill,
-    RiGithubFill,
-    RiDiscordFill,
-    RiFlashlightLine,
-} from 'react-icons/ri';
 
 type AuthFormProps = {
     mode: 'sign-in' | 'sign-up';
 };
+
+const FIELD_INPUT_CLASS = 'h-11 rounded-full border-border/60 bg-muted/20';
 
 const OAUTH_ICONS: Record<'google' | 'github' | 'discord', React.ReactNode> = {
     google: <RiGoogleFill className="size-4" />,
@@ -122,24 +118,16 @@ export default function AuthForm({ mode }: AuthFormProps) {
     }
 
     return (
-        <div className="w-full rounded-4xl border border-border bg-card p-7 shadow-xl dark:shadow-black/40 sm:p-8">
-            {/* Brand */}
-            <div className="mb-6 flex items-center gap-2.5">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <RiFlashlightLine className="size-4" />
-                </div>
-                <span className="text-[15px] font-semibold tracking-tight text-foreground">SnapHost</span>
-            </div>
-
+        <div className="w-full rounded-4xl border border-border/60 bg-card/80 p-7 backdrop-blur-xl shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)] sm:p-8">
             {/* Heading */}
             <div className="mb-6">
-                <h2 className="text-xl font-bold tracking-tight text-foreground">
+                <h1 className="text-3xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-4xl">
                     {isSignIn ? 'Welcome back' : 'Create your account'}
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
+                </h1>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {isSignIn
-                        ? 'Sign in to continue to your dashboard.'
-                        : ''}
+                        ? 'Sign in to manage your uploads and links.'
+                        : 'Set up a username and start sharing files.'}
                 </p>
             </div>
 
@@ -149,7 +137,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                     <Field>
                         <FieldLabel htmlFor="username">Username</FieldLabel>
                         <div className="relative">
-                            <RiUserLine className="pointer-events-none absolute left-3 top-3.5 size-4 text-muted-foreground" />
+                            <User className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                             <UsernameAvailability
                                 id="username"
                                 value={username}
@@ -158,7 +146,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                                 statusTone={usernameStatus.tone}
                                 onChange={setUsername}
                                 disabled={loading}
-                                className="pl-9"
+                                className={`${FIELD_INPUT_CLASS} pl-9`}
                             />
                         </div>
                     </Field>
@@ -167,7 +155,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 <Field>
                     <FieldLabel htmlFor="email">Email</FieldLabel>
                     <div className="relative">
-                        <RiMailLine className="pointer-events-none absolute left-3 top-3.5 size-4 text-muted-foreground" />
+                        <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             id="email"
                             type="email"
@@ -177,7 +165,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                             autoComplete="email"
                             required
                             disabled={loading}
-                            className="h-10 pl-9"
+                            className={`${FIELD_INPUT_CLASS} pl-9`}
                         />
                     </div>
                 </Field>
@@ -194,6 +182,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                         minLength={8}
                         disabled={loading}
                         aria-invalid={!isSignIn && !passwordIsStrong}
+                        className={FIELD_INPUT_CLASS}
                     />
                     <PasswordRequirements
                         id="password-requirements"
@@ -216,7 +205,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
                 <Button
                     type="submit"
-                    className="h-10 w-full rounded-xl font-semibold"
+                    size="lg"
+                    className="h-11 w-full cursor-pointer"
                     disabled={loading || (!isSignIn && (!isUsernameAvailable || isUsernameChecking || !passwordIsStrong))}
                 >
                     {loading ? 'Please wait…' : isSignIn ? 'Sign in' : 'Create account'}
@@ -226,8 +216,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
             {/* OAuth */}
             {oauthProviders.length > 0 && (
                 <>
-                    <div className="my-5 relative flex items-center bg-muted-foreground h-0.5 w-full rounded-full gap-3">
-                        <span className="text-[11px] uppercase tracking-widest text-muted-foreground bg-background px-2 font-semibold absolute left-1/2 -translate-x-1/2 select-none">or</span>
+                    <div className="relative my-5">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-border/60" />
+                        </div>
+                        <div className="relative flex justify-center">
+                            <span className="bg-card px-3 text-xs text-muted-foreground">or continue with</span>
+                        </div>
                     </div>
                     <div className="grid gap-2 sm:grid-cols-2">
                         {oauthProviders.map((provider) => (
@@ -235,7 +230,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                                 key={provider}
                                 type="button"
                                 variant="outline"
-                                className="h-10 gap-2 rounded-xl text-sm font-medium"
+                                className="h-11 w-full cursor-pointer gap-2 rounded-full text-sm font-medium"
                                 onClick={() => handleOAuth(provider)}
                                 disabled={loading}
                             >
@@ -252,14 +247,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 {isSignIn ? (
                     <>
                         Don&apos;t have an account?{' '}
-                        <Link href="/sign-up" className="font-medium text-foreground underline-offset-4 hover:underline">
+                        <Link href="/sign-up" className="font-medium text-accent underline-offset-4 hover:underline">
                             Sign up
                         </Link>
                     </>
                 ) : (
                     <>
                         Already have an account?{' '}
-                        <Link href="/sign-in" className="font-medium text-foreground underline-offset-4 hover:underline">
+                        <Link href="/sign-in" className="font-medium text-accent underline-offset-4 hover:underline">
                             Sign in
                         </Link>
                     </>

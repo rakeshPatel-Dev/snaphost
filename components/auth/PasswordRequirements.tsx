@@ -78,7 +78,7 @@ export default function PasswordRequirements({
                                         )}
                                     />
                                 </TooltipTrigger>
-                                <TooltipContent side="bottom" className="text-[10px] font-medium px-2 py-1">
+                                <TooltipContent side="bottom" className="px-2 py-1 text-xs font-medium">
                                     <p className={cn(isMet ? "text-emerald-500" : "text-background")}>
                                         {req.label} {isMet ? '✓' : ''}
                                     </p>
