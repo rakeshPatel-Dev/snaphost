@@ -16,6 +16,8 @@ import ProfileLink from './ProfileLink';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useUsernameAvailability } from '@/lib/useUsernameAvailability';
 import { useUpdateMeUsernameMutation } from '@/state/api';
+import { getApiErrorMessage } from '@/lib/api-error';
+import { AUTH_ERRORS } from '@/lib/messages';
 
 
 type AccountInfoProps = {
@@ -47,7 +49,7 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
     }
 
     if (!isAvailable) {
-      toast.error('Pick an available username before saving');
+      toast.error(AUTH_ERRORS.pickAvailableUsername);
       return;
     }
 
@@ -59,7 +61,7 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
       setValue(normalizedUsername);
       setEditing(false);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to update username');
+      toast.error(getApiErrorMessage(err, AUTH_ERRORS.failedToUpdateUsername));
     }
   }
 

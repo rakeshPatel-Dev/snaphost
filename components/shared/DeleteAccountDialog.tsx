@@ -5,6 +5,8 @@ import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
 import { useDeleteAccountMutation } from '@/state/api';
 import type { DeleteAccountDialogProps } from '@/types/components';
 import { useAuth } from '@/components/providers/auth-provider';
+import { getApiErrorMessage } from '@/lib/api-error';
+import { ACCOUNT_ERRORS, TOAST_LABELS } from '@/lib/messages';
 
 export default function DeleteAccountDialog({
   trigger,
@@ -28,9 +30,9 @@ export default function DeleteAccountDialog({
       });
 
     await toast.promise(op, {
-      loading: 'Deleting account...',
-      success: 'Account deleted',
-      error: (err) => (err instanceof Error ? err.message : 'Failed to delete account'),
+      loading: TOAST_LABELS.deleteAccount.loading,
+      success: TOAST_LABELS.deleteAccount.success,
+      error: (err) => getApiErrorMessage(err, ACCOUNT_ERRORS.failedToDeleteAccount),
     });
   };
 

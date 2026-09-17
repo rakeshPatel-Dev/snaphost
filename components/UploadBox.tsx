@@ -6,6 +6,7 @@ import UploadForm from './UploadForm';
 import UploadSuccessCard from './UploadSuccessCard';
 import { validateFile } from '@/lib/fileValidation';
 import { getApiErrorMessage } from '@/lib/api-error';
+import { UPLOAD_ERRORS, TOAST_LABELS } from '@/lib/messages';
 import { useAppDispatch, useAppSelector } from '@/state/store';
 import { resetUploadState, setDragging, setError, setSuccess } from '@/state/slices/uploadSlice';
 import { useUploadFileMutation } from '@/state/api';
@@ -77,12 +78,12 @@ export default function UploadBox() {
         });
 
       await toast.promise(op, {
-        loading: 'Uploading file...',
-        success: 'File uploaded successfully!',
-        error: (err) => getApiErrorMessage(err, 'Upload failed'),
+        loading: TOAST_LABELS.upload.loading,
+        success: TOAST_LABELS.upload.success,
+        error: (err) => getApiErrorMessage(err, UPLOAD_ERRORS.uploadFailed),
       });
     } catch (error) {
-      const errorMsg = getApiErrorMessage(error, 'Upload failed. Please try again.');
+      const errorMsg = getApiErrorMessage(error, UPLOAD_ERRORS.uploadFailed);
       console.error('Upload error:', error);
       dispatch(setError(errorMsg));
       toast.error(errorMsg);

@@ -11,6 +11,7 @@ import UsernameAvailability from '@/components/auth/UsernameAvailability';
 import PasswordRequirements, { evaluatePasswordRequirements } from '@/components/auth/PasswordRequirements';
 import PasswordField from '@/components/auth/PasswordField';
 import { useUsernameAvailability } from '@/lib/useUsernameAvailability';
+import { AUTH_ERRORS } from '@/lib/messages';
 import { Field, FieldLabel } from '../ui/field';
 import {
     RiMailLine,
@@ -73,12 +74,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
             }
 
             if (normalizedUsername.length < 3) {
-                toast.error('Username must be at least 3 characters');
+                toast.error(AUTH_ERRORS.usernameTooShort);
                 return;
             }
 
             if (!isUsernameAvailable) {
-                toast.error('Choose an available username before creating your account');
+                toast.error(AUTH_ERRORS.usernameNotAvailable);
                 return;
             }
 
@@ -102,7 +103,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 toast.info('Check your email for confirmation');
             }
         } catch (err) {
-            toast.error(err instanceof Error ? err.message : 'Authentication failed');
+            toast.error(err instanceof Error ? err.message : AUTH_ERRORS.authFailed);
         } finally {
             setLoading(false);
         }
@@ -115,7 +116,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
             options: { redirectTo: `${window.location.origin}/profile` },
         });
         if (error) {
-            toast.error(error.message);
+            toast.error(error.message || AUTH_ERRORS.oauthFailed);
             setLoading(false);
         }
     }

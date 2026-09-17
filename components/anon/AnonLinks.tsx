@@ -6,6 +6,8 @@ import { Trash2, ExternalLink, File, Clock, RefreshCw } from 'lucide-react';
 import type { AnonymousLink } from '@/types/app';
 import { deleteAnonymousLink, fetchAnonymousLinks } from '@/services/anonymous-links';
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
+import { getApiErrorMessage } from '@/lib/api-error';
+import { ANON_ERRORS } from '@/lib/messages';
 
 export default function AnonLinks() {
   const [files, setFiles] = useState<AnonymousLink[]>([]);
@@ -21,7 +23,7 @@ export default function AnonLinks() {
         toast.success(`Loaded ${nextFiles.length} link${nextFiles.length === 1 ? '' : 's'}`);
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to load links';
+      const message = getApiErrorMessage(err, 'Failed to load links');
 
       if (message.toLowerCase().includes('session')) {
         setFiles([]);
@@ -32,7 +34,7 @@ export default function AnonLinks() {
       }
 
       console.error('anon links load', err);
-      toast.error('Failed to load links');
+      toast.error(ANON_ERRORS.failedToLoadLinks);
     }
   };
 
@@ -59,7 +61,7 @@ export default function AnonLinks() {
       toast.success('Link deleted successfully');
     } catch (err) {
       console.error('delete anon', err);
-      toast.error('Failed to delete link');
+      toast.error(ANON_ERRORS.failedToDeleteLink);
     } finally {
       setDeleting(null);
     }

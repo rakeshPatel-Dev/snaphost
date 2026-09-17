@@ -6,6 +6,7 @@ import PdfPreview from './PdfPreview';
 import FloatingBadge from './Floating';
 import { useGetFileQuery } from '@/state/api';
 import { getApiErrorMessage } from '@/lib/api-error';
+import { FILE_ERRORS } from '@/lib/messages';
 import type { FilePreviewProps } from '@/types/components';
 
 export default function FilePreview({ fileId }: FilePreviewProps) {
@@ -25,7 +26,7 @@ export default function FilePreview({ fileId }: FilePreviewProps) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <p className="text-muted-foreground">
-          {getApiErrorMessage(error, 'File not found')}
+          {getApiErrorMessage(error, FILE_ERRORS.fileNotFound)}
         </p>
       </div>
     );

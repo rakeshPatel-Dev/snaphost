@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import DashedGrid from '@/components/shared/DashedGrid';
+import { PASSWORD_ERRORS } from '@/lib/messages';
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
@@ -29,7 +30,7 @@ export default function ForgotPasswordPage() {
 
             toast.info('Check your email for password reset instructions.');
         } catch (err) {
-            toast.error(err instanceof Error ? err.message : 'Failed to send reset email');
+            toast.error(err instanceof Error ? err.message : PASSWORD_ERRORS.failedToSendResetEmail);
         } finally {
             setLoading(false);
         }

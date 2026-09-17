@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useDeleteFileMutation, useUpdateFileMutation } from '@/state/api';
 import { getApiErrorMessage } from '@/lib/api-error';
+import { FILE_ERRORS, TOAST_LABELS } from '@/lib/messages';
 import type { AppFile } from '@/types/app';
 import AccountInfo from './components/AccountInfo';
 import TierBanner from './components/TierBanner';
@@ -45,9 +46,9 @@ export default function ProfileDashboard({
     });
 
     await toast.promise(op, {
-      loading: 'Copying...',
-      success: 'Link copied to clipboard',
-      error: 'Failed to copy link',
+      loading: TOAST_LABELS.copyLink.loading,
+      success: TOAST_LABELS.copyLink.success,
+      error: FILE_ERRORS.failedToCopyLink,
     });
   }
 
@@ -68,12 +69,12 @@ export default function ProfileDashboard({
         });
 
       await toast.promise(op, {
-        loading: 'Saving changes...',
-        success: 'Link updated',
-        error: (err) => getApiErrorMessage(err, 'Failed to update file'),
+        loading: TOAST_LABELS.saveFile.loading,
+        success: TOAST_LABELS.saveFile.success,
+        error: (err) => getApiErrorMessage(err, FILE_ERRORS.failedToUpdateFile),
       });
     } catch (error) {
-      toast.error(getApiErrorMessage(error, 'Failed to update file'));
+      toast.error(getApiErrorMessage(error, FILE_ERRORS.failedToUpdateFile));
     } finally {
       setEditingFileId(null);
     }
@@ -91,12 +92,12 @@ export default function ProfileDashboard({
         });
 
       await toast.promise(op, {
-        loading: 'Deleting link...',
-        success: 'Link deleted',
-        error: (err) => getApiErrorMessage(err, 'Failed to delete file'),
+        loading: TOAST_LABELS.deleteFile.loading,
+        success: TOAST_LABELS.deleteFile.success,
+        error: (err) => getApiErrorMessage(err, FILE_ERRORS.failedToDeleteFile),
       });
     } catch (error) {
-      toast.error(getApiErrorMessage(error, 'Failed to delete file'));
+      toast.error(getApiErrorMessage(error, FILE_ERRORS.failedToDeleteFile));
     } finally {
       setEditingFileId(null);
     }

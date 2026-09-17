@@ -14,6 +14,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import DeleteAccountDialog from '@/components/shared/DeleteAccountDialog';
 import { useAuth } from '@/components/providers/auth-provider';
 import { toast } from 'sonner';
+import { AUTH_ERRORS } from '@/lib/messages';
 
 export default function UserMenu() {
     const { user, signOut } = useAuth();
@@ -25,7 +26,7 @@ export default function UserMenu() {
             window.location.href = '/';
         } catch (e) {
             console.error('Error signing out:', e);
-            toast.error('Failed to sign out. Please try again.');
+            toast.error(AUTH_ERRORS.failedToSignOut);
         }
     }
 

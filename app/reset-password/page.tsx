@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import PasswordRequirements, { evaluatePasswordRequirements } from '@/components/auth/PasswordRequirements';
 import PasswordField from '@/components/auth/PasswordField';
 import DashedGrid from '@/components/shared/DashedGrid';
+import { PASSWORD_ERRORS } from '@/lib/messages';
 
 export default function ResetPasswordPage() {
     const [password, setPassword] = useState('');
@@ -42,7 +43,7 @@ export default function ResetPasswordPage() {
             toast.success('Password updated - you are signed in');
             router.replace('/profile');
         } catch (err) {
-            toast.error(err instanceof Error ? err.message : 'Unable to update password');
+            toast.error(err instanceof Error ? err.message : PASSWORD_ERRORS.failedToUpdatePassword);
         } finally {
             setLoading(false);
         }
