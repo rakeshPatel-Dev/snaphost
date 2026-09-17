@@ -29,8 +29,7 @@ export const metadata: Metadata = {
       { url: "/icon0.svg", type: "image/svg+xml" },
       { url: "/icon1.png", type: "image/png", sizes: "32x32" },
     ],
-    apple: "/apple-touch-icon.png",
-    shortcut: "/favicon.ico",
+    apple: "/apple-icon.png",
   },
   description:
     "Instantly upload and share images and PDFs with clean, fast links. No login required. Simple, secure file hosting in seconds.",
@@ -79,7 +78,6 @@ export default function RootLayout({
       <head>
         <meta name="apple-mobile-web-app-title" content="Snaphost" />
         <meta name="application-name" content="Snaphost" />
-        <link rel="manifest" href="/manifest.json" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
