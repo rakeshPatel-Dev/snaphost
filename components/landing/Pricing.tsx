@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
+import { useState } from 'react';
 import { Check, Minus, Zap, User, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Container from '@/components/shared/Container';
@@ -25,12 +25,11 @@ const features: Feature[] = [
   { label: 'Link expiration',       free: '24 hours (auto)',     starter: 'User-controlled',     pro: 'User-controlled' },
   { label: 'Custom URL path',       free: false,                 starter: true,                  pro: true },
   { label: 'File management dashboard', free: false,             starter: true,                  pro: true },
-  { label: 'Delete uploads',        free: false,                 starter: true,                  pro: true },
+  { label: 'Delete uploads',        free: true,                  starter: true,                  pro: true },
   { label: 'Custom expiry rules',   free: false,                 starter: true,                  pro: true },
-  { label: 'Password-protected links', free: false,              starter: false,                 pro: true },
-  { label: 'Custom domain',         free: false,                 starter: false,                 pro: true },
-  { label: 'Upload analytics',      free: false,                 starter: false,                 pro: true },
-  { label: 'API access',            free: false,                 starter: false,                 pro: true },
+  { label: 'Password-protected links', free: false,              starter: false,                 pro: 'Coming soon' },
+  { label: 'Custom domain',         free: false,                 starter: false,                 pro: 'Coming soon' },
+  { label: 'Upload analytics',      free: false,                 starter: false,                 pro: 'Coming soon' },
   { label: 'Priority support',      free: false,                 starter: false,                 pro: true },
 ];
 
@@ -73,7 +72,7 @@ const plans = [
     monthlyPrice: 7,
     yearlyPrice: 5,
     cta: 'Get Pro',
-    ctaHref: '/sign-up',
+    ctaHref: '/getpro',
     highlight: false,
     badge: 'Coming soon',
   },
@@ -99,7 +98,6 @@ function FeatureValue({ value }: { value: string | boolean }) {
 
 export default function Pricing() {
   const [billing, setBilling] = useState<BillingCycle>('monthly');
-
   return (
     <section id="pricing" className="py-20 sm:py-24 relative overflow-hidden border-t border-border/50 scroll-mt-16">
       <Container>
@@ -111,7 +109,9 @@ export default function Pricing() {
 
           <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/20 p-1">
             <button
+              type="button"
               onClick={() => setBilling('monthly')}
+              aria-pressed={billing === 'monthly'}
               className={cn(
                 'px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer',
                 billing === 'monthly'
@@ -122,7 +122,9 @@ export default function Pricing() {
               Monthly
             </button>
             <button
+              type="button"
               onClick={() => setBilling('yearly')}
+              aria-pressed={billing === 'yearly'}
               className={cn(
                 'px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-1.5 cursor-pointer',
                 billing === 'yearly'
@@ -206,7 +208,6 @@ export default function Pricing() {
                   {/* CTA */}
                   <Button
                     asChild
-                    disabled={plan.key === 'pro'}
                     className="w-full h-11 px-6 rounded-full font-medium text-sm cursor-pointer"
                   >
                     <Link href={plan.ctaHref}>{plan.cta}</Link>
