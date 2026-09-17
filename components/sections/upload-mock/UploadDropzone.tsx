@@ -34,7 +34,7 @@ export default function UploadDropzone({
       <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-background border border-border group-hover:border-accent/40 group-hover:scale-105 transition-all text-muted-foreground group-hover:text-accent sm:h-18 sm:w-18">
         <AnonUpload className="h-13 w-13 sm:h-15 sm:w-15" />
       </div>
-      <p className="text-base font-bold text-foreground sm:text-lg">Drag and drop or click to upload</p>
+      <p className="text-base font-semibold text-foreground sm:text-lg">Drag and drop or click to upload</p>
       <p className="mt-1 text-xs text-muted-foreground">PNG, JPG, WEBP, and PDF only.</p>
     </div>
   );

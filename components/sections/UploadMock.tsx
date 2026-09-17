@@ -180,7 +180,7 @@ export function UploadMock({
                 </div>
                 <div className="min-w-0 space-y-0.5">
                   <p className="text-sm font-medium leading-none tracking-tight">{title}</p>
-                  <p className="text-[11px] leading-snug text-current/80">{description}</p>
+                  <p className="text-xs leading-snug text-current/80">{description}</p>
                 </div>
               </div>
             </div>
@@ -229,7 +229,7 @@ export function UploadMock({
             {uploadState === "completed" && currentFile && (
               <div className="space-y-3 animate-in fade-in zoom-in-95 duration-200">
                 <div className="flex items-center gap-3 rounded-4xl border border-border/60 bg-background/60 px-3 py-3 sm:px-4 sm:py-3.5">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/10 text-[11px] font-semibold tracking-wide text-accent">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/10 text-xs font-semibold tracking-wide text-accent">
                     {currentFile.fileType === "pdf" ? "PDF" : "IMG"}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -237,11 +237,11 @@ export function UploadMock({
                       <p className="min-w-0 flex-1 truncate text-xs font-semibold tracking-tight text-foreground">
                         {currentFile.filename}
                       </p>
-                      <span className="shrink-0 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-emerald-500">
+                      <span className="shrink-0 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium uppercase tracking-wider text-emerald-500">
                         Ready
                       </span>
                     </div>
-                    <p className="mt-0.5 text-[11px] text-muted-foreground">
+                    <p className="mt-0.5 text-xs text-muted-foreground">
                       {currentFile.fileSize} · expires in 24h
                     </p>
                   </div>
@@ -345,7 +345,7 @@ export function UploadMock({
                 </div>
                 <div className="min-w-0">
                   <p className="text-xs font-medium leading-tight tracking-tight text-foreground">{title}</p>
-                  <p className="truncate text-[11px] text-muted-foreground">{description}</p>
+                  <p className="truncate text-xs text-muted-foreground">{description}</p>
                 </div>
               </div>
             ))}

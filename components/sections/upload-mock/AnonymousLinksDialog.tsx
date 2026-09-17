@@ -21,7 +21,7 @@ export default function AnonymousLinksDialog({
 }: AnonymousLinksDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="rounded-3xl sm:max-w-lg!">
+      <DialogContent className="rounded-4xl sm:max-w-lg!">
         <DialogHeader className="pb-2">
           <DialogTitle className="text-xl">Anonymous Links</DialogTitle>
           <DialogDescription>

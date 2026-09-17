@@ -190,7 +190,7 @@ export default function ShareModal({
             </h3>
 
             <div className="flex flex-col items-center">
-              <div className="bg-white p-6 rounded-2xl shadow-xl border border-border">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-border">
                 <QRCode value={fileUrl} size={180} level="H" />
               </div>
               <div className="mt-6 text-center">

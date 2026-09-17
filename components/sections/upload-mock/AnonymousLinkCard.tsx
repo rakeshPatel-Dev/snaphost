@@ -35,7 +35,7 @@ export default function AnonymousLinkCard({
       <div className="rounded-4xl border border-border/60 bg-card/80 p-4 shadow-[0_10px_30px_-20px_rgba(0,0,0,0.2)] backdrop-blur-xl sm:p-5">
         {/* Header: file info + actions */}
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted/40 text-[10px] font-semibold tracking-wide text-foreground sm:h-11 sm:w-11 sm:text-[11px]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted/40 text-xs font-semibold tracking-wide text-foreground sm:h-11 sm:w-11 sm:text-xs">
             {fileType === 'pdf' ? 'PDF' : 'IMG'}
           </div>
 
@@ -43,7 +43,7 @@ export default function AnonymousLinkCard({
             <p className="truncate text-sm font-medium tracking-tight text-foreground">
               {filename}
             </p>
-            <p className="mt-0.5 text-[11px] text-muted-foreground">
+            <p className="mt-0.5 text-xs text-muted-foreground">
               {fileSize} · {formatShortDate(createdAt)}
             </p>
           </div>
@@ -95,7 +95,7 @@ export default function AnonymousLinkCard({
 
         {/* URL row */}
         <div className="mt-3 flex items-center gap-2 rounded-full border border-border/60 bg-muted/20 py-2 pl-3.5 pr-1.5 sm:mt-3.5">
-          <p className="min-w-0 flex-1 truncate font-mono text-[11px] text-foreground">
+          <p className="min-w-0 flex-1 truncate font-mono text-xs text-foreground">
             {url}
           </p>
           <button
@@ -113,7 +113,7 @@ export default function AnonymousLinkCard({
         </div>
 
         {/* Footer meta */}
-        <div className="mt-2.5 flex items-center gap-2 px-1 text-[11px] text-muted-foreground">
+        <div className="mt-2.5 flex items-center gap-2 px-1 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
             <Clock className="h-3 w-3" />
             {getTimeRemaining(expiresAt)}
