@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-gradient-to-b from-blue-500 to-blue-600 text-white shadow-[0_4px_14px_-2px_rgba(37,99,235,0.45)] hover:from-blue-600 hover:to-blue-700 hover:shadow-[0_6px_18px_-4px_rgba(37,99,235,0.6)] focus-visible:border-blue-300 focus-visible:ring-blue-400/40 active:not-aria-[haspopup]:shadow-[0_2px_6px_-2px_rgba(37,99,235,0.35)] dark:shadow-[0_4px_16px_-2px_rgba(59,130,246,0.55)] dark:hover:shadow-[0_6px_20px_-4px_rgba(59,130,246,0.7)]",
+          "bg-gradient-to-b from-emerald-500 to-emerald-600 text-white shadow-[0_4px_14px_-2px_rgba(5,150,105,0.45)] hover:from-emerald-600 hover:to-emerald-700 hover:shadow-[0_6px_18px_-4px_rgba(5,150,105,0.6)] focus-visible:border-emerald-300 focus-visible:ring-emerald-400/40 active:not-aria-[haspopup]:shadow-[0_2px_6px_-2px_rgba(5,150,105,0.35)] dark:shadow-[0_4px_16px_-2px_rgba(16,185,129,0.5)] dark:hover:shadow-[0_6px_20px_-4px_rgba(16,185,129,0.65)]",
         outline:
           "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         secondary:
@@ -19,7 +19,7 @@ const buttonVariants = cva(
           "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
-        link: "text-blue-600 underline-offset-4 hover:underline dark:text-blue-400",
+        link: "text-emerald-600 underline-offset-4 hover:underline dark:text-emerald-400",
       },
       size: {
         default:

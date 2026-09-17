@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 @layer theme, base, components, utilities;
 
 :root {
@@ -10,7 +11,7 @@
   --popover-foreground: #0f172a;
   --muted: #f8fafc;
   --muted-foreground: #64748b;
-  --accent: #003e9e;
+  --accent: #059669;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
@@ -20,11 +21,8 @@
   --primary-foreground: #f8fafc;
   --secondary: #f1f5f9;
   --secondary-foreground: #0f172a;
-  --grid: rgba(148, 163, 184, 0.07);
-  /* Use subtle neutral glows (remove dominant blue page tint) */
-  --glow-color: rgba(15, 23, 42, 0.03);
-  --glow-color-purple: rgba(99, 102, 241, 0.03);
-  --glow-color-rose: rgba(244, 63, 94, 0.03);
+  /* Single subtle brand glow keeps the page neutral. */
+  --glow-color: rgba(5, 150, 105, 0.05);
   --grid-dashed-line: #e7e5e4;
 }
 
@@ -60,8 +58,8 @@
   --popover-foreground: #fafafa;
   --muted: #18181b;
   --muted-foreground: #a1a1aa;
-  --accent: #3b82f6;
-  --accent-foreground: #fafafa;
+  --accent: #10b981;
+  --accent-foreground: #052e16;
   --destructive: #ef4444;
   --destructive-foreground: #09090b;
   --border: #27272a;
@@ -70,10 +68,7 @@
   --primary-foreground: #09090b;
   --secondary: #18181b;
   --secondary-foreground: #fafafa;
-  --grid: rgba(255, 255, 255, 0.02);
-  --glow-color: rgba(255, 255, 255, 0.015);
-  --glow-color-purple: rgba(139, 92, 246, 0.02);
-  --glow-color-rose: rgba(244, 63, 94, 0.01);
+  --glow-color: rgba(16, 185, 129, 0.06);
   --grid-dashed-line: rgba(255, 255, 255, 0.08);
 }
 
@@ -81,53 +76,18 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
-  background-image: 
-    radial-gradient(at 0% 0%, var(--glow-color) 0px, transparent 50%), 
-    radial-gradient(at 100% 0%, var(--glow-color-purple) 0px, transparent 50%);
+  background-image: radial-gradient(at 50% -10%, var(--glow-color) 0px, transparent 60%);
   background-attachment: fixed;
 }
 
-/* Custom background patterns */
-.bg-grid-pattern {
-  background-size: 60px 60px;
-  background-image:
-    linear-gradient(to right, var(--grid) 3px, transparent 3px),
-    linear-gradient(to bottom, var(--grid) 3px, transparent 3px);
+::selection {
+  background-color: color-mix(in oklab, var(--accent) 24%, transparent);
+  color: var(--foreground);
 }
 
-.bg-dashed-fade-grid {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: 
-    linear-gradient(to right, var(--grid-dashed-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-dashed-line) 1px, transparent 1px);
-  background-size: 20px 20px;
-  background-position: 0 0, 0 0;
-  mask-image: 
-    repeating-linear-gradient(to right, black 0px, black 3px, transparent 3px, transparent 8px),
-    repeating-linear-gradient(to bottom, black 0px, black 3px, transparent 3px, transparent 8px),
-    radial-gradient(ellipse 100% 80% at 50% 100%, #000 50%, transparent 90%);
-  -webkit-mask-image: 
-    repeating-linear-gradient(to right, black 0px, black 3px, transparent 3px, transparent 8px),
-    repeating-linear-gradient(to bottom, black 0px, black 3px, transparent 3px, transparent 8px),
-    radial-gradient(ellipse 100% 80% at 50% 100%, #000 50%, transparent 90%);
-  mask-composite: intersect;
-  -webkit-mask-composite: source-in;
-}
-
-.glow-radial {
-  background: radial-gradient(circle at center, var(--glow-color) 0%, transparent 70%);
-}
-
-@keyframes pulse-slow {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 0.3; }
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--foreground) 22%, transparent) transparent;
 }
 
 @keyframes float-soft {
