@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { useDeleteFileMutation, useUpdateFileMutation } from '@/state/api';
 import { getApiErrorMessage } from '@/lib/api-error';
 import { FILE_ERRORS, TOAST_LABELS } from '@/lib/messages';
 import type { AppFile } from '@/types/app';
+import { cn } from '@/lib/utils';
 import Container from '@/components/shared/Container';
 import AccountInfo from './components/AccountInfo';
 import TierBanner from './components/TierBanner';
@@ -26,15 +27,17 @@ export default function ProfileDashboard({
 }: ProfileDashboardProps) {
   const [files, setFiles] = useState<AppFile[]>(initialFiles);
   const [savedFiles, setSavedFiles] = useState<AppFile[]>(initialFiles);
+  const [prevInitialFiles, setPrevInitialFiles] = useState(initialFiles);
   const [editingFileId, setEditingFileId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [updateFile] = useUpdateFileMutation();
   const [deleteFileMutation] = useDeleteFileMutation();
 
-  useEffect(() => {
+  if (prevInitialFiles !== initialFiles) {
+    setPrevInitialFiles(initialFiles);
     setFiles(initialFiles);
     setSavedFiles(initialFiles);
-  }, [initialFiles]);
+  }
 
   const isPremium = tier === 'premium';
 
@@ -104,7 +107,12 @@ export default function ProfileDashboard({
 
   return (
     <Container className="py-12 sm:py-16">
-      <div className="space-y-6">
+      <div
+        className={cn(
+          'space-y-6',
+          isPremium && 'premium-glow rounded-4xl border border-amber-400/15 bg-amber-400/[0.015] p-4 sm:p-6'
+        )}
+      >
         <TierBanner isPremium={isPremium} />
 
         <AccountInfo isPremium={isPremium} username={initialUsername} email={email} tier={tier} />
