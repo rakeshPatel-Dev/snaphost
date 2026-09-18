@@ -1,11 +1,11 @@
-import { BentoGrid, CTA, FAQ, Hero, LogoCloud, Pricing } from '@/features/landing';
+import { FeatureShowcase, CTA, FAQ, Hero, LogoCloud, Pricing } from '@/features/landing';
 
 export default function Home() {
   return (
     <main className="flex flex-col">
       <Hero />
       <LogoCloud />
-      <BentoGrid />
+      <FeatureShowcase />
       <Pricing />
       <FAQ />
       <CTA />

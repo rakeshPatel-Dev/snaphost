@@ -42,12 +42,12 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Snaphost" }],
   creator: "Snaphost",
-  metadataBase: new URL("https://snaphost.cloud"),
+  metadataBase: new URL("https://snaphost.dev"),
   openGraph: {
     title: "Snaphost — Instant file sharing",
     description:
       "Upload images and PDFs and get a clean, shareable link in seconds. No account needed, and links expire automatically.",
-    url: "https://snaphost.cloud",
+    url: "https://snaphost.dev",
     siteName: "Snaphost",
     type: "website",
   },
