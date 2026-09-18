@@ -27,8 +27,7 @@ export default function GetProPage() {
           </h1>
 
           <p className="mt-6 text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-10">
-            Snaphost Pro is here with advanced file management,
-            priority support, and enhanced storage limits. Upgrade your account today.
+            Advanced file management, priority support, and expanded storage — all yours on Pro.
           </p>
 
           <div className="flex flex-wrap justify-center gap-3.5">
