@@ -73,7 +73,7 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
           className={cn(
             'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium',
             isPremium
-              ? 'border-accent/20 bg-accent/10 text-accent'
+              ? 'border-amber-400/25 bg-amber-400/10 text-amber-500'
               : 'border-border/60 bg-muted/20 text-muted-foreground'
           )}
         >
