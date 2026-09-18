@@ -1,7 +1,7 @@
 export const footerLinks = [
   { name: "GitHub", href: "https://github.com/snaphost" },
   { name: "Twitter", href: "https://twitter.com/snaphost" },
-  { name: "Contact", href: "mailto:hello@snaphost.cloud" },
+  { name: "Contact", href: "mailto:hello@snaphost.dev" },
 ];
 
 export const companyLinks = [

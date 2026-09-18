@@ -77,7 +77,7 @@ export const termsOfServiceSections = [
   },
   {
     title: '10. Contact',
-    body: ['If you have questions about these Terms, contact hello@snaphost.cloud.'],
+    body: ['If you have questions about these Terms, contact hello@snaphost.dev.'],
   },
 ];
 
@@ -134,7 +134,7 @@ export const privacyPolicySections = [
   {
     title: '8. Your Choices',
     body: [
-      'You can stop using Snaphost at any time. If you need account support, contact us at hello@snaphost.cloud.',
+      'You can stop using Snaphost at any time. If you need account support, contact us at hello@snaphost.dev.',
     ],
   },
   {
@@ -151,6 +151,6 @@ export const privacyPolicySections = [
   },
   {
     title: '11. Contact',
-    body: ['For privacy questions, contact hello@snaphost.cloud.'],
+    body: ['For privacy questions, contact hello@snaphost.dev.'],
   },
 ];
