@@ -30,8 +30,14 @@ export default function UploadMockTabs({
         className={`${base} ${activeTab === 'upload' ? active : inactive}`}
       >
         <UploadCloud className="h-3.5 w-3.5" />
-        Anonymous upload
+
+        {/* Short label — mobile only */}
+        <span className="sm:hidden">Upload</span>
+
+        {/* Full label — sm and up */}
+        <span className="hidden sm:inline">Anonymous upload</span>
       </button>
+
       <button
         type="button"
         role="tab"
@@ -40,7 +46,16 @@ export default function UploadMockTabs({
         className={`${base} ${activeTab === 'links' ? active : inactive}`}
       >
         <Link2 className="h-3.5 w-3.5" />
-        Created links ({linksCount})
+
+        {/* Short label — mobile only */}
+        <span className="sm:hidden">
+          Links{linksCount ? ` (${linksCount})` : ''}
+        </span>
+
+        {/* Full label — sm and up */}
+        <span className="hidden sm:inline">
+          Created links ({linksCount})
+        </span>
       </button>
     </div>
   );
