@@ -12,7 +12,7 @@ const buttonVariants = cva(
         default:
           "bg-gradient-to-b from-emerald-500 to-emerald-600 text-white shadow-[0_4px_14px_-2px_rgba(5,150,105,0.45)] hover:from-emerald-600 hover:to-emerald-700 hover:shadow-[0_6px_18px_-4px_rgba(5,150,105,0.6)] focus-visible:border-emerald-300 focus-visible:ring-emerald-400/40 active:not-aria-[haspopup]:shadow-[0_2px_6px_-2px_rgba(5,150,105,0.35)] dark:shadow-[0_4px_16px_-2px_rgba(16,185,129,0.5)] dark:hover:shadow-[0_6px_20px_-4px_rgba(16,185,129,0.65)]",
         outline:
-          "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+          "border-foreground/15 bg-gradient-to-b from-background to-muted/50 shadow-[0_4px_14px_-2px_rgba(15,23,42,0.12)] hover:from-muted hover:to-muted hover:text-foreground hover:shadow-[0_6px_18px_-4px_rgba(15,23,42,0.18)] aria-expanded:from-muted aria-expanded:to-muted aria-expanded:text-foreground active:not-aria-[haspopup]:shadow-[0_2px_6px_-2px_rgba(15,23,42,0.1)] dark:border-foreground/20 dark:from-white/[0.08] dark:to-white/[0.02] dark:shadow-[0_4px_16px_-2px_rgba(0,0,0,0.5)] dark:hover:from-white/[0.12] dark:hover:to-white/[0.06] dark:hover:shadow-[0_6px_20px_-4px_rgba(0,0,0,0.65)] dark:aria-expanded:from-white/[0.12] dark:aria-expanded:to-white/[0.06]",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:
