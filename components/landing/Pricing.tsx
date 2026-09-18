@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import Container from '@/components/shared/Container';
 import SectionHeading from '@/components/shared/SectionHeading';
 import { Button } from '@/components/ui/button';
+import { useTier } from '@/lib/useTier';
 
 type BillingCycle = 'monthly' | 'yearly';
 
@@ -98,6 +99,7 @@ function FeatureValue({ value }: { value: string | boolean }) {
 
 export default function Pricing() {
   const [billing, setBilling] = useState<BillingCycle>('monthly');
+  const { isPremium } = useTier();
   return (
     <section id="pricing" className="py-20 sm:py-24 relative overflow-hidden border-t border-border/50 scroll-mt-16">
       <Container>
@@ -156,14 +158,16 @@ export default function Pricing() {
                 )}
               >
                 {/* Badge */}
-                {plan.badge && (
+                {(plan.badge || (plan.key === 'pro' && isPremium)) && (
                   <div className={cn(
                     'absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border',
-                    plan.highlight
-                      ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
-                      : 'bg-muted/30 text-muted-foreground border-border/60'
+                    plan.key === 'pro' && isPremium
+                      ? 'premium-gradient text-white border-transparent'
+                      : plan.highlight
+                        ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+                        : 'bg-muted/30 text-muted-foreground border-border/60'
                   )}>
-                    {plan.badge}
+                    {plan.key === 'pro' && isPremium ? 'Current plan' : plan.badge}
                   </div>
                 )}
 
@@ -206,12 +210,19 @@ export default function Pricing() {
                   </div>
 
                   {/* CTA */}
-                  <Button
-                    asChild
-                    className="w-full h-11 px-6 rounded-full font-medium text-sm cursor-pointer"
-                  >
-                    <Link href={plan.ctaHref}>{plan.cta}</Link>
-                  </Button>
+                  {plan.key === 'pro' && isPremium ? (
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="w-full h-11 px-6 rounded-full font-medium text-sm cursor-pointer border-amber-400/30 text-amber-500 hover:bg-amber-400/10 hover:text-amber-500"
+                    >
+                      <Link href="/profile">Manage plan</Link>
+                    </Button>
+                  ) : (
+                    <Button asChild className="w-full h-11 px-6 rounded-full font-medium text-sm cursor-pointer">
+                      <Link href={plan.ctaHref}>{plan.cta}</Link>
+                    </Button>
+                  )}
 
                   {/* Key features */}
                   <ul className="mt-6 space-y-2.5">
