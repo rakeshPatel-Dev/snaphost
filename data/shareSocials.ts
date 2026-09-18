@@ -4,28 +4,31 @@ interface ShareOption {
   id: string;
   name: string;
   platform?: SocialPlatform;
-  icon?: any; // Kept for backward compatibility if needed, but we prefer platform
+  icon?: any;
   className: string;
   iconColor: string;
   shareUrl?: (fileUrl: string, filename: string, fileSize?: string) => string;
 }
 
+// Optional third arg lets you pass size, e.g. "2.4 MB"
+// so messages can say "a 2.4 MB file" instead of just "a file".
+
+const surface =
+  'bg-muted/30 hover:bg-muted/60 text-foreground border border-border/60 hover:border-border transition-colors';
+
+// Human-friendly file description
+const describeFile = (filename: string, fileSize?: string) =>
+  fileSize ? `${filename} (${fileSize})` : filename;
+
 export const shareSocials: ShareOption[] = [
-  {
-    id: 'copy',
-    name: 'Copy Link',
-    className: 'bg-muted hover:bg-muted/80 text-foreground border border-border/50 hover:border-border',
-    iconColor: 'text-muted-foreground',
-    // Copy doesn't have a platform, it's a utility
-  },
   {
     id: 'twitter',
     name: 'X (Twitter)',
     platform: 'twitter',
-    className: 'bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 hover:border-accent/30',
-    iconColor: 'text-accent',
-    shareUrl: (fileUrl, filename) => {
-      const text = `Check out this file: ${filename}`;
+    className: surface,
+    iconColor: 'text-foreground',
+    shareUrl: (fileUrl, filename, fileSize) => {
+      const text = `Sharing ${describeFile(filename, fileSize)}`;
       return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(fileUrl)}`;
     },
   },
@@ -33,9 +36,11 @@ export const shareSocials: ShareOption[] = [
     id: 'linkedin',
     name: 'LinkedIn',
     platform: 'linkedin',
-    className: 'bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 hover:border-accent/30',
-    iconColor: 'text-accent',
-    shareUrl: (fileUrl) => {
+    className: surface,
+    iconColor: 'text-foreground',
+    shareUrl: (fileUrl, filename) => {
+      // LinkedIn's share endpoint only accepts a URL — no custom text.
+      // The OG tags on the target page are what populate the preview.
       return `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fileUrl)}`;
     },
   },
@@ -43,20 +48,22 @@ export const shareSocials: ShareOption[] = [
     id: 'facebook',
     name: 'Facebook',
     platform: 'facebook',
-    className: 'bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 hover:border-accent/30',
-    iconColor: 'text-accent',
-    shareUrl: (fileUrl) => {
-      return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fileUrl)}`;
+    className: surface,
+    iconColor: 'text-foreground',
+    shareUrl: (fileUrl, filename) => {
+      // Facebook's sharer also ignores custom text. Quote is honored though.
+      const quote = `Sharing ${filename}`;
+      return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fileUrl)}&quote=${encodeURIComponent(quote)}`;
     },
   },
   {
     id: 'whatsapp',
     name: 'WhatsApp',
     platform: 'whatsapp',
-    className: 'bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 hover:border-accent/30',
-    iconColor: 'text-accent',
-    shareUrl: (fileUrl, filename) => {
-      const text = `${filename} - ${fileUrl}`;
+    className: surface,
+    iconColor: 'text-foreground',
+    shareUrl: (fileUrl, filename, fileSize) => {
+      const text = `Hey — here's ${describeFile(filename, fileSize)}:\n${fileUrl}`;
       return `https://wa.me/?text=${encodeURIComponent(text)}`;
     },
   },
@@ -64,16 +71,17 @@ export const shareSocials: ShareOption[] = [
     id: 'telegram',
     name: 'Telegram',
     platform: 'telegram',
-    className: 'bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 hover:border-accent/30',
-    iconColor: 'text-accent',
+    className: surface,
+    iconColor: 'text-foreground',
     shareUrl: (fileUrl, filename) => {
-      return `https://t.me/share/url?url=${encodeURIComponent(fileUrl)}&text=${encodeURIComponent(filename)}`;
+      const text = `Sharing ${filename}`;
+      return `https://t.me/share/url?url=${encodeURIComponent(fileUrl)}&text=${encodeURIComponent(text)}`;
     },
   },
   {
     id: 'email',
     name: 'Email',
-    className: 'bg-destructive/10 hover:bg-destructive/20 text-destructive border border-destructive/20 hover:border-destructive/30',
-    iconColor: 'text-destructive',
+    className: surface,
+    iconColor: 'text-muted-foreground group-hover:text-foreground transition-colors',
   },
 ];
