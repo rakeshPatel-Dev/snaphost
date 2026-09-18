@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 @layer theme, base, components, utilities;
 
 :root {
@@ -47,6 +49,18 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --animate-shine: shine var(--duration) infinite linear;
+  @keyframes shine {
+  0% {
+    background-position: 0% 0%;
+    }
+  50% {
+    background-position: 100% 100%;
+    }
+  to {
+    background-position: 0% 0%;
+    }
+  }
 }
 
 .dark {
@@ -145,4 +159,3 @@ body {
     animation: none;
     mix-blend-mode: normal;
 }
-

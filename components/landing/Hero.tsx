@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { UploadMock } from '../sections/UploadMock';
 import { ArrowRight } from 'lucide-react';
 import DashedGrid from '@/components/shared/DashedGrid';
+import AnnouncementPill from './AnnouncementPill';
 
 export default function Hero() {
   const consoleRef = useRef<HTMLDivElement>(null);
@@ -44,20 +45,7 @@ export default function Hero() {
           transition={{ duration: 0.5, ease: 'easeOut' }}
           className="flex flex-col items-start text-left max-w-3xl"
         >
-          <Link
-            href="/upload"
-            className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/20 hover:bg-muted/40 px-3.5 py-1.5 text-xs font-medium text-foreground transition-all mb-8 group"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-            </span>
-            <span>Snaphost 2.0 is live</span>
-            <span className="text-muted-foreground">•</span>
-            <span className="text-muted-foreground group-hover:text-foreground transition-colors flex items-center gap-1">
-              Upload files fast <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-            </span>
-          </Link>
+          <AnnouncementPill/>
 
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-semibold tracking-tight text-foreground leading-[1.06]">
             Instant file sharing <br className="hidden sm:inline" />
