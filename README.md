@@ -23,7 +23,7 @@ SnapHost solves the problem of quickly sharing files online without friction:
 
 ### ✨ Core Features
 - **File Upload**: PNG, JPG, JPEG, WEBP, PDF
-- **Instant Link Generation**: Format: `snaphost.cloud/f/{fileId}`
+- **Instant Link Generation**: Format: `snaphost.dev/f/{fileId}`
 - **File Preview**: Images render inline, PDFs embedded viewer
 - **Download**: Direct download button
 - **Copy Link**: One-click link sharing
@@ -157,7 +157,7 @@ Body: FormData with 'file' field
 ```json
 {
   "fileId": "abc12345",
-  "url": "https://snaphost.cloud/f/abc12345"
+  "url": "https://snaphost.dev/f/abc12345"
 }
 ```
 

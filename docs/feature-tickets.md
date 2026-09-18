@@ -110,7 +110,7 @@ As a [type of user], I want to [action] so that [benefit].
 
 ### P0 — Shareable Link Generation
 **Status:** Done | **Milestone:** v1.0
-- Format: `snaphost.cloud/f/{fileId}`
+- Format: `snaphost.dev/f/{fileId}`
 - One-click copy to clipboard
 - Publicly accessible preview page
 
@@ -136,7 +136,7 @@ As a [type of user], I want to [action] so that [benefit].
 
 ### P1 — Custom URL Slugs
 **Status:** Done | **Milestone:** v1.0
-- Signed-in users can customize their share link: `snaphost.cloud/{username}/{slug}`
+- Signed-in users can customize their share link: `snaphost.dev/{username}/{slug}`
 - Unique per user, editable from dashboard
 
 ---

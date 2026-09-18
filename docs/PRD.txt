@@ -5,7 +5,7 @@ link in seconds. No sign-up required. Think of it like Imgur for any file.
 
 How It Works
 ------------
-1. Go to snaphost.cloud
+1. Go to snaphost.dev
 2. Drag a file onto the page (PNG, JPG, WEBP, or PDF — max 10 MB)
 3. Instantly get a short link to share with anyone
 4. Done. That's it.
@@ -20,7 +20,7 @@ Signed-In Mode
 --------------
 - Create a free account with email, Google, or GitHub
 - All your uploads live in a personal dashboard
-- Customize the URL (e.g. snaphost.cloud/yourname/my-image)
+- Customize the URL (e.g. snaphost.dev/yourname/my-image)
 - Set custom expiration dates per file
 - Rename or delete files anytime
 
@@ -45,4 +45,4 @@ Planned Features (Coming Soon)
 - API & CLI tool for programmatic uploads
 - Browser extension & mobile app
 
-Built by the SnapHost team. Questions? hello@snaphost.cloud
+Built by the SnapHost team. Questions? hello@snaphost.dev
