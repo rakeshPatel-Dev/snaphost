@@ -13,11 +13,13 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import DeleteAccountDialog from '@/components/shared/DeleteAccountDialog';
 import { useAuth } from '@/components/providers/auth-provider';
+import { useTier } from '@/lib/useTier';
 import { toast } from 'sonner';
 import { AUTH_ERRORS } from '@/lib/messages';
 
 export default function UserMenu() {
     const { user, signOut } = useAuth();
+    const { isPremium } = useTier();
     const [accountDeleteOpen, setAccountDeleteOpen] = useState(false);
 
     const meta = (user?.user_metadata ?? {}) as Record<string, unknown>;
@@ -50,11 +52,16 @@ export default function UserMenu() {
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 relative cursor-pointer rounded-full">
                         <Avatar size="sm">
                             {avatarUrl ? <AvatarImage src={avatarUrl} alt={displayName} /> : null}
                             <AvatarFallback>{initial}</AvatarFallback>
                         </Avatar>
+                        {isPremium && (
+                            <span className="premium-gradient absolute -bottom-0.5 -right-0.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full px-[3px] text-[8px] font-bold leading-none text-white ring-2 ring-background">
+                                P
+                            </span>
+                        )}
                     </Button>
                 </DropdownMenuTrigger>
 

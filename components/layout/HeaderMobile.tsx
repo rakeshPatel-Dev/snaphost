@@ -9,11 +9,13 @@ import { AnimatedThemeToggler } from '../ui/animated-theme-toggler';
 import DeleteAccountDialog from '@/components/shared/DeleteAccountDialog';
 import { useState } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
+import { useTier } from '@/lib/useTier';
 
 export default function HeaderMobile() {
     const [open, setOpen] = useState(false);
     const [accountDeleteOpen, setAccountDeleteOpen] = useState(false);
     const { isSignedIn, signOut } = useAuth();
+    const { isPremium } = useTier();
 
     async function handleSignOut() {
         try {
@@ -75,11 +77,16 @@ export default function HeaderMobile() {
                         ) : (
                             <div className="flex flex-col gap-2 px-1 pt-1">
                                 <Button variant="outline" size="sm" className="w-full rounded-full" asChild>
-                                    <Link href="/profile" onClick={() => setOpen(false)}>
-                                        <UserRound className="h-3.5 w-3.5" />
-                                        Profile
-                                    </Link>
-                                </Button>
+                                        <Link href="/profile" onClick={() => setOpen(false)}>
+                                            <UserRound className="h-3.5 w-3.5" />
+                                            Profile
+                                            {isPremium && (
+                                                <span className="premium-gradient -mr-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[8px] font-bold leading-none text-white">
+                                                    P
+                                                </span>
+                                            )}
+                                        </Link>
+                                    </Button>
                                 <Button variant="outline" size="sm" className="w-full rounded-full" onClick={handleSignOut}>
                                     <LogOut className="h-3.5 w-3.5" />
                                     Sign out
