@@ -96,6 +96,8 @@ export default function RootLayout({
             `,
           }}
         />
+
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="af559c44-6fb8-4b85-b777-1b831e1655de"></script>
       </head>
       <body
         suppressHydrationWarning
