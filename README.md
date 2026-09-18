@@ -42,7 +42,7 @@ SnapHost solves the problem of quickly sharing files online without friction:
 
 ### Prerequisites
 - Node.js 18+
-- pnpm (recommended) or npm
+- npm
 - Supabase account (free tier works)
 
 ### Setup
@@ -51,7 +51,7 @@ SnapHost solves the problem of quickly sharing files online without friction:
    ```bash
    git clone <repo>
    cd snaphost
-   pnpm install
+   npm install
    ```
 
 2. **Environment Variables**
@@ -101,7 +101,7 @@ SnapHost solves the problem of quickly sharing files online without friction:
 
 4. **Run Dev Server**
    ```bash
-   pnpm dev
+   npm run dev
    ```
    
    Open [http://localhost:3000](http://localhost:3000)
@@ -246,7 +246,7 @@ Fetch file metadata.
 
 Install dependencies:
 ```bash
-pnpm install
+npm install
 ```
 
 ---
@@ -313,8 +313,8 @@ vercel --prod
 
 ### Manual Deployment
 ```bash
-pnpm run build
-pnpm start
+npm run build
+npm start
 ```
 
 ---
@@ -344,9 +344,9 @@ pnpm start
 
 ### "Next.js package not found"
 ```bash
-rm -rf node_modules pnpm-lock.yaml
-pnpm install
-pnpm dev
+rm -rf node_modules package-lock.json
+npm install
+npm run dev
 ```
 
 ### Upload fails with 403 error
@@ -361,8 +361,8 @@ pnpm dev
 
 ### Build errors
 ```bash
-pnpm exec tsc --noEmit  # Check TS errors
-pnpm run lint           # Check linting
+npx tsc --noEmit        # Check TS errors
+npm run lint            # Check linting
 ```
 
 ---
