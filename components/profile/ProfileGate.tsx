@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { Loader2 } from 'lucide-react';
 import ProfileDashboard from './ProfileDashboard';
 import { Button } from '@/components/ui/button';
 import { getApiErrorMessage } from '@/lib/api-error';
@@ -13,9 +12,40 @@ export default function ProfileGate() {
 
   if (isLoading || (isSignedIn && loadingProfile)) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-      </div>
+      <Container className="py-12 sm:py-16">
+        <div className="space-y-6 animate-pulse" aria-busy="true" role="status">
+          <div className="h-16 rounded-4xl border border-border/60 bg-muted/30" />
+          <div className="rounded-4xl border border-border/60 bg-card/80">
+            <div className="flex items-center justify-between border-b border-border/50 px-5 py-4">
+              <div className="h-5 w-24 rounded-full bg-muted/60" />
+              <div className="h-6 w-20 rounded-full bg-muted/60" />
+            </div>
+            <div className="grid gap-5 px-5 py-6 sm:grid-cols-2">
+              <div className="h-10 rounded-full bg-muted/50" />
+              <div className="h-10 rounded-full bg-muted/50" />
+            </div>
+          </div>
+          <div className="rounded-4xl border border-border/60 bg-card/80">
+            <div className="flex items-center justify-between border-b border-border/50 px-5 py-4">
+              <div className="h-5 w-28 rounded-full bg-muted/60" />
+              <div className="h-6 w-16 rounded-full bg-muted/60" />
+            </div>
+            {[0, 1].map((i) => (
+              <div key={i} className="space-y-4 px-5 py-5">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-muted/60" />
+                  <div className="h-4 w-2/3 rounded-full bg-muted/50" />
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="h-9 rounded-full bg-muted/50" />
+                  <div className="h-9 rounded-full bg-muted/50" />
+                </div>
+              </div>
+            ))}
+          </div>
+          <span className="sr-only">Loading your profile</span>
+        </div>
+      </Container>
     );
   }
 
