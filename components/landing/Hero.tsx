@@ -8,8 +8,10 @@ import { UploadMock } from '../sections/UploadMock';
 import { ArrowRight } from 'lucide-react';
 import DashedGrid from '@/components/shared/DashedGrid';
 import AnnouncementPill from './AnnouncementPill';
+import { useAuth } from '@/components/providers/auth-provider';
 
 export default function Hero() {
+  const { isSignedIn } = useAuth();
   const consoleRef = useRef<HTMLDivElement>(null);
 
   // Detect viewport >= sm (640px). Scale effect only runs on desktop.
@@ -60,9 +62,17 @@ export default function Hero() {
           </p>
 
           <div className="mt-8 flex items-center gap-3.5 flex-wrap">
-            <Button asChild size="lg" className="h-11 px-6 cursor-pointer">
-              <Link href="/sign-up">Create account</Link>
-            </Button>
+            {!isSignedIn ? (
+              <Button asChild size="lg" className="h-11 px-6 cursor-pointer">
+                <Link href="/sign-up">Create account</Link>
+              </Button>
+            ) : (
+              <Button asChild size="lg" className="h-11 px-6 cursor-pointer">
+                <Link href="/profile">
+                  Dashboard <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            )}
 
             <Button variant="outline" asChild size="lg" className="h-11 px-6 cursor-pointer">
               <a href="#dropzone">Upload anonymously</a>
