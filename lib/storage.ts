@@ -28,9 +28,10 @@ export async function uploadFileToStorage(
     }
 
     return { path: data.path, error: null };
-  } catch (err: any) {
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Upload failed';
     console.error('Upload exception:', err);
-    return { path: '', error: err.message || 'Upload failed' };
+    return { path: '', error: message };
   }
 }
 

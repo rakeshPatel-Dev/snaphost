@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { SocialIcon, SocialPlatform } from '@/components/ui/SocialIcon';
 
-const socials: { platform?: SocialPlatform; href: string; label: string; iconFallback?: any }[] = [
+const socials: { platform?: SocialPlatform; href: string; label: string }[] = [
   { platform: 'github', href: 'https://github.com/snaphost', label: 'GitHub' },
   { platform: 'twitter', href: 'https://twitter.com/snaphost', label: 'Twitter' },
   { platform: 'linkedin', href: 'https://linkedin.com/company/snaphost', label: 'LinkedIn' },
@@ -12,7 +12,7 @@ export default function SocialButtons({ className }: { className?: string }) {
   return (
     <div className={className}>
       <div className="flex items-center gap-1 mt-1">
-        {socials.map(({ platform, href, label }, index) => (
+        {socials.map(({ platform, href, label }) => (
           <Button
             key={label}
             variant="ghost"

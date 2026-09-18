@@ -4,7 +4,6 @@ interface ShareOption {
   id: string;
   name: string;
   platform?: SocialPlatform;
-  icon?: any;
   className: string;
   iconColor: string;
   shareUrl?: (fileUrl: string, filename: string, fileSize?: string) => string;
@@ -38,7 +37,7 @@ export const shareSocials: ShareOption[] = [
     platform: 'linkedin',
     className: surface,
     iconColor: 'text-foreground',
-    shareUrl: (fileUrl, filename) => {
+    shareUrl: (fileUrl) => {
       // LinkedIn's share endpoint only accepts a URL — no custom text.
       // The OG tags on the target page are what populate the preview.
       return `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fileUrl)}`;

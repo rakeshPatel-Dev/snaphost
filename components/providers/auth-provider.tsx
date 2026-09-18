@@ -53,7 +53,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     router.replace('/reset-password');
                 } catch (e) {
                     // fallback to full navigation if router is unavailable
-                    // eslint-disable-next-line no-console
                     console.warn('Redirecting to reset-password failed, falling back to location assign.', e);
                     window.location.href = '/reset-password';
                 }
@@ -67,7 +66,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             mounted = false;
             listener.subscription.unsubscribe();
         };
-    }, []);
+    }, [router]);
 
     const refreshUser = useCallback(async () => {
         const { data } = await supabase.auth.getUser();

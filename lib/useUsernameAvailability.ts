@@ -54,8 +54,6 @@ export function useUsernameAvailability({
   const [debouncedUsername, setDebouncedUsername] = useState('');
 
   useEffect(() => {
-    setDebouncedUsername('');
-
     if (!enabled || !normalizedUsername) {
       return;
     }

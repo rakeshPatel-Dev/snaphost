@@ -6,22 +6,12 @@ import { CONFIG } from './config';
  */
 function generateRandomId(length: number): string {
   const chars = '0123456789abcdefghijklmnopqrstuvwxyz';
-  let result = '';
+  const bytes = new Uint8Array(length);
+  crypto.getRandomValues(bytes);
 
-  if (typeof window === 'undefined') {
-    // Node.js environment (server-side)
-    const crypto = require('crypto');
-    const bytes = crypto.randomBytes(length);
-    for (let i = 0; i < length; i++) {
-      result += chars[bytes[i] % chars.length];
-    }
-  } else {
-    // Browser environment (client-side)
-    const bytes = new Uint8Array(length);
-    crypto.getRandomValues(bytes);
-    for (let i = 0; i < length; i++) {
-      result += chars[bytes[i] % chars.length];
-    }
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars[bytes[i] % chars.length];
   }
 
   return result;
