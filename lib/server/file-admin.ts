@@ -56,6 +56,20 @@ export async function listFilesForUser(userId: string) {
   return (data ?? []) as AdminFileRow[];
 }
 
+export async function listActiveFilesForUser(userId: string) {
+  const { data, error } = await supabaseAdmin
+    .from('files')
+    .select('id, storage_path')
+    .eq('user_id', userId)
+    .is('deleted_at', null);
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []) as Array<{ id: string; storage_path: string }>;
+}
+
 export async function countActiveFilesForUser(userId: string) {
   const { error, count } = await supabaseAdmin
     .from('files')

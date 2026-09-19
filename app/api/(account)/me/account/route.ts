@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCurrentAppUser } from '@/lib/server/auth-user';
 import { getAuthUserFromRequest } from '@/lib/server/auth-server';
 import { deleteFileFromStorage } from '@/lib/server/storage';
-import { deleteFileForUser, listFilesForUser } from '@/lib/server/file-admin';
+import { listActiveFilesForUser } from '@/lib/server/file-admin';
 import { supabaseAdmin } from '@/lib/server/supabase-admin';
 
 export async function DELETE(request: Request) {
@@ -22,34 +22,30 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
   }
 
-  const files = await listFilesForUser(user.id);
+  // Capture active storage paths before removing the Auth identity, whose foreign-key
+  // cascade deletes the application user and all related file records.
+  const files = await listActiveFilesForUser(user.id);
 
-  for (const file of files) {
-    const deleted = await deleteFileFromStorage(file.storage_path);
-
-    if (!deleted) {
-      return NextResponse.json(
-        { error: `Failed to delete storage for ${file.filename}` },
-        { status: 500 }
-      );
-    }
-
-    await deleteFileForUser(file.id, user.id);
+  const { error: authDeleteError } = await supabaseAdmin.auth.admin.deleteUser(authUser.id);
+  if (authDeleteError) {
+    console.error('Supabase auth user deletion failed', authDeleteError);
+    return NextResponse.json({ error: 'Unable to delete your account. Please try again.' }, { status: 500 });
   }
 
-  const { error: userDeleteError } = await supabaseAdmin
-    .from('users')
-    .delete()
-    .eq('auth_user_id', authUser.id);
+  // Storage has no transaction with Postgres; best-effort cleanup cannot undo an
+  // already-complete account deletion, so failed removals are logged for follow-up.
+  const storageResults = await Promise.allSettled(
+    files.map(({ storage_path }) => deleteFileFromStorage(storage_path))
+  );
+  const failedStorageDeletes = storageResults.filter(
+    (result) => result.status === 'rejected' || !result.value
+  );
 
-  if (userDeleteError) {
-    return NextResponse.json({ error: userDeleteError.message }, { status: 500 });
-  }
-
-  try {
-    await supabaseAdmin.auth.admin.deleteUser(authUser.id);
-  } catch (error) {
-    console.error('Supabase auth user deletion failed after local cleanup', error);
+  if (failedStorageDeletes.length > 0) {
+    console.error('Account deleted with orphaned storage objects', {
+      authUserId: authUser.id,
+      failedStorageDeletes: failedStorageDeletes.length,
+    });
   }
 
   return NextResponse.json({ success: true }, { status: 200 });
