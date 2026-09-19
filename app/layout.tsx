@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { SiteChrome } from "@/features/layout";
@@ -68,11 +70,14 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
+  const umamiWebsiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+
   return (
     <html
       lang="en"
@@ -82,7 +87,10 @@ export default function RootLayout({
       <head>
         <meta name="apple-mobile-web-app-title" content="Snaphost" />
         <meta name="application-name" content="Snaphost" />
-        <script
+        <Script
+          id="theme-bootstrap"
+          nonce={nonce}
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               try {
@@ -99,7 +107,15 @@ export default function RootLayout({
           }}
         />
 
-        <script defer src="https://cloud.umami.is/script.js" data-website-id="af559c44-6fb8-4b85-b777-1b831e1655de"></script>
+        {umamiWebsiteId ? (
+          <Script
+            id="umami-analytics"
+            src="https://cloud.umami.is/script.js"
+            data-website-id={umamiWebsiteId}
+            nonce={nonce}
+            strategy="afterInteractive"
+          />
+        ) : null}
       </head>
       <body
         suppressHydrationWarning
