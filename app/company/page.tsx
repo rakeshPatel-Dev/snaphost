@@ -3,6 +3,7 @@ import { ArrowRight, Scale, ShieldCheck } from 'lucide-react';
 import { companyOverviewLinks } from '@/data/company';
 import Container from '@/components/shared/Container';
 import SectionHeading from '@/components/shared/SectionHeading';
+import Reveal from '@/components/motion/Reveal';
 
 export const metadata = {
     title: 'Company',
@@ -28,8 +29,8 @@ export default function CompanyPage() {
                         const Icon = iconMap[card.title as keyof typeof iconMap];
 
                         return (
-                            <Link
-                                key={card.title}
+                            <Reveal key={card.title} delay={0.05}>
+                                <Link
                                 href={card.href}
                                 className="group flex flex-col rounded-4xl border border-border/60 bg-card/80 p-6 backdrop-blur-xl transition-colors hover:bg-card sm:p-7"
                             >
@@ -47,6 +48,7 @@ export default function CompanyPage() {
                                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                                 </span>
                             </Link>
+                            </Reveal>
                         );
                     })}
                 </div>

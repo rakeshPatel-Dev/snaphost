@@ -2,6 +2,7 @@ import { UploadBox } from '@/features/upload';
 import Container from '@/components/shared/Container';
 import SectionHeading from '@/components/shared/SectionHeading';
 import DashedGrid from '@/components/shared/DashedGrid';
+import Reveal from '@/components/motion/Reveal';
 
 export default function UploadPage() {
   return (
@@ -16,7 +17,9 @@ export default function UploadPage() {
           />
 
           <div className="mt-12 sm:mt-16">
-            <UploadBox />
+            <Reveal>
+              <UploadBox />
+            </Reveal>
           </div>
         </Container>
       </div>
