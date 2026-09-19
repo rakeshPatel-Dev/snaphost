@@ -1,8 +1,8 @@
-type FAQItem = {
+export type FAQItem = {
   q: string;
   a: string;
 };
-  
+
 export const faqs: FAQItem[] = [
   { 
     q: 'Do I need an account to upload files?', 
@@ -27,5 +27,24 @@ export const faqs: FAQItem[] = [
   { 
     q: 'Where can I manage my uploads?', 
     a: 'Signed-in users can manage uploads from the profile page, where filenames, slugs, expiration settings, and delete actions are available in one place.' 
+  },
+];
+
+export const proFaqs: FAQItem[] = [
+  {
+    q: 'How fast is Pro activation?',
+    a: 'Pro upgrades are processed manually right now. Once we receive your email and payment details, we typically activate Pro within 24 hours.',
+  },
+  {
+    q: 'What payment methods do you accept?',
+    a: 'We currently accept Digital Wallet and Bank Transfer. After you email us, we will send you the payment details and confirm once received.',
+  },
+  {
+    q: 'What happens after I request access?',
+    a: 'We review your email, confirm the payment, and manually upgrade your account to Pro status — usually within a day.',
+  },
+  {
+    q: 'Can I cancel Pro anytime?',
+    a: 'Yes. Since upgrades are manual, just email us to switch back to the free tier — no lock-in and no recurring billing.',
   },
 ];
