@@ -27,6 +27,8 @@ export const UPLOAD_ERRORS = {
   storageFailed: 'We couldn\'t save your file to storage. Please try again in a moment.',
   /** Upload rate limit hit */
   rateLimited: 'Too many upload attempts. Please wait a few minutes and try again.',
+  /** Expiration date is malformed or has already passed */
+  invalidExpirationDate: 'Choose a valid expiration date in the future.',
   /** Free plan daily cap hit */
   freePlanLimitReached: 'You\'ve reached your plan\'s upload limit for today. Upgrade for more.',
 } as const;

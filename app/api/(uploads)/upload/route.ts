@@ -117,12 +117,20 @@ export async function POST(request: NextRequest) {
 
     const uploadType = authUserId ? 'custom' : 'anonymous';
     currentUploadType = uploadType;
-    const expiresAt =
-      uploadType === 'anonymous'
-        ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-        : typeof expiresAtInput === 'string' && expiresAtInput.trim()
-          ? new Date(expiresAtInput).toISOString()
-          : null;
+
+    let expiresAt: string | null = null;
+    if (uploadType === 'anonymous') {
+      expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    } else if (typeof expiresAtInput === 'string' && expiresAtInput.trim()) {
+      const parsed = new Date(expiresAtInput);
+      if (Number.isNaN(parsed.getTime()) || parsed.getTime() <= Date.now()) {
+        return NextResponse.json(
+          { error: UPLOAD_ERRORS.invalidExpirationDate },
+          { status: 400 }
+        );
+      }
+      expiresAt = parsed.toISOString();
+    }
 
     // Upload to storage
     const { path, error: storageError } = await uploadFileToStorage(slug, file, verifiedMimeType);
@@ -130,7 +138,7 @@ export async function POST(request: NextRequest) {
 
     if (storageError) {
       return NextResponse.json(
-        { error: UPLOAD_ERRORS.storageFailed, details: storageError },
+        { error: UPLOAD_ERRORS.storageFailed },
         { status: 500 }
       );
     }
@@ -181,6 +189,13 @@ export async function POST(request: NextRequest) {
 
         if (insErr || !ins) {
           console.error('Failed to create anon session', insErr);
+          if (uploadedStoragePath) {
+            await deleteFileFromStorage(uploadedStoragePath);
+          }
+          return NextResponse.json(
+            { error: SERVER_ERRORS.internalError },
+            { status: 500 }
+          );
         } else {
           anonSessionId = ins.id;
           rawAnonToken = rawToken;
@@ -275,7 +290,7 @@ export async function POST(request: NextRequest) {
 
     console.error('Upload route error:', error);
     return NextResponse.json(
-      { error: SERVER_ERRORS.internalError, details: String(error) },
+      { error: SERVER_ERRORS.internalError },
       { status: 500 }
     );
   }
