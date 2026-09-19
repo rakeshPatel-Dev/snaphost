@@ -37,7 +37,7 @@ export default function GetProPage() {
           <Reveal className="flex flex-col items-start text-left max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3.5 py-1.5 text-xs font-medium text-foreground mb-8">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
+                <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-75 sm:motion-safe:animate-ping" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
               </span>
               <span>Get Early Access to Pro</span>

@@ -39,7 +39,7 @@ export default function FAQ({
             return (
               <Reveal key={index} delay={index * 0.04}>
                 <div
-                  className="rounded-4xl border border-border/60 bg-card/80 backdrop-blur-xl px-5 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)] overflow-hidden transition-all duration-200"
+                  className="overflow-hidden rounded-4xl border border-border/60 bg-card/95 px-5 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)] transition-all duration-200 sm:bg-card/80 sm:backdrop-blur-xl"
                 >
                   <button
                     onClick={() => toggleIndex(index)}

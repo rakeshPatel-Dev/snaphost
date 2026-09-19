@@ -1,7 +1,8 @@
 'use client';
 
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { ReactNode } from 'react';
+import { useMotionEnabled } from './useMotionEnabled';
 
 export default function Reveal({
   children,
@@ -14,13 +15,17 @@ export default function Reveal({
   y?: number;
   className?: string;
 }) {
-  const reduced = useReducedMotion();
+  const canAnimate = useMotionEnabled();
+
+  if (!canAnimate) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <motion.div
       className={className}
-      initial={reduced ? undefined : { opacity: 0, y }}
-      whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-10%' }}
       transition={{ type: 'spring', stiffness: 90, damping: 18, delay }}
     >

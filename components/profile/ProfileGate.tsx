@@ -13,7 +13,7 @@ export default function ProfileGate() {
   if (isLoading || (isSignedIn && loadingProfile)) {
     return (
       <Container className="py-12 sm:py-16">
-        <div className="space-y-6 animate-pulse" aria-busy="true" role="status">
+        <div className="space-y-6 motion-safe:animate-pulse" aria-busy="true" role="status">
           <div className="h-16 rounded-4xl border border-border/60 bg-muted/30" />
           <div className="rounded-4xl border border-border/60 bg-card/80">
             <div className="flex items-center justify-between border-b border-border/50 px-5 py-4">

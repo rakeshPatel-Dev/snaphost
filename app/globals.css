@@ -104,34 +104,9 @@ body {
   scrollbar-color: color-mix(in oklab, var(--foreground) 22%, transparent) transparent;
 }
 
-@keyframes float-soft {
-  0%, 100% {
-    transform: translate3d(0, 0, 0);
-  }
-
-  50% {
-    transform: translate3d(0, -10px, 0);
-  }
-}
-
-.animate-float-slow {
-  animation: float-soft 6s ease-in-out infinite;
-}
-
-.animate-float-medium {
-  animation: float-soft 5s ease-in-out infinite;
-  animation-delay: -1.5s;
-}
-
-.animate-float-fast {
-  animation: float-soft 4.5s ease-in-out infinite;
-  animation-delay: -0.75s;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .animate-float-slow,
-  .animate-float-medium,
-  .animate-float-fast {
+  .animate-ping,
+  .animate-pulse {
     animation: none;
   }
 }

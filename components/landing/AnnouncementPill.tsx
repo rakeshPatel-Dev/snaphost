@@ -13,7 +13,7 @@ const AnnouncementPill = () => {
     return (
         <Link
             href={AnnouncementContent.link}
-            className="group relative inline-flex items-center gap-2 rounded-full h-10 px-3 text-xs font-medium text-foreground mb-8 bg-muted/20 backdrop-blur-md border border-border/60 overflow-hidden"
+            className="group relative inline-flex h-10 items-center gap-2 overflow-hidden rounded-full border border-border/60 bg-muted/70 px-3 text-xs font-medium text-foreground mb-8 sm:bg-muted/20 sm:backdrop-blur-md"
         >
             {/* Traveling shine on the border */}
             <ShineBorder

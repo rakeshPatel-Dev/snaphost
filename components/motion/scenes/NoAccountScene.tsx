@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { UserX, ShieldCheck, Clock, Check, AlertTriangle } from 'lucide-react';
 import UploadMockTabs from '@/components/sections/upload-mock/UploadMockTabs';
@@ -43,7 +43,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 // --- timeline (fractions of t, 0 -> 1) ---
 const UPLOAD_END = 0.3;    // upload tab -> links tab
-const CLICK_START = 0.42;  // copy button pressed (after card settles in)
 const CLICK_END = 0.48;    // copy button "pressed" window ends
 const COPIED_END = 0.6;    // "Link copied" toast clears, full card disappears
 const EXPIRE_END = 0.85;   // bare-link countdown hits zero
@@ -52,50 +51,9 @@ type Phase = 'card' | 'minimal' | 'expired';
 
 export default function NoAccountScene({ t }: { t: number }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [clickPoint, setClickPoint] = useState<{ x: number; y: number } | null>(null);
   const onUploadTab = t < UPLOAD_END;
 
-  const clicked = inWindow(t, CLICK_START, CLICK_END);
   const copied = inWindow(t, CLICK_END, COPIED_END);
-
-  useEffect(() => {
-    if (!clicked && !copied) return;
-
-    const tick = () => {
-      const card = cardRef.current;
-      if (!card) return;
-      const btn = card.querySelector<HTMLElement>(
-        'button[aria-label="Copied"], button[aria-label="Copy link"]'
-      );
-      if (!btn) return;
-
-      let scale = 1;
-      for (let n: HTMLElement | null = card; n; n = n.parentElement) {
-        const cs = getComputedStyle(n);
-        const m = cs.transform;
-        const s = cs.scale;
-        if (m && m !== 'none') {
-          scale *= Math.abs(parseFloat(m.slice(m.indexOf('(') + 1)));
-        }
-        if (s && s !== 'none') {
-          scale *= Math.abs(parseFloat(s));
-        }
-      }
-
-      const wrap = card.getBoundingClientRect();
-      const b = btn.getBoundingClientRect();
-      setClickPoint({
-        x: (b.left - wrap.left + b.width / 2) / scale,
-        y: (b.top - wrap.top + b.height / 2) / scale,
-      });
-    };
-
-    tick();
-    const timer = window.setInterval(tick, 50);
-
-    return () => clearInterval(timer);
-  }, [clicked, copied]);
 
   const phase: Phase =
     t < COPIED_END ? 'card' : t < EXPIRE_END ? 'minimal' : 'expired';
@@ -156,7 +114,7 @@ export default function NoAccountScene({ t }: { t: number }) {
           </AnimatePresence>
         </div>
 
-        <div ref={cardRef} className="relative">
+        <div className="relative">
           <AnonymousLinkCard
             {...demoAnonymousLink}
             copied={copied}
@@ -164,24 +122,6 @@ export default function NoAccountScene({ t }: { t: number }) {
             onOpen={noop}
             onDelete={noop}
           />
-
-          {clicked && clickPoint && (
-            <motion.div
-              key="click"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.12 }}
-              className="pointer-events-none absolute z-30"
-              style={{
-                left: clickPoint.x,
-                top: clickPoint.y,
-              }}
-            >
-              <span className="absolute -inset-2 animate-ping rounded-full bg-emerald-500/25" />
-              <span className="block h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-emerald-500 bg-emerald-500/40" />
-            </motion.div>
-          )}
         </div>
       </div>
     </motion.div>

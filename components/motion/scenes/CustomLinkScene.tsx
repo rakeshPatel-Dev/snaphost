@@ -71,7 +71,7 @@ export default function CustomLinkScene({ t }: { t: number }) {
                   }`}
               >
                 {newSlug}
-                {morphing && <span className="animate-pulse text-accent">|</span>}
+                {morphing && <span className="motion-safe:animate-pulse text-accent">|</span>}
               </motion.span>
             ) : (
               typed && (
@@ -85,7 +85,7 @@ export default function CustomLinkScene({ t }: { t: number }) {
                   className="shrink-0 rounded bg-muted/60 px-1 py-0.5 font-semibold text-foreground"
                 >
                   {typed}
-                  <span className="animate-pulse text-accent">|</span>
+                  <span className="motion-safe:animate-pulse text-accent">|</span>
                 </motion.span>
               )
             )}

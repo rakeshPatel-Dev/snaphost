@@ -1,11 +1,11 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { Check, UserRound } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Container from '@/components/shared/Container';
 import SectionHeading from '@/components/shared/SectionHeading';
 import MotionPreview from '@/components/motion/MotionPreview';
+import Reveal from '@/components/motion/Reveal';
 import { motionScenes } from '@/components/motion';
 import { features } from '@/data/features';
 import { Button } from '../ui/button';
@@ -29,21 +29,16 @@ export default function FeatureShowcase() {
                 key={feature.id}
                 className="grid items-center gap-6 md:grid-cols-2 md:gap-12 lg:gap-16"
               >
-                <motion.div
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-10%' }}
-                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                <Reveal
+                  y={24}
                   className={cn('min-w-0', reverse && 'md:order-2')}
                 >
                   <MotionPreview>{(t) => <Scene t={t} />}</MotionPreview>
-                </motion.div>
+                </Reveal>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-10%' }}
-                  transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
+                <Reveal
+                  y={24}
+                  delay={0.1}
                   className={cn(reverse && 'md:order-1')}
                 >
                   <div className="flex items-center gap-3">
@@ -77,7 +72,7 @@ export default function FeatureShowcase() {
                       For registered users
                     </span>
                   ) : null}
-                </motion.div>
+                </Reveal>
               </div>
             );
           })}

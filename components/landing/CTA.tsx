@@ -11,7 +11,7 @@ export default function CTA() {
     <section className="pt-20 sm:pt-24 pb-20 sm:pb-24 relative overflow-hidden">
       <Container>
         <Reveal>
-        <div className="relative rounded-4xl border border-border/60 bg-card/80 backdrop-blur-xl p-8 sm:p-12 md:p-14 text-left shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)] overflow-hidden">
+        <div className="relative overflow-hidden rounded-4xl border border-border/60 bg-card/95 p-8 text-left shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)] sm:bg-card/80 sm:p-12 sm:backdrop-blur-xl md:p-14">
           <div className="absolute -top-24 left-1/4 w-[80vw] max-w-[600px] h-96 rounded-full bg-accent/5 blur-[80px] pointer-events-none -z-10" />
           <div className="absolute -bottom-24 right-1/4 w-[80vw] max-w-[600px] h-96 rounded-full bg-accent/5 blur-[80px] pointer-events-none -z-10" />
 

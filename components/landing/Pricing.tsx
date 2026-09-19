@@ -113,7 +113,7 @@ export default function Pricing() {
               <Reveal key={plan.key} delay={i * 0.08}>
               <div
                 className={cn(
-                  'relative rounded-4xl border bg-card/80 backdrop-blur-xl p-7 flex flex-col transition-all duration-300 h-full',
+                  'relative flex h-full flex-col rounded-4xl border bg-card/95 p-7 transition-all duration-300 sm:bg-card/80 sm:backdrop-blur-xl',
                   plan.highlight
                     ? 'border-accent/60 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)] md:scale-[1.02]'
                     : 'border-border/60 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)] hover:border-border'
