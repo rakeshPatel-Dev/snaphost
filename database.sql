@@ -166,6 +166,131 @@ CREATE INDEX IF NOT EXISTS idx_files_created_at
 ON files(created_at DESC);
 
 -- ============================================
+-- GLOBAL STORAGE QUOTA
+-- ============================================
+
+-- Change max_bytes to match the storage budget for this project. This migration
+-- starts at 5 GiB and seeds used_bytes from all currently live file records.
+CREATE TABLE IF NOT EXISTS app_storage_quota (
+  singleton BOOLEAN PRIMARY KEY DEFAULT TRUE CHECK (singleton),
+  max_bytes BIGINT NOT NULL CHECK (max_bytes > 0),
+  used_bytes BIGINT NOT NULL DEFAULT 0 CHECK (used_bytes >= 0),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+INSERT INTO app_storage_quota (
+  singleton,
+  max_bytes,
+  used_bytes
+)
+SELECT
+  TRUE,
+  5::BIGINT * 1024 * 1024 * 1024,
+  COALESCE(SUM(size), 0)::BIGINT
+FROM files
+WHERE deleted_at IS NULL
+ON CONFLICT (singleton) DO NOTHING;
+
+ALTER TABLE app_storage_quota ENABLE ROW LEVEL SECURITY;
+
+-- Serializing updates on the singleton row prevents concurrent uploads from
+-- exceeding the quota between the check and the insert.
+CREATE OR REPLACE FUNCTION enforce_global_storage_quota()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  quota app_storage_quota%ROWTYPE;
+  previous_bytes BIGINT := 0;
+  next_bytes BIGINT := 0;
+  bytes_to_add BIGINT := 0;
+BEGIN
+  IF TG_OP = 'INSERT' THEN
+    previous_bytes := 0;
+  ELSIF OLD.deleted_at IS NULL THEN
+    previous_bytes := COALESCE(OLD.size, 0)::BIGINT;
+  END IF;
+
+  IF NEW.deleted_at IS NULL THEN
+    next_bytes := COALESCE(NEW.size, 0)::BIGINT;
+  ELSE
+    next_bytes := 0;
+  END IF;
+
+  bytes_to_add := next_bytes - previous_bytes;
+
+  IF bytes_to_add > 0 THEN
+    SELECT * INTO quota
+    FROM app_storage_quota
+    WHERE singleton = TRUE
+    FOR UPDATE;
+
+    IF quota IS NULL THEN
+      RAISE EXCEPTION 'storage quota configuration is missing';
+    END IF;
+
+    -- Avoid BIGINT overflow during the comparison.
+    IF quota.used_bytes > quota.max_bytes - bytes_to_add THEN
+      RAISE EXCEPTION 'global storage quota exceeded';
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION update_global_storage_quota()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  previous_bytes BIGINT := 0;
+  next_bytes BIGINT := 0;
+BEGIN
+  IF TG_OP = 'DELETE' THEN
+    IF OLD.deleted_at IS NULL THEN
+      previous_bytes := COALESCE(OLD.size, 0)::BIGINT;
+    END IF;
+  ELSE
+    IF TG_OP <> 'INSERT' AND OLD.deleted_at IS NULL THEN
+      previous_bytes := COALESCE(OLD.size, 0)::BIGINT;
+    END IF;
+
+    IF NEW.deleted_at IS NULL THEN
+      next_bytes := COALESCE(NEW.size, 0)::BIGINT;
+    END IF;
+  END IF;
+
+  UPDATE app_storage_quota
+  SET
+    used_bytes = GREATEST(
+      0::BIGINT,
+      used_bytes + next_bytes - previous_bytes
+    ),
+    updated_at = NOW()
+  WHERE singleton = TRUE;
+
+  IF TG_OP = 'DELETE' THEN
+    RETURN OLD;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS enforce_global_storage_quota ON files;
+CREATE TRIGGER enforce_global_storage_quota
+BEFORE INSERT OR UPDATE OF size, deleted_at ON files
+FOR EACH ROW
+EXECUTE FUNCTION enforce_global_storage_quota();
+
+DROP TRIGGER IF EXISTS update_global_storage_quota ON files;
+CREATE TRIGGER update_global_storage_quota
+AFTER INSERT OR UPDATE OF size, deleted_at OR DELETE ON files
+FOR EACH ROW
+EXECUTE FUNCTION update_global_storage_quota();
+
+-- ============================================
 -- UPDATED_AT TRIGGER FUNCTION
 -- ============================================
 
