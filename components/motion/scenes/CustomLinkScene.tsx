@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { User, Pencil, Check } from 'lucide-react';
 import { inWindow } from '@/components/motion/usePlayback';
 import { reveal } from './sample';
+import { SITE_URL } from '@/data/emails';
 
 const USERNAME = 'jane';
 const NEW_PART = 'resume';
@@ -34,7 +35,6 @@ export default function CustomLinkScene({ t }: { t: number }) {
 
   // Slide direction: new slug enters from the right, old slug exits to the left.
   const direction = customized ? 1 : -1;
-  const activeKey = customized ? 'new' : 'old';
 
   return (
     <div className="w-full space-y-4">
@@ -53,7 +53,7 @@ export default function CustomLinkScene({ t }: { t: number }) {
         <div className="flex h-5 items-center gap-1 overflow-hidden font-mono text-xs">
           {/* domain now keeps its natural width so the slug sits right after it */}
           <span className="shrink-0 whitespace-nowrap text-muted-foreground">
-            https://snaphost.dev/{USERNAME}/
+            {SITE_URL}/{USERNAME}/
           </span>
 
           <AnimatePresence mode="wait" initial={false} custom={direction}>

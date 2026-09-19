@@ -8,11 +8,12 @@ import UploadForm from '@/components/UploadForm';
 import FileDetailsCard from '@/components/FileDetailsCard';
 import ShareLinkInput from '@/components/ShareLinkInput';
 import { noop } from './sample';
+import { SITE_URL } from '@/data/emails';
 
 const DEMO = {
   filename: 'mockup.png',
   fileSize: 2_457_600,
-  url: 'https://snaphost.dev/jane/8xK3pQ',
+  url: `${SITE_URL}/jane/8xK3pQ`,
 };
 
 const fade = {

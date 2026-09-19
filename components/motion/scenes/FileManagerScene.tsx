@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FileImage, Copy, Check, Trash2, Clock, FileText } from 'lucide-react';
 import { inWindow } from '@/components/motion/usePlayback';
+import { SITE_URL } from '@/data/emails';
 
 type DemoFile = {
   id: string;
@@ -14,9 +15,9 @@ type DemoFile = {
 };
 
 const FILES: DemoFile[] = [
-  { id: 'a', name: 'https://snaphost.dev/jane/meeting', date: 'Sep 16', expiry: '24h', icon: FileText },
-  { id: 'b', name: 'https://snaphost.dev/jane/notes', date: 'Sep 17', expiry: '30 days', icon: FileText },
-  { id: 'c', name: 'https://snaphost.dev/jane/photos', date: 'Sep 18', expiry: 'never', icon: FileImage },
+  { id: 'a', name: `${SITE_URL}/jane/meeting`, date: 'Sep 16', expiry: '24h', icon: FileText },
+  { id: 'b', name: `${SITE_URL}/jane/notes`, date: 'Sep 17', expiry: '30 days', icon: FileText },
+  { id: 'c', name: `${SITE_URL}/jane/photos`, date: 'Sep 18', expiry: 'never', icon: FileImage },
 ];
 
 const rowVariants = {

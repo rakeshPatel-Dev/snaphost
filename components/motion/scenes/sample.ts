@@ -1,11 +1,12 @@
 import type { AnonymousLink } from '@/types/app';
+import { SITE_URL } from '@/data/emails';
 
 export const demoAnonymousLink: AnonymousLink = {
   id: 'demo-anon-link',
   filename: 'mockup.png',
   fileType: 'image',
   fileSize: '2.4 MB',
-  url: 'https://snaphost.dev/anon/sh_7y2b1x',
+  url: `${SITE_URL}/anon/sh_7y2b1x`,
   createdAt: new Date().toISOString(),
   expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
 };

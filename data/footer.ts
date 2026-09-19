@@ -1,7 +1,9 @@
+import { mailto } from './emails';
+
 export const footerLinks = [
   { name: "GitHub", href: "https://github.com/snaphost" },
   { name: "Twitter", href: "https://twitter.com/snaphost" },
-  { name: "Contact", href: "mailto:hello@snaphost.dev" },
+  { name: "Contact", href: mailto('general') },
 ];
 
 export const companyLinks = [

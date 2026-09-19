@@ -1,3 +1,5 @@
+import { EMAILS } from './emails';
+
 export const companyOverviewLinks = [
   {
     title: 'Terms of Service',
@@ -77,7 +79,7 @@ export const termsOfServiceSections = [
   },
   {
     title: '10. Contact',
-    body: ['If you have questions about these Terms, contact hello@snaphost.dev.'],
+    body: [`If you have questions about these Terms, contact ${EMAILS.general}.`],
   },
 ];
 
@@ -134,7 +136,7 @@ export const privacyPolicySections = [
   {
     title: '8. Your Choices',
     body: [
-      'You can stop using Snaphost at any time. If you need account support, contact us at hello@snaphost.dev.',
+      `You can stop using Snaphost at any time. If you need account support, contact us at ${EMAILS.support}.`,
     ],
   },
   {
@@ -151,6 +153,6 @@ export const privacyPolicySections = [
   },
   {
     title: '11. Contact',
-    body: ['For privacy questions, contact hello@snaphost.dev.'],
+    body: [`For privacy questions, contact ${EMAILS.general}.`],
   },
 ];
