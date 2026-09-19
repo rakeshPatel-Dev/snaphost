@@ -31,7 +31,16 @@ export async function PATCH(request: Request, { params }: RouteContext) {
   }
 
   const { fileId } = await params;
-  const body = await request.json();
+  let body: Record<string, unknown>;
+  try {
+    const parsedBody: unknown = await request.json();
+    if (!parsedBody || typeof parsedBody !== 'object' || Array.isArray(parsedBody)) {
+      return NextResponse.json({ error: 'Request body must be a JSON object' }, { status: 400 });
+    }
+    body = parsedBody as Record<string, unknown>;
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  }
 
   const updates: {
     slug?: string;
