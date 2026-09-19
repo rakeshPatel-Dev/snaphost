@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { UserX, ShieldCheck, Clock, Check, AlertTriangle } from 'lucide-react';
 import UploadMockTabs from '@/components/sections/upload-mock/UploadMockTabs';

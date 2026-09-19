@@ -7,7 +7,9 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import ReduxProvider from "@/components/providers/redux-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { MotionConfig } from "framer-motion";
 import { Analytics } from "@vercel/analytics/next";
+import { SITE_URL } from "@/data/emails";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,12 +44,12 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Snaphost" }],
   creator: "Snaphost",
-  metadataBase: new URL("https://snaphost.dev"),
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     title: "Snaphost — Instant file sharing",
     description:
       "Upload images and PDFs and get a clean, shareable link in seconds. No account needed, and links expire automatically.",
-    url: "https://snaphost.dev",
+    url: SITE_URL,
     siteName: "Snaphost",
     type: "website",
   },
@@ -107,8 +109,10 @@ export default function RootLayout({
           <AuthProvider>
             <ThemeProvider>
               <TooltipProvider>
-                <Toaster position="top-right" closeButton duration={3000} />
-                <SiteChrome>{children}</SiteChrome>
+                <MotionConfig reducedMotion="user">
+                  <Toaster position="top-right" closeButton duration={3000} />
+                  <SiteChrome>{children}</SiteChrome>
+                </MotionConfig>
               </TooltipProvider>
             </ThemeProvider>
           </AuthProvider>
