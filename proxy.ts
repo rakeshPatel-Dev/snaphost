@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 function buildContentSecurityPolicy(nonce: string) {
-  const developmentScriptSource = process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : '';
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const developmentScriptSource = isDevelopment ? " 'unsafe-eval'" : '';
+  // Next's development overlay and Turbopack inject styles at runtime without
+  // a nonce. In production, allow only Sonner's pinned runtime stylesheet.
+  const styleSource = isDevelopment
+    ? "'self' 'unsafe-inline'"
+    : `'self' 'nonce-${nonce}' 'sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY='`;
 
   return [
     "default-src 'self'",
@@ -10,7 +16,7 @@ function buildContentSecurityPolicy(nonce: string) {
     "frame-ancestors 'none'",
     "object-src 'none'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://cloud.umami.is https://cdn.vercel-insights.com https://va.vercel-scripts.com${developmentScriptSource}`,
-    `style-src 'self' 'nonce-${nonce}'`,
+    `style-src ${styleSource}`,
     "style-src-attr 'unsafe-inline'",
     "img-src 'self' blob: data: https://xbywqnrququdipqhqtgn.supabase.co",
     "font-src 'self'",
