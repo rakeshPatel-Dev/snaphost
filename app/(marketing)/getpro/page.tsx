@@ -120,7 +120,7 @@ export default function GetProPage() {
               {
                 icon: UserCheck,
                 title: '3. Activation',
-                desc: 'Once verified, we&apos;ll manually upgrade your account to Pro status instantly.',
+                desc: "Once verified, we'll manually upgrade your account to Pro status instantly.",
               }
             ].map((step, i) => (
               <Reveal key={i} delay={i * 0.08}>
