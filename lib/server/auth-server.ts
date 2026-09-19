@@ -1,4 +1,6 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import 'server-only';
+
+import { supabaseAdmin } from './supabase-admin';
 
 type AuthUser = {
   id: string;

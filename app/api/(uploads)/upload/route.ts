@@ -1,23 +1,81 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateFile, getFileType } from '@/lib/fileValidation';
+import { validateFileContent, getFileType } from '@/lib/fileValidation';
 import { sanitizeFilename } from '@/lib/sanitizeFilename';
 import { createFileIdSync } from '@/lib/generateFileId';
-import { deleteFileFromStorage, uploadFileToStorage } from '@/lib/storage';
-import { createFileRecord, buildFileUrl, countActiveFilesForUser } from '@/lib/file-admin';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { deleteFileFromStorage, uploadFileToStorage } from '@/lib/server/storage';
+import { createFileRecord, buildFileUrl, countActiveFilesForUser } from '@/lib/server/file-admin';
+import { supabaseAdmin } from '@/lib/server/supabase-admin';
 import crypto from 'crypto';
-import { getCurrentAppUser } from '@/lib/auth-user';
-import { getAuthUserFromRequest } from '@/lib/auth-server';
+import { getCurrentAppUser } from '@/lib/server/auth-user';
+import { getAuthUserFromRequest } from '@/lib/server/auth-server';
+import {
+  getClientIp,
+  limitAccountUploads,
+  limitAnonymousUploads,
+  limitUploadIpBurst,
+} from '@/lib/server/upload-rate-limit';
 import { UPLOAD_ERRORS, ANON_ERRORS, SERVER_ERRORS } from '@/lib/messages';
 
 export const maxDuration = 60; // 60 seconds for file upload
+
+function rateLimitResponse(result: { remaining: number; reset: number; unavailable?: boolean }, message: string) {
+  if (result.unavailable) {
+    return NextResponse.json(
+      { error: SERVER_ERRORS.internalError },
+      { status: 503 }
+    );
+  }
+
+  const retryAfter = Math.max(1, Math.ceil((result.reset - Date.now()) / 1000));
+  return NextResponse.json(
+    { error: message },
+    {
+      status: 429,
+      headers: {
+        'Retry-After': String(retryAfter),
+        'X-RateLimit-Remaining': String(result.remaining),
+        'X-RateLimit-Reset': String(result.reset),
+      },
+    }
+  );
+}
 
 export async function POST(request: NextRequest) {
   let uploadedStoragePath: string | null = null;
   let currentUploadType: 'anonymous' | 'custom' | null = null;
   try {
+    // Rate-limit before parsing multipart data so rejected uploads do not consume memory.
+    const ip = getClientIp(request.headers);
+    const ipBurst = await limitUploadIpBurst(ip);
+    if (!ipBurst.success) {
+      return rateLimitResponse(ipBurst, UPLOAD_ERRORS.rateLimited);
+    }
+
     const authUser = await getAuthUserFromRequest(request);
     const authUserId = authUser?.id ?? null;
+
+    let userRecord = null;
+    if (authUserId && authUser?.email) {
+      userRecord = await getCurrentAppUser({
+        authUserId,
+        email: authUser.email,
+        usernameHint: authUser.usernameHint,
+      });
+
+      const accountDaily = await limitAccountUploads(userRecord.id, userRecord.tier);
+      if (!accountDaily.success) {
+        return rateLimitResponse(
+          accountDaily,
+          userRecord.tier === 'free' ? UPLOAD_ERRORS.freePlanLimitReached : UPLOAD_ERRORS.rateLimited
+        );
+      }
+    } else {
+      const anonymousDaily = await limitAnonymousUploads(ip);
+      if (!anonymousDaily.success) {
+        return rateLimitResponse(anonymousDaily, ANON_ERRORS.linkLimitReached);
+      }
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
@@ -29,8 +87,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file
-    const validation = validateFile(file);
-    if (!validation.valid) {
+    const validation = await validateFileContent(file);
+    if (!validation.valid || !validation.mimeType) {
       return NextResponse.json(
         {
           error: UPLOAD_ERRORS.fileValidationFailed,
@@ -42,27 +100,12 @@ export async function POST(request: NextRequest) {
 
     // Sanitize filename
     const sanitizedName = sanitizeFilename(file.name);
-    const fileType = getFileType(file.type);
-
-    if (fileType === 'unknown') {
-      return NextResponse.json(
-        { error: UPLOAD_ERRORS.unsupportedFileType },
-        { status: 400 }
-      );
-    }
+    const verifiedMimeType = validation.mimeType;
+    const fileType = getFileType(verifiedMimeType);
 
     // Generate unique file ID
     const slug = createFileIdSync();
     const expiresAtInput = formData.get('expiresAt');
-
-    let userRecord = null;
-    if (authUserId && authUser?.email) {
-      userRecord = await getCurrentAppUser({
-        authUserId,
-        email: authUser.email,
-        usernameHint: authUser.usernameHint,
-      });
-    }
 
     // Enforce free-tier file limit: free users can have at most 5 active links.
     if (userRecord && userRecord.tier === 'free') {
@@ -82,7 +125,7 @@ export async function POST(request: NextRequest) {
           : null;
 
     // Upload to storage
-    const { path, error: storageError } = await uploadFileToStorage(slug, file);
+    const { path, error: storageError } = await uploadFileToStorage(slug, file, verifiedMimeType);
     uploadedStoragePath = path || null;
 
     if (storageError) {
@@ -155,7 +198,7 @@ export async function POST(request: NextRequest) {
         slug,
         filename: sanitizedName,
         fileType: fileType as 'pdf' | 'image',
-        mimeType: file.type,
+        mimeType: verifiedMimeType,
         size: file.size,
         storagePath: path,
         expiresAt,

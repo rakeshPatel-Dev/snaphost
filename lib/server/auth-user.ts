@@ -1,4 +1,6 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import 'server-only';
+
+import { supabaseAdmin } from './supabase-admin';
 import type { AppUser } from '@/types/app';
 
 type EnsureUserParams = {

@@ -1,5 +1,7 @@
-import { supabase } from './supabase';
-import { CONFIG } from './config';
+import 'server-only';
+
+import { supabase } from '../supabase';
+import { CONFIG } from '../config';
 import type { AdminFileRow, FileMetadata } from '@/types/app';
 
 type FileRecord = AdminFileRow;

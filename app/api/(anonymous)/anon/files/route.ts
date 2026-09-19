@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabaseAdmin } from '@/lib/server/supabase-admin';
 import crypto from 'crypto';
-import { listFilesForAnonSession, buildFileUrl } from '@/lib/file-admin';
+import { listFilesForAnonSession, buildFileUrl } from '@/lib/server/file-admin';
 import { formatFileSize } from '@/shared/utils/file-format';
 import type { AnonymousLink } from '@/types/app';
 

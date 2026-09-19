@@ -1,24 +1,35 @@
-import { supabase } from './supabase';
+import 'server-only';
+
+import { supabase } from '../supabase';
 import { supabaseAdmin } from './supabase-admin';
-import { CONFIG } from './config';
-import { getFileExtension } from './sanitizeFilename';
+import { CONFIG } from '../config';
+import type { ValidatedMimeType } from '../fileValidation';
+
+const STORAGE_EXTENSIONS: Record<ValidatedMimeType, string> = {
+  'image/png': '.png',
+  'image/jpeg': '.jpg',
+  'image/webp': '.webp',
+  'application/pdf': '.pdf',
+};
 
 /**
  * Upload file to Supabase Storage
  */
 export async function uploadFileToStorage(
   fileId: string,
-  file: File
+  file: File,
+  mimeType: ValidatedMimeType
 ): Promise<{ path: string; error: string | null }> {
   const bucket = supabase.storage.from(CONFIG.STORAGE_BUCKET);
 
-  // Store in format: uploads/{fileId}.{extension}
-  const ext = getFileExtension(file.name).toLowerCase();
+  // Keep object metadata and extension tied to the verified binary type.
+  const ext = STORAGE_EXTENSIONS[mimeType];
   const storagePath = `uploads/${fileId}${ext}`;
 
   try {
     const { data, error } = await bucket.upload(storagePath, file, {
       cacheControl: '31536000', // 1 year cache
+      contentType: mimeType,
       upsert: false,
     });
 
@@ -49,4 +60,3 @@ export async function deleteFileFromStorage(storagePath: string): Promise<boolea
     return false;
   }
 }
-

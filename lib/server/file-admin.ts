@@ -1,7 +1,9 @@
+import 'server-only';
+
 import { supabaseAdmin } from './supabase-admin';
-import { CONFIG } from './config';
+import { CONFIG } from '../config';
 import type { AdminFileRow, FileType, UploadType } from '@/types/app';
-import { buildPublicFileUrl } from './public-file-url';
+import { buildPublicFileUrl } from '../public-file-url';
 
 export async function createFileRecord(input: {
   userId: string | null;
@@ -140,35 +142,6 @@ export async function deleteAnonSession(anonSessionId: string) {
   }
 
   return data as { id: string };
-}
-
-export async function getFileBySlug(slug: string) {
-  const { data, error } = await supabaseAdmin
-    .from('files')
-    .select('*, user:users(username)')
-    .eq('slug', slug)
-    .maybeSingle();
-
-  if (error) {
-    throw error;
-  }
-
-  return data as AdminFileRow | null;
-}
-
-export async function deleteFileBySlug(slug: string) {
-  const { data, error } = await supabaseAdmin
-    .from('files')
-    .delete()
-    .eq('slug', slug)
-    .select('id, storage_path, upload_type')
-    .single();
-
-  if (error) {
-    throw error;
-  }
-
-  return data as { id: string; storage_path: string; upload_type: UploadType };
 }
 
 export async function updateFileForUser(

@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
-import { getCurrentAppUser } from '@/lib/auth-user';
-import { getAuthUserFromRequest } from '@/lib/auth-server';
+import { getCurrentAppUser } from '@/lib/server/auth-user';
+import { getAuthUserFromRequest } from '@/lib/server/auth-server';
 import {
   buildFileUrl,
   deleteFileForUser,
   getFileForUser,
   updateFileForUser,
-} from '@/lib/file-admin';
-import { deleteFileFromStorage } from '@/lib/storage';
+} from '@/lib/server/file-admin';
+import { deleteFileFromStorage } from '@/lib/server/storage';
 
 type RouteContext = {
   params: Promise<{ fileId: string }>;

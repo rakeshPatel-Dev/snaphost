@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabaseAdmin } from '@/lib/server/supabase-admin';
 
 const USERNAME_PATTERN = /^[a-z0-9](?:[a-z0-9_\-]{1,30}[a-z0-9])?$/;
 

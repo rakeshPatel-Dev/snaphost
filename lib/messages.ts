@@ -25,6 +25,8 @@ export const UPLOAD_ERRORS = {
     `PDF too large — max allowed is ${maxMb} MB, but your file is ${gotMb} MB.`,
   /** Storage write failed */
   storageFailed: 'We couldn\'t save your file to storage. Please try again in a moment.',
+  /** Upload rate limit hit */
+  rateLimited: 'Too many upload attempts. Please wait a few minutes and try again.',
   /** Free plan daily cap hit */
   freePlanLimitReached: 'You\'ve reached your plan\'s upload limit for today. Upgrade for more.',
 } as const;

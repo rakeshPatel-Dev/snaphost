@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getCurrentAppUser, updateCurrentAppUserUsername } from '@/lib/auth-user';
-import { getAuthUserFromRequest } from '@/lib/auth-server';
+import { getCurrentAppUser, updateCurrentAppUserUsername } from '@/lib/server/auth-user';
+import { getAuthUserFromRequest } from '@/lib/server/auth-server';
 
 export async function GET(request: Request) {
   const authUser = await getAuthUserFromRequest(request);

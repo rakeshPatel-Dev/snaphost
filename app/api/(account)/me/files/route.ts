@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getCurrentAppUser } from '@/lib/auth-user';
-import { getAuthUserFromRequest } from '@/lib/auth-server';
-import { listFilesForUser, buildFileUrl } from '@/lib/file-admin';
+import { getCurrentAppUser } from '@/lib/server/auth-user';
+import { getAuthUserFromRequest } from '@/lib/server/auth-server';
+import { listFilesForUser, buildFileUrl } from '@/lib/server/file-admin';
 
 export async function GET(request: Request) {
   const authUser = await getAuthUserFromRequest(request);

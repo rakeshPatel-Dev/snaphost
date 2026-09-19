@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabaseAdmin } from '@/lib/server/supabase-admin';
 import { CONFIG } from '@/lib/config';
 import {
   countFilesForAnonSession,
   deleteAnonSession,
   deleteFileForAnonSession,
-} from '@/lib/file-admin';
+} from '@/lib/server/file-admin';
 
 export async function DELETE(
   request: NextRequest,

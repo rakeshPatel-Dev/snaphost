@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getCurrentAppUser } from '@/lib/auth-user';
-import { getAuthUserFromRequest } from '@/lib/auth-server';
-import { deleteFileFromStorage } from '@/lib/storage';
-import { deleteFileForUser, listFilesForUser } from '@/lib/file-admin';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getCurrentAppUser } from '@/lib/server/auth-user';
+import { getAuthUserFromRequest } from '@/lib/server/auth-server';
+import { deleteFileFromStorage } from '@/lib/server/storage';
+import { deleteFileForUser, listFilesForUser } from '@/lib/server/file-admin';
+import { supabaseAdmin } from '@/lib/server/supabase-admin';
 
 export async function DELETE(request: Request) {
   const authUser = await getAuthUserFromRequest(request);
