@@ -12,7 +12,6 @@ import type { AnonymousLink } from "@/types/app";
 import {
   deleteAnonymousLink,
   fetchAnonymousLinks,
-  getAutoCleanupIntervalMs,
   uploadAnonymousFile,
 } from "@/services/anonymous-links";
 import { floatingFeatures } from "@/data/floatingFeatures";
@@ -78,11 +77,9 @@ export function UploadMock({
     };
 
     void run();
-    const intervalId = window.setInterval(() => void refreshLinks(), getAutoCleanupIntervalMs());
 
     return () => {
       alive = false;
-      window.clearInterval(intervalId);
     };
   }, [refreshLinks]);
 

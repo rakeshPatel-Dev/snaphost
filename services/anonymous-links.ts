@@ -5,12 +5,6 @@ import { formatFileSize } from '@/shared/utils/file-format';
 import type { AnonymousLink } from '@/types/app';
 import { UPLOAD_ERRORS } from '@/lib/messages';
 
-const AUTO_CLEANUP_INTERVAL_MS = 60 * 1000;
-
-export function getAutoCleanupIntervalMs() {
-  return AUTO_CLEANUP_INTERVAL_MS;
-}
-
 export function getAnonymousUploadAcceptValue() {
   return 'image/png,image/jpeg,image/webp,.pdf,application/pdf';
 }
