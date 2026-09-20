@@ -26,13 +26,13 @@ export async function getFileMetadata(
   // storage internals.
   let query = supabaseAdmin
     .from('files')
-    .select('slug, filename, file_type, size, created_at, expires_at, storage_path')
+    .select('slug, filename, file_type, size, created_at, expires_at, storage_path, user:users(username)')
     .eq('slug', slug)
     .is('deleted_at', null)
     .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString());
 
   if (username) {
-    query = query.eq('upload_type', 'custom').eq('users.username', username);
+    query = query.eq('upload_type', 'custom');
   } else {
     query = query.is('user_id', null);
   }
@@ -48,10 +48,20 @@ export async function getFileMetadata(
     return null;
   }
 
-  const file = data as Pick<
+  // PostgREST embed filters do not exclude the parent row, so enforce the
+  // composite (username, slug) key here: a custom file must belong to the
+  // username in the URL, otherwise treat it as not found.
+  const file = data as unknown as Pick<
     FileRecord,
     'slug' | 'filename' | 'file_type' | 'size' | 'created_at' | 'expires_at' | 'storage_path'
-  >;
+  > & { user?: { username: string | null }[] | { username: string | null } | null };
+
+  if (username) {
+    const ownerName = Array.isArray(file.user) ? file.user[0]?.username : file.user?.username;
+    if (ownerName !== username) {
+      return null;
+    }
+  }
 
   return {
     slug: file.slug,
