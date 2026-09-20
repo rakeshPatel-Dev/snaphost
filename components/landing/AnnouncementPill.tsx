@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react'
 import { ShineBorder } from '@/components/ui/shine-border'
 
 const AnnouncementContent = {
-    title: 'Multiple file upload',
+    title: 'Snaphost Beta is live!',
     description: 'Upload now',
     link: '/upload',
 }
@@ -27,7 +27,7 @@ const AnnouncementPill = () => {
                 size="xs"
                 className="relative rounded-full bg-accent px-2 text-xs font-semibold uppercase tracking-wider text-accent-foreground pointer-events-none"
             >
-                New
+                Beta
             </Button>
 
             <span className="relative font-medium tracking-tight">
