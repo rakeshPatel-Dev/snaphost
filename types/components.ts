@@ -77,6 +77,7 @@ export type FileDetailsCardProps = Pick<UploadSuccess, 'filename' | 'fileSize' |
 
 export type FilePreviewProps = {
   fileId: string;
+  isAnonymous?: boolean;
 };
 
 export type ImagePreviewProps = {
