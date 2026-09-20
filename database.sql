@@ -436,23 +436,13 @@ CREATE POLICY "Service role manages all files"
   USING (true)
   WITH CHECK (true);
 
--- This function emits a NOTIFY for each expired file (so a backend worker
--- can remove the object from storage) and then deletes the DB row.
+-- Deletes expired file rows. Storage objects are removed by the worker script
+-- before calling this via rpc() or by the scheduled QStash cleanup job.
 CREATE OR REPLACE FUNCTION delete_expired_files()
 RETURNS INTEGER AS $$
 DECLARE
-  r RECORD;
   deleted_count INTEGER := 0;
 BEGIN
-  FOR r IN SELECT id, storage_path FROM files
-           WHERE expires_at IS NOT NULL
-             AND expires_at < NOW()
-             AND deleted_at IS NULL
-  LOOP
-    -- Notify backend to delete storage object. Payload is JSON with id and storage_path
-    PERFORM pg_notify('snaphost_expired_file', json_build_object('id', r.id, 'storage_path', r.storage_path)::text);
-  END LOOP;
-
   DELETE FROM files
   WHERE expires_at IS NOT NULL
     AND expires_at < NOW()
