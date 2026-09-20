@@ -242,6 +242,8 @@ $$;
 CREATE OR REPLACE FUNCTION update_global_storage_quota()
 RETURNS TRIGGER
 LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
 AS $$
 DECLARE
   previous_bytes BIGINT := 0;
