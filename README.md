@@ -376,6 +376,27 @@ npm run lint            # Check linting
 | `SUPABASE_SERVICE_ROLE_KEY` | Yes | Supabase service role key (server only) |
 | `NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS` | No | OAuth providers to show on auth screen (e.g. `google,github`) |
 | `NEXT_PUBLIC_BASE_URL` | No | Custom domain (default: localhost:3000, production: https://sh.rakeshpatel.me) |
+| `QSTASH_CURRENT_SIGNING_KEY` | Production | Verifies scheduled cleanup requests from QStash |
+| `QSTASH_NEXT_SIGNING_KEY` | Production | Supports QStash signing-key rotation |
+| `QSTASH_TOKEN` | Provisioning only | Creates or updates the QStash schedule |
+| `QSTASH_URL` | Provisioning only | QStash API endpoint for the selected region |
+
+### Expired-upload cleanup
+
+The signed QStash cleanup job deletes expired Supabase Storage objects before
+removing their database rows. Its schedule lives in
+`scripts/expired-upload-cleanup-schedule.config.mjs` and defaults to every six
+hours (`0 */6 * * *`, UTC).
+
+After deploying the cleanup route and setting the two signing keys in the
+deployment environment, create or update the remote schedule with:
+
+```bash
+npm run cleanup:provision
+```
+
+The command reads `.env.local`; use the same canonical production URL in
+`NEXT_PUBLIC_BASE_URL` that QStash will call.
 
 ---
 
