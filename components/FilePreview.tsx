@@ -18,10 +18,11 @@ function getPreviewTitle(filename: string): string {
   return `${displayName} | Snaphost — Instant file sharing`;
 }
 
-export default function FilePreview({ fileId, isAnonymous = false }: FilePreviewProps) {
-  const { data: metadata, error, isLoading } = useGetFileQuery(fileId, {
-    skip: !fileId,
-  });
+export default function FilePreview({ fileId, isAnonymous = false, username }: FilePreviewProps) {
+  const { data: metadata, error, isLoading } = useGetFileQuery(
+    { fileId, username },
+    { skip: !fileId }
+  );
 
   useEffect(() => {
     if (metadata) {

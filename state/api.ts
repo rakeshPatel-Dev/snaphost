@@ -69,9 +69,12 @@ export const snaphostApi = createApi({
 			providesTags: ['MeFiles'],
 			keepUnusedDataFor: 60,
 		}),
-		getFile: builder.query<FileMetadata, string>({
-			query: (fileId) => `/api/files/${fileId}`,
-			providesTags: (_result, _error, fileId) => [{ type: 'PublicFile', id: fileId }],
+		getFile: builder.query<FileMetadata, { fileId: string; username?: string }>({
+			query: ({ fileId, username }) => ({
+				url: `/api/files/${fileId}`,
+				params: username ? { username } : undefined,
+			}),
+			providesTags: (_result, _error, arg) => [{ type: 'PublicFile', id: arg.fileId }],
 			keepUnusedDataFor: 300,
 		}),
 		getUsernameAvailability: builder.query<UsernameAvailabilityPayload, string>({

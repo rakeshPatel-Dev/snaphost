@@ -10,8 +10,17 @@ function withoutExtension(filename: string): string {
   return extensionStart > 0 ? filename.slice(0, extensionStart) : filename;
 }
 
-export async function getFilePageMetadata(slug: string, isAnonymous = false): Promise<Metadata> {
-  const file = await getFileMetadata(slug);
+type FilePageMetadataOptions = {
+  username?: string;
+  isAnonymous?: boolean;
+};
+
+export async function getFilePageMetadata(
+  slug: string,
+  options: FilePageMetadataOptions = {}
+): Promise<Metadata> {
+  const { username, isAnonymous = false } = options;
+  const file = await getFileMetadata(slug, username);
 
   if (!file) {
     return {

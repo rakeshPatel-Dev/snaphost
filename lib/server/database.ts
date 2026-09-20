@@ -7,19 +7,37 @@ import type { AdminFileRow, FileMetadata } from '@/types/app';
 type FileRecord = AdminFileRow;
 
 /**
- * Fetch public file metadata by slug.
+ * Fetch public file metadata. Slugs are only unique per owner:
+ *  - custom files are resolved by (username, slug), since the username is
+ *    globally unique;
+ *  - slug-only lookups (anonymous / short links) are scoped to ownerless rows
+ *    so they can never collide with a custom file that happens to share a slug.
  */
-export async function getFileMetadata(slug: string): Promise<FileMetadata | null> {
+export async function getFileMetadata(
+  slug: string,
+  username?: string | null
+): Promise<FileMetadata | null> {
+  if (!slug) {
+    return null;
+  }
+
   // Share metadata is intentionally fetched server-side. The browser must not
   // receive direct SELECT access to files because rows include ownership and
   // storage internals.
-  const { data, error } = await supabaseAdmin
+  let query = supabaseAdmin
     .from('files')
     .select('slug, filename, file_type, size, created_at, expires_at, storage_path')
     .eq('slug', slug)
     .is('deleted_at', null)
-    .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
-    .maybeSingle();
+    .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString());
+
+  if (username) {
+    query = query.eq('upload_type', 'custom').eq('users.username', username);
+  } else {
+    query = query.is('user_id', null);
+  }
+
+  const { data, error } = await query.maybeSingle();
 
   if (error) {
     console.error('Unexpected error fetching file metadata:', error);

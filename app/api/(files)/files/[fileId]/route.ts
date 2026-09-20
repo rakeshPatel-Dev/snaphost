@@ -1,21 +1,21 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getFileMetadata } from '@/lib/server/database';
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ fileId: string }> }
-) {
+const SLUG_PATTERN = /^[a-zA-Z0-9_-]+$/;
+
+export async function GET(request: NextRequest, { params }: { params: Promise<{ fileId: string }> }) {
   try {
     const { fileId } = await params;
 
-    if (!fileId) {
+    if (!fileId || !SLUG_PATTERN.test(fileId)) {
       return NextResponse.json(
-        { error: 'File ID is required' },
+        { error: 'Invalid file ID' },
         { status: 400 }
       );
     }
 
-    const metadata = await getFileMetadata(fileId);
+    const username = request.nextUrl.searchParams.get('username');
+    const metadata = await getFileMetadata(fileId, username);
 
     if (!metadata) {
       return NextResponse.json(

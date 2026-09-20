@@ -7,8 +7,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ username: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  return getFilePageMetadata(slug);
+  const { username, slug } = await params;
+  return getFilePageMetadata(slug, { username });
 }
 
 export default async function UserFilePage({
@@ -16,7 +16,7 @@ export default async function UserFilePage({
 }: {
   params: Promise<{ username: string; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { username, slug } = await params;
 
-  return <FilePreview fileId={slug} />;
+  return <FilePreview fileId={slug} username={username} />;
 }
