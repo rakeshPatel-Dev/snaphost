@@ -8,12 +8,14 @@
     "start": "next start",
     "lint": "eslint",
     "cleanup:expired": "node scripts/cleanup-expired-files.mjs",
-    "purge:anon": "node scripts/purge-expired-anon-sessions.mjs"
+    "purge:anon": "node scripts/purge-expired-anon-sessions.mjs",
+    "cleanup:provision": "node --env-file=.env.local scripts/provision-expired-upload-cleanup.mjs"
   },
   "dependencies": {
     "@formspree/react": "^3.0.0",
     "@reduxjs/toolkit": "^2.12.0",
     "@supabase/supabase-js": "^2.106.0",
+    "@upstash/qstash": "^2.11.3",
     "@upstash/ratelimit": "^2.1.0",
     "@upstash/redis": "^1.38.4",
     "@vercel/analytics": "^2.0.1",
