@@ -19,10 +19,10 @@ export async function getFileMetadata(slug: string): Promise<FileMetadata | null
     .eq('slug', slug)
     .is('deleted_at', null)
     .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
-    .single();
+    .maybeSingle();
 
   if (error) {
-    console.error('Error fetching file metadata:', error);
+    console.error('Unexpected error fetching file metadata:', error);
     return null;
   }
 
@@ -43,6 +43,7 @@ export async function getFileMetadata(slug: string): Promise<FileMetadata | null
     createdAt: file.created_at,
     expiresAt: file.expires_at,
     url: getStoragePublicUrl(file.storage_path),
+    downloadUrl: getStorageDownloadUrl(file.storage_path, file.filename),
   };
 }
 
@@ -51,4 +52,14 @@ export async function getFileMetadata(slug: string): Promise<FileMetadata | null
  */
 function getStoragePublicUrl(storagePath: string): string {
   return supabaseAdmin.storage.from(CONFIG.STORAGE_BUCKET).getPublicUrl(storagePath).data.publicUrl;
+}
+
+/**
+ * Generate a download URL that keeps the safe, user-facing filename.
+ * The storage object itself retains its random path.
+ */
+function getStorageDownloadUrl(storagePath: string, filename: string): string {
+  return supabaseAdmin.storage
+    .from(CONFIG.STORAGE_BUCKET)
+    .getPublicUrl(storagePath, { download: filename }).data.publicUrl;
 }

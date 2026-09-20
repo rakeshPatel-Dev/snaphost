@@ -49,6 +49,7 @@ export type FileMetadata = {
   createdAt: string;
   expiresAt: string | null;
   url: string;
+  downloadUrl: string;
 };
 
 export type AnonymousLink = {
