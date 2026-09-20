@@ -389,16 +389,13 @@ CREATE POLICY "System can insert users"
 
 -- ============ FILES TABLE POLICIES ============
 
--- 1. PUBLIC READ: Anyone can read active, non-expired, non-deleted files
-CREATE POLICY "Public read active files"
-  ON files FOR SELECT
-  USING (
-    deleted_at IS NULL
-    AND (
-      expires_at IS NULL
-      OR expires_at > NOW()
-    )
-  );
+-- 1. No direct browser SELECT access. Public share metadata is returned by the
+-- server-side /api/files route, which selects only the fields required for a
+-- preview. This keeps owner IDs, anonymous session IDs, and storage paths out
+-- of the anon/authenticated Supabase roles.
+DROP POLICY IF EXISTS "Public read active files" ON files;
+DROP POLICY IF EXISTS "Authenticated users read own and public files" ON files;
+REVOKE SELECT ON TABLE files FROM anon, authenticated;
 
 -- 2. ANONYMOUS UPLOAD: Public users can upload files (no auth required)
 CREATE POLICY "Allow anonymous uploads"
@@ -411,22 +408,7 @@ CREATE POLICY "Allow anonymous uploads"
     AND expires_at <= (NOW() + INTERVAL '24 hours')
   );
 
--- 3. AUTHENTICATED READ: Users can read their own files + public files
-CREATE POLICY "Authenticated users read own and public files"
-  ON files FOR SELECT
-  USING (
-    (
-      deleted_at IS NULL
-      AND (
-        expires_at IS NULL
-        OR expires_at > NOW()
-      )
-    )
-    OR
-    (user_id = current_user_id())
-  );
-
--- 4. AUTHENTICATED UPLOAD: Logged-in users can upload files
+-- 3. AUTHENTICATED UPLOAD: Logged-in users can upload files
 CREATE POLICY "Authenticated users can upload"
   ON files FOR INSERT
   WITH CHECK (
@@ -435,18 +417,18 @@ CREATE POLICY "Authenticated users can upload"
     AND deleted_at IS NULL
   );
 
--- 5. AUTHENTICATED UPDATE: Users can only update/manage their own files
+-- 4. AUTHENTICATED UPDATE: Users can only update/manage their own files
 CREATE POLICY "Users can update own files"
   ON files FOR UPDATE
   USING (user_id = current_user_id())
   WITH CHECK (user_id = current_user_id());
 
--- 6. AUTHENTICATED DELETE: Users can soft-delete their own files
+-- 5. AUTHENTICATED DELETE: Users can soft-delete their own files
 CREATE POLICY "Users can delete own files"
   ON files FOR DELETE
   USING (user_id = current_user_id());
 
--- 7. SERVICE ROLE: Backend service role can manage all files (for cleanup)
+-- 6. SERVICE ROLE: Backend service role can manage all files (for cleanup)
 CREATE POLICY "Service role manages all files"
   ON files FOR ALL
   USING (true)
