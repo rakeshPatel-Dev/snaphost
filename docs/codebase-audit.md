@@ -93,19 +93,29 @@ Anonymous uploads are capped only per session (3 links, `database.sql:224`), and
 
 ### 8. Documented limits diverge from enforced limits
 
+> **Status: ✅ FIXED — 2026-09-20**
+
 - UI + `data/pricing.ts`: free = **3 links/day**, **10 MB**, "custom URL / dashboard false".
 - Server (`app/api/upload/route.ts:68-73`): free users capped at **5 active files**, and `countActiveFilesForUser` counts rows with `deleted_at IS NULL` regardless of expiry (`lib/file-admin.ts:57-69`) — a *permanent* cap, contradicting the "for today" copy in `lib/messages.ts:29`.
 - `database.sql:224` caps anonymous sessions at **3** links.
 
 **Fix:** pick one contract and enforce it consistently (daily window query + DB constraint + copy in `messages.ts` and `data/pricing.ts`).
 
+**Resolution:** the contract is now **permanent active-link caps** — anonymous = 3 links/session, free account = 5 active links, Pro = unlimited (with a 50/day abuse ceiling). `data/pricing.ts` now advertises "Active links" (3 / 5 / Unlimited) instead of "links per day", and the free-limit error no longer says "for today" (`lib/messages.ts:33`). No enforcement changes were needed; only the copy was made accurate.
+
 ### 9. Slug collisions break `getFileBySlug`
+
+> **Status: ✅ FIXED — 2026-09-20**
 
 `lib/file-admin.ts:145-157` uses `.maybeSingle()` on `slug`. Slugs are only unique **per user** for custom uploads (`database.sql:155-157`). If two users reuse the same slug, `GET/DELETE /api/files/{slug}` throws PostgREST PGRST116 ("multiple rows"), surfacing as a 500. The route param is a slug but the handler treats it as a globally-unique id.
 
 **Fix:** look up files by a composite key (`username + slug` for custom, or by file UUID), or make slugs globally unique. Also validate the param against `^[a-zA-Z0-9_-]+$` in `GET` (the `DELETE` already does).
 
+**Resolution:** metadata is now resolved by composite key — custom files via `(username, slug)` against the globally-unique `users.username`, and slug-only (anonymous / short) lookups are scoped to ownerless rows (`lib/server/database.ts:12-42`), so an anonymous slug can never collide with a custom file. `GET /api/files/{fileId}` accepts an optional `?username=` and validates the slug format; the `/[username]/[slug]` page now passes the username through the preview and metadata chain.
+
 ### 10. Invalid `expiresAt` throws and leaks a 500
+
+> **Status: ✅ FIXED — 2026-09-19**
 
 `app/api/upload/route.ts:80-82` — a non-date string like `expiresAt=foo` makes `new Date('foo')` an `Invalid Date`, then `.toISOString()` **throws**, and the catch returns `details: String(error)` probing internal error text.
 
@@ -113,15 +123,21 @@ Anonymous uploads are capped only per session (3 links, `database.sql:224`), and
 
 ### 11. Account deletion aborts if a file was already deleted
 
+> **Status: ✅ FIXED — 2026-09-19**
+
 `app/api/me/account/route.ts:25-38` calls `listFilesForUser` (which does **not** filter `deleted_at`) and tries to delete storage + rows for *every* row. A previously soft-deleted or already-purged file makes storage removal fail → whole account deletion fails with 500.
 
 **Fix:** filter active files (`deleted_at IS NULL` and not expired); delete the `users` row first, then handle storage asynchronously/best-effort.
 
 ### 12. `pg_notify` has no listener
 
+> **Status: ✅ FIXED — 2026-09-20**
+
 `database.sql:332-355` — `delete_expired_files()` raises `NOTIFY snaphost_expired_file` for each expired file, but **nothing in the repo subscribes** to that channel. The actual cleanup runs only via the scheduled scripts. The notify is dead weight and misleading.
 
 **Fix:** either subscribe (pg `LISTEN` worker) or drop the `pg_notify` calls to avoid implying reactive cleanup exists.
+
+**Resolution:** `delete_expired_files()` no longer loops or emits `NOTIFY`; it is now a set-based `DELETE` returning the affected row count (mirroring `purge_expired_anon_sessions`). Cleanup continues exclusively through the scheduled QStash job.
 
 ---
 
