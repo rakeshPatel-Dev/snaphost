@@ -10,7 +10,7 @@ export interface Feature {
 export const features: Feature[] = [
   { label: 'File uploads', free: 'PNG, JPG, WEBP, PDF', starter: 'PNG, JPG, WEBP, PDF', pro: 'PNG, JPG, WEBP, PDF' },
   { label: 'Max file size', free: '10 MB', starter: '10 MB', pro: '10 MB' },
-  { label: 'Max links per day', free: '3 links', starter: '5 links', pro: 'Unlimited' },
+  { label: 'Active links', free: '3', starter: '5', pro: 'Unlimited' },
   { label: 'Anonymous upload', free: true, starter: true, pro: true },
   { label: 'Link expiration', free: '24 hours (auto)', starter: 'User-controlled', pro: 'User-controlled' },
   { label: 'Custom URL path', free: false, starter: true, pro: true },

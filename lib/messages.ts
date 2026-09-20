@@ -29,8 +29,8 @@ export const UPLOAD_ERRORS = {
   rateLimited: 'Too many upload attempts. Please wait a few minutes and try again.',
   /** Expiration date is malformed or has already passed */
   invalidExpirationDate: 'Choose a valid expiration date in the future.',
-  /** Free plan daily cap hit */
-  freePlanLimitReached: 'You\'ve reached your plan\'s upload limit for today. Upgrade for more.',
+  /** Free plan active-link cap hit */
+  freePlanLimitReached: 'You\'ve reached your plan\'s link limit. Delete an old link or upgrade for more.',
 } as const;
 
 // ─── Anonymous sessions ────────────────────────────────────
