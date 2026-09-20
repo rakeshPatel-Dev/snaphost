@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import BetaBanner from '@/components/beta/BetaBanner';
 import type { SiteChromeProps } from '@/types/components';
 
 export default function SiteChrome({ children }: SiteChromeProps) {
@@ -26,6 +27,7 @@ export default function SiteChrome({ children }: SiteChromeProps) {
 
   return (
     <>
+      <BetaBanner />
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
