@@ -1,24 +1,27 @@
-'use client';
+import type { Metadata } from 'next';
+import FilePageClient from './FilePageClient';
+import { getFilePageMetadata } from '@/lib/file-page-metadata';
 
-import { useParams, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
-import FilePreview from '@/components/FilePreview';
-import { toast } from 'sonner';
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ fileId: string }>;
+}): Promise<Metadata> {
+  const { fileId } = await params;
+  return getFilePageMetadata(fileId);
+}
 
-export default function FilePage() {
-  const params = useParams();
-  const searchParams = useSearchParams();
-  const fileId = params.fileId as string;
-  const showSuccess = searchParams.get('success') === 'true';
-
-  useEffect(() => {
-    if (showSuccess) {
-      toast.success('File uploaded! Share this link with others.');
-      window.history.replaceState({}, '', `/f/${fileId}`);
-    }
-  }, [showSuccess, fileId]);
+export default async function FilePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ fileId: string }>;
+  searchParams: Promise<{ success?: string }>;
+}) {
+  const { fileId } = await params;
+  const { success } = await searchParams;
 
   if (!fileId) return null;
 
-  return <FilePreview fileId={fileId} />;
+  return <FilePageClient fileId={fileId} showSuccess={success === 'true'} />;
 }
