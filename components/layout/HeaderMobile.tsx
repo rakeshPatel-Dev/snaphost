@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -16,12 +17,13 @@ export default function HeaderMobile() {
     const [accountDeleteOpen, setAccountDeleteOpen] = useState(false);
     const { isSignedIn, signOut } = useAuth();
     const { isPremium } = useTier();
+    const router = useRouter();
 
     async function handleSignOut() {
         try {
             await signOut();
             setOpen(false);
-            window.location.href = '/';
+            router.push('/');
         } catch {
         }
     }

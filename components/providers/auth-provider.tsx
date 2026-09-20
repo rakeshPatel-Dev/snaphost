@@ -54,6 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 } catch (e) {
                     // fallback to full navigation if router is unavailable
                     console.warn('Redirecting to reset-password failed, falling back to location assign.', e);
+                    // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- Deliberate hard fallback when the router is unavailable.
                     window.location.href = '/reset-password';
                 }
             }

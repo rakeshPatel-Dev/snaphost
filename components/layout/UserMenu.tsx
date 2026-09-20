@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,6 +22,7 @@ export default function UserMenu() {
     const { user, signOut } = useAuth();
     const { isPremium } = useTier();
     const [accountDeleteOpen, setAccountDeleteOpen] = useState(false);
+    const router = useRouter();
 
     const meta = (user?.user_metadata ?? {}) as Record<string, unknown>;
     const identityData = ((user?.identities ?? []) as Array<{
@@ -41,7 +43,7 @@ export default function UserMenu() {
     async function handleSignOut() {
         try {
             await signOut();
-            window.location.href = '/';
+            router.push('/');
         } catch (e) {
             console.error('Error signing out:', e);
             toast.error(AUTH_ERRORS.failedToSignOut);

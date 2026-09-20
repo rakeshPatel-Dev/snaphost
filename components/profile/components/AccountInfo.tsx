@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Crown, LogOut, Pencil, Trash2, User } from 'lucide-react';
@@ -25,6 +26,7 @@ type AccountInfoProps = {
 const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => {
   const { signOut, refreshUser } = useAuth();
   const [updateMeUsername] = useUpdateMeUsernameMutation();
+  const router = useRouter();
 
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(username || '');
@@ -160,7 +162,7 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
             variant="ghost"
             onClick={async () => {
               await signOut();
-              window.location.href = '/';
+              router.push('/');
             }}
             className="gap-2 px-3 text-sm text-muted-foreground hover:text-foreground"
           >
