@@ -83,9 +83,13 @@ Anonymous uploads are capped only per session (3 links, `database.sql:224`), and
 
 ### 7. RLS policy exposes full rows and custom-file metadata publicly
 
+> **Status: ✅ FIXED — 2026-09-20**
+
 `database.sql:268-276` — `"Public read active files"` lets the **anon key** `SELECT` every active row, including `storage_path`, `user_id`, `anon_session_id`, `filename`, `mime_type`, and `size` — for signed-in users' custom files too. `lib/database.ts:11` queries through the public anon client.
 
 **Fix:** narrow the public-read policy or (better) expose a **view** / `SECURITY DEFINER` function that returns only `slug, filename, file_type, size, created_at, expires_at`. Never expose `storage_path` / `user_id` to the anon role.
+
+**Resolution:** the public-read policies were dropped and `SELECT` was revoked from `anon`/`authenticated` on `files` (`database.sql:398-400`). Public share metadata is now fetched server-side via the service-role admin client (`lib/server/database.ts:16-22`), selecting only the fields a preview needs.
 
 ### 8. Documented limits diverge from enforced limits
 
