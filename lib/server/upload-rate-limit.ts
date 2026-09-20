@@ -74,3 +74,17 @@ export async function limitAccountUploads(
   const limiter = tier === 'premium' ? premiumAccountDailyLimit : freeAccountDailyLimit;
   return limiter ? limiter.limit(userId) : unavailable();
 }
+
+export type AccountUploadQuota = {
+  remaining: number;
+  reset: number;
+  limit: number;
+};
+
+export async function getAccountUploadQuota(
+  userId: string,
+  tier: 'free' | 'premium'
+): Promise<AccountUploadQuota | null> {
+  const limiter = tier === 'premium' ? premiumAccountDailyLimit : freeAccountDailyLimit;
+  return limiter ? limiter.getRemaining(userId) : null;
+}

@@ -85,6 +85,12 @@ export type ProfilePayload = {
   user: AppUser;
 };
 
+export type UploadQuotaPayload = {
+  remaining: number | null;
+  limit: number | null;
+  reset: number | null;
+};
+
 export type FilesPayload = {
   files: AppFile[];
 };

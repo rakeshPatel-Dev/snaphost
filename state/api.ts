@@ -7,6 +7,7 @@ import type {
 	FilesPayload,
 	ProfilePayload,
 	UpdateFilePayload,
+	UploadQuotaPayload,
 	UploadResponse,
 	UsernameAvailabilityPayload,
 } from '@/types/app';
@@ -57,7 +58,7 @@ const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQuery
 export const snaphostApi = createApi({
 	reducerPath: 'snaphostApi',
 	baseQuery: baseQueryWithAuth,
-	tagTypes: ['Me', 'MeFiles', 'PublicFile', 'UsernameAvailability', 'AnonLinks'],
+	tagTypes: ['Me', 'MeFiles', 'PublicFile', 'UsernameAvailability', 'AnonLinks', 'MeUploadQuota'],
 	endpoints: (builder) => ({
 		getMe: builder.query<ProfilePayload, void>({
 			query: () => '/api/me',
@@ -67,6 +68,11 @@ export const snaphostApi = createApi({
 		getMeFiles: builder.query<FilesPayload, void>({
 			query: () => '/api/me/files',
 			providesTags: ['MeFiles'],
+			keepUnusedDataFor: 60,
+		}),
+		getMeUploadQuota: builder.query<UploadQuotaPayload, void>({
+			query: () => '/api/me/upload-quota',
+			providesTags: ['MeUploadQuota'],
 			keepUnusedDataFor: 60,
 		}),
 		getFile: builder.query<FileMetadata, { fileId: string; username?: string }>({
@@ -103,7 +109,7 @@ export const snaphostApi = createApi({
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: ['Me', 'MeFiles'],
+			invalidatesTags: ['Me', 'MeFiles', 'MeUploadQuota'],
 		}),
 		updateFile: builder.mutation<{ file: AppFile }, UpdateFilePayload>({
 			query: ({ fileId, ...body }) => ({
@@ -176,6 +182,7 @@ export const snaphostApi = createApi({
 export const {
 	useGetMeQuery,
 	useGetMeFilesQuery,
+	useGetMeUploadQuotaQuery,
 	useGetFileQuery,
 	useGetUsernameAvailabilityQuery,
 	useGetAnonymousLinksQuery,

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { useDeleteFileMutation, useUpdateFileMutation } from '@/state/api';
+import { useDeleteFileMutation, useUpdateFileMutation, useGetMeUploadQuotaQuery } from '@/state/api';
 import { getApiErrorMessage } from '@/lib/api-error';
 import { FILE_ERRORS, TOAST_LABELS } from '@/lib/messages';
 import type { AppFile } from '@/types/app';
@@ -32,6 +32,7 @@ export default function ProfileDashboard({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [updateFile] = useUpdateFileMutation();
   const [deleteFileMutation] = useDeleteFileMutation();
+  const { data: uploadQuota } = useGetMeUploadQuotaQuery();
 
   if (prevInitialFiles !== initialFiles) {
     setPrevInitialFiles(initialFiles);
@@ -122,6 +123,7 @@ export default function ProfileDashboard({
           files={files}
           savedFiles={savedFiles}
           isPremium={isPremium}
+          uploadsRemaining={uploadQuota?.remaining ?? null}
           editingFileId={editingFileId}
           copiedId={copiedId}
           setFiles={setFiles}

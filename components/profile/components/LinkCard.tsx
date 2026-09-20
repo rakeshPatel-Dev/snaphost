@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Check, Clock, Copy, ExternalLink, File, FileImage, Save, Share2, Trash2, Zap } from 'lucide-react';
+import { Check, Clock, Copy, ExternalLink, File, FileImage, Save, Share2, Trash2, Upload, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -39,6 +39,7 @@ type LinkCardProps = {
   files: AppFile[];
   savedFiles: AppFile[];
   isPremium: boolean;
+  uploadsRemaining: number | null;
   editingFileId: string | null;
   copiedId: string | null;
   setFiles: React.Dispatch<React.SetStateAction<AppFile[]>>;
@@ -52,6 +53,7 @@ const LinkCard = ({
   files,
   savedFiles,
   isPremium,
+  uploadsRemaining,
   editingFileId,
   copiedId,
   setFiles,
@@ -100,11 +102,31 @@ const LinkCard = ({
     >
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 px-5 py-4">
         <h2 className="text-lg font-semibold tracking-tight">Your links</h2>
-        {files.length > 0 && (
-          <span className="rounded-full border border-border/60 bg-muted/20 px-2.5 py-1 font-mono text-xs font-medium text-muted-foreground">
-            {files.length} / {isPremium ? '∞' : '5'}
-          </span>
-        )}
+        <div className="flex flex-wrap items-center gap-3">
+          {files.length > 0 && (
+            <span className="rounded-full border border-border/60 bg-muted/20 px-2.5 py-1 font-mono text-xs font-medium text-muted-foreground">
+              {files.length} / {isPremium ? '∞' : '5'}
+            </span>
+          )}
+          {uploadsRemaining !== null && (
+            <span
+              className={cn(
+                'text-xs font-medium',
+                uploadsRemaining > 0 ? 'text-muted-foreground' : 'text-destructive'
+              )}
+            >
+              {uploadsRemaining > 0
+                ? `${uploadsRemaining} upload${uploadsRemaining === 1 ? '' : 's'} left today`
+                : 'Daily upload limit reached'}
+            </span>
+          )}
+          <Button asChild size="sm" className="h-8 gap-1.5 rounded-full px-3 text-xs">
+            <Link href="/upload" className="flex items-center gap-1.5">
+              <Upload className="h-4 w-4" />
+              Upload more
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {files.length === 0 ? (
