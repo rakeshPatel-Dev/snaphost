@@ -9,6 +9,7 @@ SnapHost is an instant file hosting and sharing platform for images and PDFs wit
 ## 🎯 What is SnapHost?
 
 SnapHost solves the problem of quickly sharing files online without friction:
+
 - ✅ Upload images or PDFs
 - ✅ Get instant clean shareable links
 - ✅ Preview files online
@@ -22,6 +23,7 @@ SnapHost solves the problem of quickly sharing files online without friction:
 ## 📋 MVP Features
 
 ### ✨ Core Features
+
 - **File Upload**: PNG, JPG, JPEG, WEBP, PDF
 - **Instant Link Generation**: Format: `snaphost.dev/f/{fileId}`
 - **File Preview**: Images render inline, PDFs embedded viewer
@@ -31,16 +33,18 @@ SnapHost solves the problem of quickly sharing files online without friction:
 - **Public Access**: No login required
 
 ### 📊 Supported File Types
-| Type | Max Size | Format |
-|------|----------|--------|
-| Images | 10 MB | PNG, JPG, JPEG, WEBP |
-| PDF | 10 MB | PDF |
+
+| Type   | Max Size | Format               |
+| ------ | -------- | -------------------- |
+| Images | 10 MB    | PNG, JPG, JPEG, WEBP |
+| PDF    | 10 MB    | PDF                  |
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 18+
 - npm
 - Supabase account (free tier works)
@@ -48,6 +52,7 @@ SnapHost solves the problem of quickly sharing files online without friction:
 ### Setup
 
 1. **Clone & Install**
+
    ```bash
    git clone <repo>
    cd snaphost
@@ -55,55 +60,61 @@ SnapHost solves the problem of quickly sharing files online without friction:
    ```
 
 2. **Environment Variables**
-   
+
    Create `.env.local`:
+
    ```env
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-  SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-  NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS=google,github
    ```
+
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS=google,github
+
+````
 
 3. **Setup Supabase**
-   
-   In **Supabase Dashboard → SQL Editor**, run:
-   ```sql
-   CREATE TABLE files (
-     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-     file_id TEXT UNIQUE NOT NULL,
-     filename TEXT NOT NULL,
-     file_type TEXT NOT NULL, -- 'pdf' or 'image'
-     size BIGINT NOT NULL,
-     storage_path TEXT NOT NULL,
-     created_at TIMESTAMP DEFAULT NOW(),
-     mime_type TEXT
-   );
 
-   CREATE INDEX idx_file_id ON files(file_id);
-   ```
+In **Supabase Dashboard → SQL Editor**, run:
+```sql
+CREATE TABLE files (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  file_id TEXT UNIQUE NOT NULL,
+  filename TEXT NOT NULL,
+  file_type TEXT NOT NULL, -- 'pdf' or 'image'
+  size BIGINT NOT NULL,
+  storage_path TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  mime_type TEXT
+);
 
-   **Setup Storage Bucket**:
-   - Go to **Storage → Create new bucket**
-   - Name: `files`
-   - Make it public
-   - Add policies in **Storage → Policies**:
-     ```sql
-     -- Allow public read
-     CREATE POLICY "Allow public read"
-       ON storage.objects FOR SELECT
-       USING (bucket_id = 'files');
+CREATE INDEX idx_file_id ON files(file_id);
+````
 
-     -- Allow public write
-     CREATE POLICY "Allow public write"
-       ON storage.objects FOR INSERT
-       WITH CHECK (bucket_id = 'files');
-     ```
+**Setup Storage Bucket**:
+
+- Go to **Storage → Create new bucket**
+- Name: `files`
+- Make it public
+- Add policies in **Storage → Policies**:
+  ```sql
+  -- Allow public read
+  CREATE POLICY "Allow public read"
+    ON storage.objects FOR SELECT
+    USING (bucket_id = 'files');
+
+  -- Allow public write
+  CREATE POLICY "Allow public write"
+    ON storage.objects FOR INSERT
+    WITH CHECK (bucket_id = 'files');
+  ```
 
 4. **Run Dev Server**
+
    ```bash
    npm run dev
    ```
-   
+
    Open [http://localhost:3000](http://localhost:3000)
 
 ---
@@ -145,15 +156,18 @@ snaphost/
 ## 🔌 API Endpoints
 
 ### POST /api/upload
+
 Upload a file and get a shareable link.
 
 **Request**:
+
 ```
 Content-Type: multipart/form-data
 Body: FormData with 'file' field
 ```
 
 **Response**:
+
 ```json
 {
   "fileId": "abc12345",
@@ -162,15 +176,18 @@ Body: FormData with 'file' field
 ```
 
 **Errors**:
+
 - `400`: Invalid file type or too large
 - `500`: Storage error
 
 ---
 
 ### GET /api/files/[fileId]
+
 Fetch file metadata.
 
 **Response**:
+
 ```json
 {
   "id": "uuid",
@@ -184,6 +201,7 @@ Fetch file metadata.
 ```
 
 **Errors**:
+
 - `404`: File not found
 - `500`: Server error
 
@@ -192,6 +210,7 @@ Fetch file metadata.
 ## 🎨 User Flow
 
 ### Upload Flow
+
 ```
 1. User visits homepage
 2. Drags file or clicks to upload
@@ -204,6 +223,7 @@ Fetch file metadata.
 ```
 
 ### Viewing Flow
+
 ```
 1. User opens shared link
 2. System fetches metadata
@@ -231,6 +251,7 @@ Fetch file metadata.
 ## 📦 Installation & Dependencies
 
 **Core Dependencies**:
+
 ```json
 {
   "next": "^16.0.0",
@@ -245,6 +266,7 @@ Fetch file metadata.
 ```
 
 Install dependencies:
+
 ```bash
 npm install
 ```
@@ -253,12 +275,12 @@ npm install
 
 ## 🎯 Performance Targets (MVP)
 
-| Metric | Target |
-|--------|--------|
+| Metric          | Target                               |
+| --------------- | ------------------------------------ |
 | Upload Response | <3 seconds (excluding file transfer) |
-| Page Load | <1.5 seconds |
-| Supported Load | 1k–10k uploads/day |
-| Uptime Target | 99%+ (relaxed for MVP) |
+| Page Load       | <1.5 seconds                         |
+| Supported Load  | 1k–10k uploads/day                   |
+| Uptime Target   | 99%+ (relaxed for MVP)               |
 
 ---
 
@@ -312,6 +334,7 @@ vercel --prod
 ```
 
 ### Manual Deployment
+
 ```bash
 npm run build
 npm start
@@ -322,18 +345,21 @@ npm start
 ## 🗓️ Post-MVP Roadmap
 
 ### Phase 2 (User Accounts)
+
 - User accounts with Supabase Auth
 - Dashboard to manage uploads
 - Delete file functionality
 - File expiration dates
 
 ### Phase 3 (Advanced Features)
+
 - Custom domains
 - Analytics dashboard
 - Password-protected links
 - API access for developers
 
 ### Phase 4 (Integrations)
+
 - CLI upload tool
 - Browser extension
 - Mobile app
@@ -343,6 +369,7 @@ npm start
 ## 🐛 Troubleshooting
 
 ### "Next.js package not found"
+
 ```bash
 rm -rf node_modules package-lock.json
 npm install
@@ -350,16 +377,19 @@ npm run dev
 ```
 
 ### Upload fails with 403 error
+
 - Check Supabase storage RLS policies
 - Ensure bucket is named `files`
 - Verify policies allow public INSERT
 
 ### Files not appearing in preview
+
 - Check database `files` table has records
 - Verify storage bucket has uploaded files
 - Check browser console for errors
 
 ### Build errors
+
 ```bash
 npx tsc --noEmit        # Check TS errors
 npm run lint            # Check linting
@@ -369,17 +399,17 @@ npm run lint            # Check linting
 
 ## 📝 Environment Variables Reference
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous key |
-| `SUPABASE_SERVICE_ROLE_KEY` | Yes | Supabase service role key (server only) |
-| `NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS` | No | OAuth providers to show on auth screen (e.g. `google,github`) |
-| `NEXT_PUBLIC_BASE_URL` | No | Custom domain (default: localhost:3000, production: https://sh.rakeshpatel.me) |
-| `QSTASH_CURRENT_SIGNING_KEY` | Production | Verifies scheduled cleanup requests from QStash |
-| `QSTASH_NEXT_SIGNING_KEY` | Production | Supports QStash signing-key rotation |
-| `QSTASH_TOKEN` | Provisioning only | Creates or updates the QStash schedule |
-| `QSTASH_URL` | Provisioning only | QStash API endpoint for the selected region |
+| Variable                              | Required          | Description                                                                    |
+| ------------------------------------- | ----------------- | ------------------------------------------------------------------------------ |
+| `NEXT_PUBLIC_SUPABASE_URL`            | Yes               | Supabase project URL                                                           |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY`       | Yes               | Supabase anonymous key                                                         |
+| `SUPABASE_SERVICE_ROLE_KEY`           | Yes               | Supabase service role key (server only)                                        |
+| `NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS` | No                | OAuth providers to show on auth screen (e.g. `google,github`)                  |
+| `NEXT_PUBLIC_BASE_URL`                | No                | Custom domain (default: localhost:3000, production: https://sh.rakeshpatel.me) |
+| `QSTASH_CURRENT_SIGNING_KEY`          | Production        | Verifies scheduled cleanup requests from QStash                                |
+| `QSTASH_NEXT_SIGNING_KEY`             | Production        | Supports QStash signing-key rotation                                           |
+| `QSTASH_TOKEN`                        | Provisioning only | Creates or updates the QStash schedule                                         |
+| `QSTASH_URL`                          | Provisioning only | QStash API endpoint for the selected region                                    |
 
 ### Expired-upload cleanup
 
@@ -413,6 +443,7 @@ The command reads `.env.local`; use the same canonical production URL in
 ## 👨‍💻 Contributing
 
 This is an MVP. Contributions welcome! Feel free to:
+
 - Report bugs
 - Suggest features
 - Submit PRs for improvements
