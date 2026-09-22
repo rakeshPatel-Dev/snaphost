@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import { Upload, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import type { UploadFormProps } from '@/types/components';
+import { Upload, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import type { UploadFormProps } from '@/types/components'
 
 export default function UploadForm({
   isDragging,
@@ -45,9 +45,7 @@ export default function UploadForm({
           <p className="text-base font-semibold text-foreground">
             {isUploading ? 'Uploading...' : 'Drop a file or click to select'}
           </p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            PNG, JPG, WebP, or PDF up to 10 MB
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">PNG, JPG, WebP, or PDF up to 10 MB</p>
         </div>
       </div>
 
@@ -70,5 +68,5 @@ export default function UploadForm({
         )}
       </Button>
     </div>
-  );
+  )
 }

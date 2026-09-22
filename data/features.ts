@@ -1,13 +1,13 @@
-import type { MotionSceneId } from '@/components/motion';
+import type { MotionSceneId } from '@/components/motion'
 
 type FeatureRow = {
-  id: MotionSceneId;
-  eyebrow: string;
-  title: string;
-  description: string;
-  bullets: string[];
-  requiresAccount?: boolean;
-};
+  id: MotionSceneId
+  eyebrow: string
+  title: string
+  description: string
+  bullets: string[]
+  requiresAccount?: boolean
+}
 
 export const features: FeatureRow[] = [
   {
@@ -24,7 +24,12 @@ export const features: FeatureRow[] = [
     title: 'No account required',
     description:
       'Upload and share without an account — anonymous links auto-expire after 24 hours, so nothing lingers.',
-    bullets: ['Anonymous uploads', 'No signup, no password', 'Auto-destruct after 24h', 'Perfect for one-off shares'],
+    bullets: [
+      'Anonymous uploads',
+      'No signup, no password',
+      'Auto-destruct after 24h',
+      'Perfect for one-off shares',
+    ],
   },
   {
     id: 'custom-links',
@@ -41,7 +46,11 @@ export const features: FeatureRow[] = [
     title: 'Flexible expiration',
     description:
       'Authenticated users choose exactly how long their files stay available — from a day to forever.',
-    bullets: ['1 day · 7 days · 30 days · Never', 'Per-link control', 'Default is always 24h for anonymous'],
+    bullets: [
+      '1 day · 7 days · 30 days · Never',
+      'Per-link control',
+      'Default is always 24h for anonymous',
+    ],
     requiresAccount: true,
   },
   {
@@ -53,4 +62,4 @@ export const features: FeatureRow[] = [
     bullets: ['View all active links', 'Copy any link instantly', 'Rename or delete anytime'],
     requiresAccount: true,
   },
-];
+]

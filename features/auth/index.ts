@@ -1,1 +1,1 @@
-export { default as AuthScreen } from '@/components/auth/AuthScreen';
+export { default as AuthScreen } from '@/components/auth/AuthScreen'

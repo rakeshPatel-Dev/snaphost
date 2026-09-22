@@ -1,83 +1,83 @@
-'use client';
+'use client'
 
-import { useEffect, useRef, useState } from 'react';
-import { useForm, ValidationError } from '@formspree/react';
-import { Bug, Check, ImagePlus, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react'
+import { useForm, ValidationError } from '@formspree/react'
+import { Bug, Check, ImagePlus, X } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { formatFileSize } from '@/shared/utils/file-format';
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { formatFileSize } from '@/shared/utils/file-format'
 
 type ReportIssueModalProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-};
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}
 
 type Screenshot = {
-  file: File;
-  url: string | null;
-};
+  file: File
+  url: string | null
+}
 
 export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModalProps) {
   const [state, handleSubmit, resetForm] = useForm(
     process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT_ID || 'missing-id'
-  );
-  const [screenshot, setScreenshot] = useState<Screenshot | null>(null);
-  const [submitFailed, setSubmitFailed] = useState(false);
-  const screenshotUrlRef = useRef<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  )
+  const [screenshot, setScreenshot] = useState<Screenshot | null>(null)
+  const [submitFailed, setSubmitFailed] = useState(false)
+  const screenshotUrlRef = useRef<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(
     () => () => {
       if (screenshotUrlRef.current) {
-        URL.revokeObjectURL(screenshotUrlRef.current);
+        URL.revokeObjectURL(screenshotUrlRef.current)
       }
     },
     []
-  );
+  )
 
   const selectScreenshot = (file: File | null) => {
     if (screenshotUrlRef.current) {
-      URL.revokeObjectURL(screenshotUrlRef.current);
-      screenshotUrlRef.current = null;
+      URL.revokeObjectURL(screenshotUrlRef.current)
+      screenshotUrlRef.current = null
     }
     if (!file) {
-      setScreenshot(null);
-      return;
+      setScreenshot(null)
+      return
     }
-    const url = file.type.startsWith('image/') ? URL.createObjectURL(file) : null;
-    screenshotUrlRef.current = url;
-    setScreenshot({ file, url });
-  };
+    const url = file.type.startsWith('image/') ? URL.createObjectURL(file) : null
+    screenshotUrlRef.current = url
+    setScreenshot({ file, url })
+  }
 
   const handleOpenChange = (next: boolean) => {
     if (next) {
-      resetForm();
-      setSubmitFailed(false);
+      resetForm()
+      setSubmitFailed(false)
     } else {
-      selectScreenshot(null);
+      selectScreenshot(null)
     }
-    onOpenChange(next);
-  };
+    onOpenChange(next)
+  }
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      await handleSubmit(e);
+      await handleSubmit(e)
     } catch {
-      setSubmitFailed(true);
+      setSubmitFailed(true)
     }
-  };
+  }
 
-  const hasFormError = !!state.errors && state.errors.getFormErrors().length > 0;
+  const hasFormError = !!state.errors && state.errors.getFormErrors().length > 0
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -93,7 +93,10 @@ export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModa
             <p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
               Thanks for reporting this — our team will look into the issue you encountered.
             </p>
-            <Button onClick={() => handleOpenChange(false)} className="mt-8 h-10 w-full px-4 sm:w-auto">
+            <Button
+              onClick={() => handleOpenChange(false)}
+              className="mt-8 h-10 w-full px-4 sm:w-auto"
+            >
               Close
             </Button>
           </div>
@@ -131,27 +134,25 @@ export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModa
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="report-context">What were you trying to do? <span className="text-muted-foreground">(optional)</span></Label>
-                <Textarea
-                  id="report-context"
-                  name="context"
-                  className="min-h-16"
-                />
+                <Label htmlFor="report-context">
+                  What were you trying to do?{' '}
+                  <span className="text-muted-foreground">(optional)</span>
+                </Label>
+                <Textarea id="report-context" name="context" className="min-h-16" />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="report-email">Email <span className="text-muted-foreground">(optional)</span></Label>
-                <Input
-                  id="report-email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                />
+                <Label htmlFor="report-email">
+                  Email <span className="text-muted-foreground">(optional)</span>
+                </Label>
+                <Input id="report-email" name="email" type="email" autoComplete="email" />
                 <ValidationError prefix="Email" field="email" errors={state.errors} />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="report-screenshot">Screenshot <span className="text-muted-foreground">(optional)</span></Label>
+                <Label htmlFor="report-screenshot">
+                  Screenshot <span className="text-muted-foreground">(optional)</span>
+                </Label>
                 <input
                   id="report-screenshot"
                   name="attachment"
@@ -176,14 +177,18 @@ export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModa
                       </div>
                     )}
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-foreground">{screenshot.file.name}</p>
-                      <p className="text-xs text-muted-foreground">{formatFileSize(screenshot.file.size)}</p>
+                      <p className="truncate text-sm font-medium text-foreground">
+                        {screenshot.file.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatFileSize(screenshot.file.size)}
+                      </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => {
-                        if (fileInputRef.current) fileInputRef.current.value = '';
-                        selectScreenshot(null);
+                        if (fileInputRef.current) fileInputRef.current.value = ''
+                        selectScreenshot(null)
                       }}
                       aria-label="Remove screenshot"
                       className="flex size-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
@@ -218,7 +223,11 @@ export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModa
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={state.submitting} className="h-10 w-full px-4 sm:w-auto">
+              <Button
+                type="submit"
+                disabled={state.submitting}
+                className="h-10 w-full px-4 sm:w-auto"
+              >
                 {state.submitting ? 'Sending…' : 'Send report'}
               </Button>
             </div>
@@ -226,5 +235,5 @@ export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModa
         )}
       </DialogContent>
     </Dialog>
-  );
+  )
 }

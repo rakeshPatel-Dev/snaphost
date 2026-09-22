@@ -1,12 +1,12 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import ShareModal from '@/components/ShareModal';
-import { Button } from '@/components/ui/button';
-import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
-import { Check, Copy, ExternalLink, Share2, Trash2, Clock } from 'lucide-react';
-import { formatShortDate, getTimeRemaining } from '@/services/anonymous-links';
-import type { AnonymousLinkCardProps } from '@/types/components';
+import { useState } from 'react'
+import ShareModal from '@/components/ShareModal'
+import { Button } from '@/components/ui/button'
+import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog'
+import { Check, Copy, ExternalLink, Share2, Trash2, Clock } from 'lucide-react'
+import { formatShortDate, getTimeRemaining } from '@/services/anonymous-links'
+import type { AnonymousLinkCardProps } from '@/types/components'
 
 export default function AnonymousLinkCard({
   id,
@@ -21,7 +21,7 @@ export default function AnonymousLinkCard({
   onOpen,
   onDelete,
 }: AnonymousLinkCardProps) {
-  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false)
 
   return (
     <>
@@ -95,9 +95,7 @@ export default function AnonymousLinkCard({
 
         {/* URL row */}
         <div className="mt-3 flex items-center gap-2 rounded-full border border-border/60 bg-muted/20 py-2 pl-3.5 pr-1.5 sm:mt-3.5">
-          <p className="min-w-0 flex-1 truncate font-mono text-xs text-foreground">
-            {url}
-          </p>
+          <p className="min-w-0 flex-1 truncate font-mono text-xs text-foreground">{url}</p>
           <button
             type="button"
             onClick={() => onCopy(url, id)}
@@ -121,5 +119,5 @@ export default function AnonymousLinkCard({
         </div>
       </div>
     </>
-  );
+  )
 }

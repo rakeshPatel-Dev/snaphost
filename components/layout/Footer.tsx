@@ -1,20 +1,20 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { Heart } from 'lucide-react';
-import { copyrightText, footerLinks, companyLinks } from '@/data/footer';
-import Container from '@/components/shared/Container';
-import Logo from './Logo';
-import SocialButtons from './SocialButtons';
-import FeedbackDialog from '../shared/FeedbackDialog';
-import { FOUNDER_SITE } from '@/data/emails';
+import Link from 'next/link'
+import { Heart } from 'lucide-react'
+import { copyrightText, footerLinks, companyLinks } from '@/data/footer'
+import Container from '@/components/shared/Container'
+import Logo from './Logo'
+import SocialButtons from './SocialButtons'
+import FeedbackDialog from '../shared/FeedbackDialog'
+import { FOUNDER_SITE } from '@/data/emails'
 
 const productLinks = [
   { label: 'Upload', href: '/upload' },
   { label: 'Sign up', href: '/sign-up' },
   { label: 'Sign in', href: '/sign-in' },
   { label: 'Dashboard', href: '/profile' },
-];
+]
 
 export default function Footer() {
   return (
@@ -24,7 +24,8 @@ export default function Footer() {
           <div className="flex flex-col gap-4 lg:col-span-5">
             <Logo />
             <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
-              Upload an image or PDF and get a clean, shareable link in seconds — no account required.
+              Upload an image or PDF and get a clean, shareable link in seconds — no account
+              required.
             </p>
             <SocialButtons />
           </div>
@@ -99,5 +100,5 @@ export default function Footer() {
         </div>
       </Container>
     </footer>
-  );
+  )
 }

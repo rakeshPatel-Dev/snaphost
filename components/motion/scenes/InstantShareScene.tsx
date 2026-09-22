@@ -1,34 +1,34 @@
-'use client';
+'use client'
 
-import { useRef } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Check } from 'lucide-react';
-import { inWindow } from '@/components/motion/usePlayback';
-import UploadForm from '@/components/UploadForm';
-import FileDetailsCard from '@/components/FileDetailsCard';
-import ShareLinkInput from '@/components/ShareLinkInput';
-import { noop } from './sample';
-import { SITE_URL } from '@/data/emails';
+import { useRef } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Check } from 'lucide-react'
+import { inWindow } from '@/components/motion/usePlayback'
+import UploadForm from '@/components/UploadForm'
+import FileDetailsCard from '@/components/FileDetailsCard'
+import ShareLinkInput from '@/components/ShareLinkInput'
+import { noop } from './sample'
+import { SITE_URL } from '@/data/emails'
 
 const DEMO = {
   filename: 'mockup.png',
   fileSize: 2_457_600,
   url: `${SITE_URL}/jane/8xK3pQ`,
-};
+}
 
 const fade = {
   initial: { opacity: 0, y: 12, scale: 0.97 },
   animate: { opacity: 1, y: 0, scale: 1 },
   exit: { opacity: 0, y: -8, scale: 0.98 },
   transition: { duration: 0.35, ease: 'easeOut' as const },
-};
+}
 
 export default function InstantShareScene({ t }: { t: number }) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const phase: 'upload' | 'uploading' | 'done' =
-    t < 0.28 ? 'upload' : t < 0.4 ? 'uploading' : 'done';
+    t < 0.28 ? 'upload' : t < 0.4 ? 'uploading' : 'done'
 
-  const copied = inWindow(t, 0.62, 0.95);
+  const copied = inWindow(t, 0.62, 0.95)
 
   return (
     <div className="relative flex h-80 w-full items-center">
@@ -88,5 +88,5 @@ export default function InstantShareScene({ t }: { t: number }) {
         )}
       </AnimatePresence>
     </div>
-  );
+  )
 }

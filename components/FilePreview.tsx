@@ -1,47 +1,48 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { useEffect } from 'react';
-import { Loader2, Unlink } from 'lucide-react';
-import ImagePreview from './ImagePreview';
-import PdfPreview from './PdfPreview';
-import FloatingBadge from './Floating';
-import { Button } from './ui/button';
-import { useGetFileQuery } from '@/state/api';
-import { getApiErrorMessage } from '@/lib/api-error';
-import type { FilePreviewProps } from '@/types/components';
+import Link from 'next/link'
+import { useEffect } from 'react'
+import { Loader2, Unlink } from 'lucide-react'
+import ImagePreview from './ImagePreview'
+import PdfPreview from './PdfPreview'
+import FloatingBadge from './Floating'
+import { Button } from './ui/button'
+import { useGetFileQuery } from '@/state/api'
+import { getApiErrorMessage } from '@/lib/api-error'
+import type { FilePreviewProps } from '@/types/components'
 
 function getPreviewTitle(filename: string): string {
-  const extensionStart = filename.lastIndexOf('.');
-  const displayName = extensionStart > 0 ? filename.slice(0, extensionStart) : filename;
+  const extensionStart = filename.lastIndexOf('.')
+  const displayName = extensionStart > 0 ? filename.slice(0, extensionStart) : filename
 
-  return `${displayName} | Snaphost — Instant file sharing`;
+  return `${displayName} | Snaphost — Instant file sharing`
 }
 
 export default function FilePreview({ fileId, isAnonymous = false, username }: FilePreviewProps) {
-  const { data: metadata, error, isLoading } = useGetFileQuery(
-    { fileId, username },
-    { skip: !fileId }
-  );
+  const {
+    data: metadata,
+    error,
+    isLoading,
+  } = useGetFileQuery({ fileId, username }, { skip: !fileId })
 
   useEffect(() => {
     if (metadata) {
-      document.title = getPreviewTitle(metadata.filename);
+      document.title = getPreviewTitle(metadata.filename)
     }
-  }, [metadata]);
+  }, [metadata])
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="h-6 w-6 animate-spin text-accent" />
       </div>
-    );
+    )
   }
 
   if (error || !metadata) {
     const isNotFound =
       !error ||
-      (typeof error === 'object' && error !== null && 'status' in error && error.status === 404);
+      (typeof error === 'object' && error !== null && 'status' in error && error.status === 404)
 
     return (
       <div className="min-h-screen bg-background">
@@ -63,7 +64,10 @@ export default function FilePreview({ fileId, isAnonymous = false, username }: F
                 ? 'This temporary snap link was available for 24 hours.'
                 : isNotFound
                   ? 'This snap link may have expired or the file may have been deleted.'
-                  : getApiErrorMessage(error, 'Something went wrong while loading this file. Please try again.')}
+                  : getApiErrorMessage(
+                      error,
+                      'Something went wrong while loading this file. Please try again.'
+                    )}
             </p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-2 sm:flex-row">
@@ -77,7 +81,7 @@ export default function FilePreview({ fileId, isAnonymous = false, username }: F
           </section>
         </main>
       </div>
-    );
+    )
   }
 
   return (
@@ -93,5 +97,5 @@ export default function FilePreview({ fileId, isAnonymous = false, username }: F
       )}
       <FloatingBadge />
     </div>
-  );
+  )
 }

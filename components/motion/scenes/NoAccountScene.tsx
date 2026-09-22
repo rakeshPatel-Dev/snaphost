@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import { useRef } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { UserX, ShieldCheck, Clock, Check, AlertTriangle } from 'lucide-react';
-import UploadMockTabs from '@/components/sections/upload-mock/UploadMockTabs';
-import UploadDropzone from '@/components/sections/upload-mock/UploadDropzone';
-import AnonymousLinkCard from '@/components/sections/upload-mock/AnonymousLinkCard';
-import { inWindow } from '@/components/motion/usePlayback';
-import { demoAnonymousLink, noop } from './sample';
+import { useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { UserX, ShieldCheck, Clock, Check, AlertTriangle } from 'lucide-react'
+import UploadMockTabs from '@/components/sections/upload-mock/UploadMockTabs'
+import UploadDropzone from '@/components/sections/upload-mock/UploadDropzone'
+import AnonymousLinkCard from '@/components/sections/upload-mock/AnonymousLinkCard'
+import { inWindow } from '@/components/motion/usePlayback'
+import { getDemoAnonymousLink, demoAnonymousLinkUrl, noop } from './sample'
 
 const tabVariants = {
   enter: (dir: number) => ({ opacity: 0, x: dir * 16, scale: 0.99 }),
@@ -23,55 +23,53 @@ const tabVariants = {
     scale: 0.99,
     transition: { duration: 0.2, ease: 'easeOut' as const },
   }),
-};
+}
 
 const fade = {
   initial: { opacity: 0, y: 12 },
   animate: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -8 },
   transition: { duration: 0.3, ease: 'easeOut' as const },
-};
+}
 
 const toastFade = {
   initial: { opacity: 0, y: -6, scale: 0.96 },
   animate: { opacity: 1, y: 0, scale: 1 },
   exit: { opacity: 0, y: -6, scale: 0.96 },
   transition: { duration: 0.2, ease: 'easeOut' as const },
-};
+}
 
-const pad = (n: number) => String(n).padStart(2, '0');
+const pad = (n: number) => String(n).padStart(2, '0')
 
 // --- timeline (fractions of t, 0 -> 1) ---
-const UPLOAD_END = 0.3;    // upload tab -> links tab
-const CLICK_END = 0.48;    // copy button "pressed" window ends
-const COPIED_END = 0.6;    // "Link copied" toast clears, full card disappears
-const EXPIRE_END = 0.85;   // bare-link countdown hits zero
+const UPLOAD_END = 0.3 // upload tab -> links tab
+const CLICK_END = 0.48 // copy button "pressed" window ends
+const COPIED_END = 0.6 // "Link copied" toast clears, full card disappears
+const EXPIRE_END = 0.85 // bare-link countdown hits zero
 
-type Phase = 'card' | 'minimal' | 'expired';
+type Phase = 'card' | 'minimal' | 'expired'
 
 export default function NoAccountScene({ t }: { t: number }) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const onUploadTab = t < UPLOAD_END;
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const onUploadTab = t < UPLOAD_END
 
-  const copied = inWindow(t, CLICK_END, COPIED_END);
+  const [demoLink] = useState(() => getDemoAnonymousLink())
 
-  const phase: Phase =
-    t < COPIED_END ? 'card' : t < EXPIRE_END ? 'minimal' : 'expired';
+  const copied = inWindow(t, CLICK_END, COPIED_END)
 
-  const progress = Math.max(
-    0,
-    Math.min(1, (t - COPIED_END) / (EXPIRE_END - COPIED_END))
-  );
+  const phase: Phase = t < COPIED_END ? 'card' : t < EXPIRE_END ? 'minimal' : 'expired'
 
-  const remaining = Math.max(0, Math.floor(24 * 3600 * (1 - progress)));
+  const progress = Math.max(0, Math.min(1, (t - COPIED_END) / (EXPIRE_END - COPIED_END)))
+
+  const remaining = Math.max(0, Math.floor(24 * 3600 * (1 - progress)))
   const countdown = `${pad(Math.floor(remaining / 3600))}:${pad(
     Math.floor((remaining % 3600) / 60)
-  )}:${pad(remaining % 60)}`;
+  )}:${pad(remaining % 60)}`
 
   // Direction: moving from upload -> links is "forward" (slide left),
   // moving links -> upload is "backward" (slide right).
-  const direction = onUploadTab ? -1 : 1;
-  const activeKey = onUploadTab ? 'upload' : `links-${phase}`;
+  const direction = onUploadTab ? -1 : 1
+  const activeKey = onUploadTab ? 'upload' : `links-${phase}`
 
   const dropzone = (
     <motion.div
@@ -89,7 +87,7 @@ export default function NoAccountScene({ t }: { t: number }) {
         onClick={noop}
       />
     </motion.div>
-  );
+  )
 
   // Phase 1–2: full card, press feedback, then "copied" toast above it
   const cardPhase = (
@@ -116,7 +114,7 @@ export default function NoAccountScene({ t }: { t: number }) {
 
         <div className="relative">
           <AnonymousLinkCard
-            {...demoAnonymousLink}
+            {...demoLink}
             copied={copied}
             onCopy={noop}
             onOpen={noop}
@@ -125,7 +123,7 @@ export default function NoAccountScene({ t }: { t: number }) {
         </div>
       </div>
     </motion.div>
-  );
+  )
 
   // Phase 3: everything stripped away — just the bare url + expiring bar
   const minimalPhase = (
@@ -136,7 +134,7 @@ export default function NoAccountScene({ t }: { t: number }) {
     >
       <div className="w-full space-y-2">
         <p className="truncate text-center font-mono text-sm text-foreground">
-          {demoAnonymousLink.url}
+          {demoAnonymousLinkUrl}
         </p>
         <div className="px-1">
           <div className="flex items-center justify-between text-xs">
@@ -157,7 +155,7 @@ export default function NoAccountScene({ t }: { t: number }) {
         </div>
       </div>
     </motion.div>
-  );
+  )
 
   // Phase 4: everything gone, centered "Link expired" toast alone
   const expiredPhase = (
@@ -171,10 +169,9 @@ export default function NoAccountScene({ t }: { t: number }) {
         Link expired!
       </div>
     </motion.div>
-  );
+  )
 
-  const linksTab =
-    phase === 'card' ? cardPhase : phase === 'minimal' ? minimalPhase : expiredPhase;
+  const linksTab = phase === 'card' ? cardPhase : phase === 'minimal' ? minimalPhase : expiredPhase
 
   return (
     <div className="relative flex h-90 w-full flex-col">
@@ -219,5 +216,5 @@ export default function NoAccountScene({ t }: { t: number }) {
         )}
       </div>
     </div>
-  );
+  )
 }

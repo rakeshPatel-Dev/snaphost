@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import { usePathname } from 'next/navigation';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-import BetaBanner from '@/components/beta/BetaBanner';
-import type { SiteChromeProps } from '@/types/components';
+import { usePathname } from 'next/navigation'
+import Header from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
+import BetaBanner from '@/components/beta/BetaBanner'
+import type { SiteChromeProps } from '@/types/components'
 
 export default function SiteChrome({ children }: SiteChromeProps) {
-  const pathname = usePathname();
+  const pathname = usePathname()
   const isFileViewRoute =
     pathname.startsWith('/f/') ||
     pathname.startsWith('/anon/') ||
-    (/^\/[^/]+\/[^/]+$/.test(pathname) && !pathname.startsWith('/company/'));
+    (/^\/[^/]+\/[^/]+$/.test(pathname) && !pathname.startsWith('/company/'))
 
   if (
     isFileViewRoute ||
@@ -22,7 +22,7 @@ export default function SiteChrome({ children }: SiteChromeProps) {
     pathname.startsWith('/check-email') ||
     pathname.startsWith('/auth/sync')
   ) {
-    return <>{children}</>;
+    return <>{children}</>
   }
 
   return (
@@ -32,5 +32,5 @@ export default function SiteChrome({ children }: SiteChromeProps) {
       <main className="flex-1">{children}</main>
       <Footer />
     </>
-  );
+  )
 }

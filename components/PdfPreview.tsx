@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { useState } from 'react'
+import { Loader2 } from 'lucide-react'
 
 interface PdfPreviewProps {
-  url: string;
-  filename: string;
+  url: string
+  filename: string
 }
 
 export default function PdfPreview({ url, filename }: PdfPreviewProps) {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true)
 
   return (
     <div className="w-full min-h-screen">
@@ -27,5 +27,5 @@ export default function PdfPreview({ url, filename }: PdfPreviewProps) {
         allowFullScreen
       />
     </div>
-  );
+  )
 }

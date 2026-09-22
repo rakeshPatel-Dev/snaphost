@@ -1,22 +1,22 @@
-'use client';
+'use client'
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { Clock } from 'lucide-react';
-import { inWindow } from '@/components/motion/usePlayback';
+import { AnimatePresence, motion } from 'framer-motion'
+import { Clock } from 'lucide-react'
+import { inWindow } from '@/components/motion/usePlayback'
 
 const PRESETS = [
   { label: '1 day', countdown: 'in 24h' },
   { label: '7 days', countdown: 'in 7d' },
   { label: '30 days', countdown: 'in 30d' },
   { label: 'Never', countdown: 'stays live' },
-] as const;
+] as const
 
 const WINDOWS = [
   [0.12, 0.3],
   [0.3, 0.48],
   [0.48, 0.66],
   [0.66, 1],
-] as const;
+] as const
 
 const countdownVariants = {
   enter: (dir: number) => ({ opacity: 0, x: dir * 12, scale: 0.98 }),
@@ -32,20 +32,20 @@ const countdownVariants = {
     scale: 0.98,
     transition: { duration: 0.18, ease: 'easeOut' as const },
   }),
-};
+}
 
 export default function FlexibleExpiryScene({ t }: { t: number }) {
   const activeIndex = Math.max(
     0,
     WINDOWS.findIndex(([start, end]) => inWindow(t, start, end))
-  );
-  const active = PRESETS[activeIndex];
+  )
+  const active = PRESETS[activeIndex]
 
   // Track direction by comparing with the previous index across renders.
   // A ref-free approach: derive direction from the window boundaries.
   // Since presets advance forward in the timeline, direction is always +1
   // while scrubbing forward, and -1 when scrubbing back.
-  const direction = 1;
+  const direction = 1
 
   return (
     <div className="space-y-4">
@@ -63,17 +63,16 @@ export default function FlexibleExpiryScene({ t }: { t: number }) {
 
       <div className="flex flex-wrap gap-2 rounded-2xl border border-border/60 bg-muted/20 p-3">
         {PRESETS.map((preset, i) => {
-          const isActive = i === activeIndex;
+          const isActive = i === activeIndex
           return (
             <motion.span
               key={preset.label}
               animate={isActive ? { opacity: 1 } : { opacity: 0.55 }}
               whileTap={{ scale: 0.96 }}
               transition={{ duration: 0.2 }}
-              className={`relative flex h-8 min-w-14 items-center justify-center rounded-full px-3 text-xs font-semibold ${isActive
-                  ? 'text-background'
-                  : 'text-muted-foreground border border-border/60'
-                }`}
+              className={`relative flex h-8 min-w-14 items-center justify-center rounded-full px-3 text-xs font-semibold ${
+                isActive ? 'text-background' : 'text-muted-foreground border border-border/60'
+              }`}
             >
               {isActive && (
                 <motion.span
@@ -84,7 +83,7 @@ export default function FlexibleExpiryScene({ t }: { t: number }) {
               )}
               <span className="relative z-10">{preset.label}</span>
             </motion.span>
-          );
+          )
         })}
       </div>
 
@@ -107,9 +106,7 @@ export default function FlexibleExpiryScene({ t }: { t: number }) {
         </div>
       </div>
 
-      <p className="text-xs text-muted-foreground">
-        Anonymous uploads default to 24h expiration.
-      </p>
+      <p className="text-xs text-muted-foreground">Anonymous uploads default to 24h expiration.</p>
     </div>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   Dialog,
@@ -6,9 +6,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import AnonymousLinkCard from './AnonymousLinkCard';
-import type { AnonymousLinksDialogProps } from '@/types/components';
+} from '@/components/ui/dialog'
+import AnonymousLinkCard from './AnonymousLinkCard'
+import type { AnonymousLinksDialogProps } from '@/types/components'
 
 export default function AnonymousLinksDialog({
   open,
@@ -52,5 +52,5 @@ export default function AnonymousLinksDialog({
         </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

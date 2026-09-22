@@ -10,9 +10,8 @@ export const checkEmailContent = {
   forgotPassword: {
     title: 'Check your email',
     heading: 'Reset instructions sent',
-    description:
-      'We sent a reset link to {email}. Follow it to choose a new password.',
+    description: 'We sent a reset link to {email}. Follow it to choose a new password.',
     buttonLabel: 'Back to sign in',
     buttonHref: '/sign-in',
   },
-};
+}

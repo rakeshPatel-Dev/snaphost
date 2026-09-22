@@ -1,8 +1,8 @@
-import React from 'react';
-import { Crown, ArrowRight } from 'lucide-react';
-import { PREMIUM_FEATURES } from '@/data/PremiumFeatures';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import React from 'react'
+import { Crown, ArrowRight } from 'lucide-react'
+import { PREMIUM_FEATURES } from '@/data/PremiumFeatures'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
 const TierBanner = ({ isPremium }: { isPremium: boolean }) => {
   if (!isPremium) {
@@ -16,14 +16,18 @@ const TierBanner = ({ isPremium }: { isPremium: boolean }) => {
             Want more control? Upgrade to Pro
           </p>
         </div>
-        <Button asChild size="sm" className="h-8 rounded-full px-4 text-xs font-medium transition-all hover:bg-accent hover:text-background">
+        <Button
+          asChild
+          size="sm"
+          className="h-8 rounded-full px-4 text-xs font-medium transition-all hover:bg-accent hover:text-background"
+        >
           <Link href="/getpro" className="flex items-center gap-1.5">
             Get Pro access
             <ArrowRight className="h-3 w-3" />
           </Link>
         </Button>
       </div>
-    );
+    )
   }
 
   return (
@@ -43,7 +47,7 @@ const TierBanner = ({ isPremium }: { isPremium: boolean }) => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TierBanner;
+export default TierBanner

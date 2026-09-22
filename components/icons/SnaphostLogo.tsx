@@ -1,14 +1,14 @@
-import React from "react";
+import React from 'react'
 
 interface SnaphostLogoProps {
-    /** Rendered width of the logo (px or any CSS width value). */
-    width?: number | string;
-    /** Rendered height of the logo (px or any CSS height value). */
-    height?: number | string;
-    /** Fill color for the mark. Defaults to black, matching the source file. */
-    color?: string;
-    /** Optional extra class names for the wrapping <svg>. */
-    className?: string;
+  /** Rendered width of the logo (px or any CSS width value). */
+  width?: number | string
+  /** Rendered height of the logo (px or any CSS height value). */
+  height?: number | string
+  /** Fill color for the mark. Defaults to black, matching the source file. */
+  color?: string
+  /** Optional extra class names for the wrapping <svg>. */
+  className?: string
 }
 
 const LOGO_PATH = `M14435 14550 c-44 -10 -260 -54 -480 -99 -220 -44 -443 -89 -495
@@ -57,38 +57,38 @@ const LOGO_PATH = `M14435 14550 c-44 -10 -260 -54 -480 -99 -220 -44 -443 -89 -49
 -3 -25 -36 -50 -74 -24 -38 -49 -74 -55 -80 -5 -6 -40 -56 -77 -111 -221 -328
 -355 -524 -376 -547 -14 -17 -150 -18 -2580 -18 -2377 0 -2564 1 -2558 16 4
 10 62 101 130 203 68 102 167 254 221 336 161 247 278 427 444 680 86 132 172
-264 191 294 35 54 35 54 775 47 407 -3 999 -11 1315 -16z`;
+264 191 294 35 54 35 54 775 47 407 -3 999 -11 1315 -16z`
 
 /**
  * "Snaphost" logo — direct potrace vector trace of the original mark.
  * The path data is used byte-for-byte from the source SVG.
  */
 const SnaphostLogo: React.FC<SnaphostLogoProps> = ({
-    width = 1500,
-    height = 1500,
-    color = "currentColor",
-    className,
+  width = 1500,
+  height = 1500,
+  color = 'currentColor',
+  className,
 }) => {
-    return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width={width}
-            height={height}
-            viewBox="0 0 1500.000000 1500.000000"
-            preserveAspectRatio="xMidYMid meet"
-            className={className}
-            role="img"
-            aria-label="Snaphost logo"
-        >
-            <g
-                transform="translate(0.000000,1500.000000) scale(0.100000,-0.100000)"
-                fill={color}
-                stroke="none"
-            >
-                <path d={LOGO_PATH} />
-            </g>
-        </svg>
-    );
-};
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={width}
+      height={height}
+      viewBox="0 0 1500.000000 1500.000000"
+      preserveAspectRatio="xMidYMid meet"
+      className={className}
+      role="img"
+      aria-label="Snaphost logo"
+    >
+      <g
+        transform="translate(0.000000,1500.000000) scale(0.100000,-0.100000)"
+        fill={color}
+        stroke="none"
+      >
+        <path d={LOGO_PATH} />
+      </g>
+    </svg>
+  )
+}
 
-export default SnaphostLogo;
+export default SnaphostLogo

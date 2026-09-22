@@ -1,4 +1,4 @@
-import { FeatureShowcase, CTA, FAQ, Hero, LogoCloud, Pricing } from '@/features/landing';
+import { FeatureShowcase, CTA, FAQ, Hero, LogoCloud, Pricing } from '@/features/landing'
 
 export default function Home() {
   return (
@@ -10,5 +10,5 @@ export default function Home() {
       <FAQ />
       <CTA />
     </main>
-  );
+  )
 }

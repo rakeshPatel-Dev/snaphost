@@ -1,36 +1,36 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import { ArrowRight, FlaskConical, X } from 'lucide-react';
-import ReportIssueModal from './ReportIssueModal';
+import { useEffect, useState } from 'react'
+import { ArrowRight, FlaskConical, X } from 'lucide-react'
+import ReportIssueModal from './ReportIssueModal'
 
-const BETA_BANNER_DISMISS_KEY = 'snaphost:beta-banner-dismissed';
+const BETA_BANNER_DISMISS_KEY = 'snaphost:beta-banner-dismissed'
 
 export default function BetaBanner() {
-  const [dismissed, setDismissed] = useState(false);
-  const [reportOpen, setReportOpen] = useState(false);
+  const [dismissed, setDismissed] = useState(false)
+  const [reportOpen, setReportOpen] = useState(false)
 
   useEffect(() => {
     try {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setDismissed(window.localStorage.getItem(BETA_BANNER_DISMISS_KEY) === '1');
+      setDismissed(window.localStorage.getItem(BETA_BANNER_DISMISS_KEY) === '1')
     } catch {
-      setDismissed(false);
+      setDismissed(false)
     }
-  }, []);
+  }, [])
 
   if (dismissed) {
-    return null;
+    return null
   }
 
   const dismiss = () => {
-    setDismissed(true);
+    setDismissed(true)
     try {
-      window.localStorage.setItem(BETA_BANNER_DISMISS_KEY, '1');
+      window.localStorage.setItem(BETA_BANNER_DISMISS_KEY, '1')
     } catch {
       // Ignore storage failures (e.g. private browsing).
     }
-  };
+  }
 
   return (
     <>
@@ -65,5 +65,5 @@ export default function BetaBanner() {
 
       <ReportIssueModal open={reportOpen} onOpenChange={setReportOpen} />
     </>
-  );
+  )
 }

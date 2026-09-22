@@ -4,4 +4,4 @@ export const expiredUploadCleanupSchedule = {
   path: '/api/jobs/cleanup-expired',
   retries: 2,
   timeout: 60,
-};
+}

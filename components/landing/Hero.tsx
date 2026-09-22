@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { UploadMock } from '../sections/UploadMock';
-import { ArrowRight } from 'lucide-react';
-import DashedGrid from '@/components/shared/DashedGrid';
-import AnnouncementPill from './AnnouncementPill';
-import { useAuth } from '@/components/providers/auth-provider';
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { UploadMock } from '../sections/UploadMock'
+import { ArrowRight } from 'lucide-react'
+import DashedGrid from '@/components/shared/DashedGrid'
+import AnnouncementPill from './AnnouncementPill'
+import { useAuth } from '@/components/providers/auth-provider'
 
 export default function Hero() {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn } = useAuth()
   return (
     <section className="relative overflow-hidden pt-16 sm:pt-24 pb-20 sm:pb-32 border-b border-border/30">
       <DashedGrid absolute zIndex={-10} opacity={0.4} />
@@ -18,7 +18,7 @@ export default function Hero() {
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <div className="flex max-w-3xl flex-col items-start text-left">
-          <AnnouncementPill/>
+          <AnnouncementPill />
 
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-semibold tracking-tight text-foreground leading-[1.06]">
             Instant file sharing <br className="hidden sm:inline" />
@@ -29,7 +29,8 @@ export default function Hero() {
             <strong className="font-semibold text-foreground">
               Snaphost offers the fastest rails
             </strong>{' '}
-            to move images and PDFs anywhere. Zero sign-up friction, instant short links, and automatic 24-hour expiration.
+            to move images and PDFs anywhere. Zero sign-up friction, instant short links, and
+            automatic 24-hour expiration.
           </p>
 
           <div className="mt-8 flex items-center gap-3.5 flex-wrap">
@@ -46,7 +47,7 @@ export default function Hero() {
             )}
 
             <Button variant="outline" asChild size="lg" className="h-11 px-6 cursor-pointer">
-              <a href="#dropzone">Upload anonymously</a>
+              <Link href="/#dropzone">Upload anonymously</Link>
             </Button>
           </div>
         </div>
@@ -57,13 +58,11 @@ export default function Hero() {
           // Full-bleed only on sm+ ; on mobile stay inside parent padding
           className="mt-14 sm:mt-20 scroll-mt-24 sm:w-[calc(100%+6rem)] sm:-mx-10"
         >
-          <div
-            className="relative rounded-4xl border border-border/80 bg-card/95 p-3 ring-1 ring-border/20 shadow-xl shadow-black/5 sm:bg-card/60 sm:p-6 sm:backdrop-blur-xl"
-          >
+          <div className="relative rounded-4xl border border-border/80 bg-card/95 p-3 ring-1 ring-border/20 shadow-xl shadow-black/5 sm:bg-card/60 sm:p-6 sm:backdrop-blur-xl">
             <UploadMock showFloatingFeatures={false} showInlineFeatures={true} />
           </div>
         </div>
       </div>
     </section>
-  );
+  )
 }

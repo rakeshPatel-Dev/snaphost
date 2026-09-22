@@ -1,28 +1,28 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Mail, CreditCard, UserCheck, ArrowRight, Gauge, Tag } from 'lucide-react';
-import DashedGrid from '@/components/shared/DashedGrid';
-import Container from '@/components/shared/Container';
-import SectionHeading from '@/components/shared/SectionHeading';
-import ComparisonTable from '@/components/pro/ComparisonTable';
-import FAQ from '@/components/landing/FAQ';
-import { proFaqs } from '@/data/faq';
-import { PREMIUM_FEATURES } from '@/data/PremiumFeatures';
-import { EMAILS, mailto } from '@/data/emails';
-import Reveal from '@/components/motion/Reveal';
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Mail, CreditCard, UserCheck, ArrowRight, Gauge, Tag } from 'lucide-react'
+import DashedGrid from '@/components/shared/DashedGrid'
+import Container from '@/components/shared/Container'
+import SectionHeading from '@/components/shared/SectionHeading'
+import ComparisonTable from '@/components/pro/ComparisonTable'
+import FAQ from '@/components/landing/FAQ'
+import { proFaqs } from '@/data/faq'
+import { PREMIUM_FEATURES } from '@/data/PremiumFeatures'
+import { EMAILS, mailto } from '@/data/emails'
+import Reveal from '@/components/motion/Reveal'
 
 const PRO_PERK_DESCS: Record<string, string> = {
   'Unlimited uploads': 'No daily link caps — share as often as you need.',
   'Password-protected links': 'Gate sensitive files behind a password.',
   'Custom expiry dates': 'Set exact expiration times per file.',
   'Priority CDN': 'Faster delivery and more reliable uptime.',
-};
+}
 
 const proPerks = [
   ...PREMIUM_FEATURES.map((f) => ({ ...f, desc: PRO_PERK_DESCS[f.label] })),
   { icon: Tag, label: 'Custom links', desc: 'Pick clean, memorable slugs for every share.' },
   { icon: Gauge, label: '50 MB uploads', desc: 'Five times the free tier file-size limit.' },
-];
+]
 
 export default function GetProPage() {
   return (
@@ -54,7 +54,10 @@ export default function GetProPage() {
 
             <div className="mt-8 flex items-center gap-3.5 flex-wrap">
               <Button asChild size="lg" className="h-11 px-6 cursor-pointer">
-                <a href={mailto('billing', 'Pro access request')} className="flex items-center gap-2">
+                <a
+                  href={mailto('billing', 'Pro access request')}
+                  className="flex items-center gap-2"
+                >
                   <Mail className="h-4 w-4" />
                   Request Pro Access
                 </a>
@@ -80,9 +83,7 @@ export default function GetProPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {proPerks.map(({ icon: Icon, label, desc }, i) => (
               <Reveal key={label} delay={i * 0.06}>
-                <div
-                  className="rounded-4xl border border-border/60 bg-card/80 backdrop-blur-xl p-6 transition-all hover:border-accent/40 hover:shadow-[0_30px_80px_-40px_rgba(5,150,105,0.15)]"
-                >
+                <div className="rounded-4xl border border-border/60 bg-card/80 backdrop-blur-xl p-6 transition-all hover:border-accent/40 hover:shadow-[0_30px_80px_-40px_rgba(5,150,105,0.15)]">
                   <div className="p-2 rounded-xl bg-accent/10 w-fit mb-4">
                     <Icon className="h-4 w-4 text-accent" />
                   </div>
@@ -101,7 +102,7 @@ export default function GetProPage() {
           <div className="mb-14">
             <SectionHeading
               title="How to upgrade to Pro"
-              description="We&apos;re currently processing upgrades manually while we build our integrated payment system."
+              description="We're currently processing upgrades manually while we build our integrated payment system."
             />
           </div>
 
@@ -121,7 +122,7 @@ export default function GetProPage() {
                 icon: UserCheck,
                 title: '3. Activation',
                 desc: "Once verified, we'll manually upgrade your account to Pro status instantly.",
-              }
+              },
             ].map((step, i) => (
               <Reveal key={i} delay={i * 0.08}>
                 <div className="p-8 rounded-4xl bg-background border border-border/60 transition-all hover:border-accent/40 group">
@@ -165,11 +166,23 @@ export default function GetProPage() {
           <Reveal className="rounded-4xl border border-border/60 bg-card/80 backdrop-blur-xl p-8 sm:p-10">
             <ul className="space-y-4">
               {[
-                { label: 'Account Email', desc: 'The email address associated with your Snaphost account.' },
-                { label: 'Payment Proof', desc: 'A screenshot of the transaction or the transaction ID.' },
-                { label: 'Contact Info', desc: 'Your name and any specific requirements you have.' },
+                {
+                  label: 'Account Email',
+                  desc: 'The email address associated with your Snaphost account.',
+                },
+                {
+                  label: 'Payment Proof',
+                  desc: 'A screenshot of the transaction or the transaction ID.',
+                },
+                {
+                  label: 'Contact Info',
+                  desc: 'Your name and any specific requirements you have.',
+                },
               ].map((item, i) => (
-                <li key={i} className="flex gap-4 p-4 rounded-2xl bg-background border border-border/60 transition-colors hover:border-accent/30">
+                <li
+                  key={i}
+                  className="flex gap-4 p-4 rounded-2xl bg-background border border-border/60 transition-colors hover:border-accent/30"
+                >
                   <div className="h-6 w-6 rounded-full bg-accent/10 text-accent flex items-center justify-center text-xs font-bold shrink-0">
                     {i + 1}
                   </div>
@@ -202,16 +215,29 @@ export default function GetProPage() {
                 Ready to go <span className="text-accent">Pro</span>?
               </h3>
               <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
-                Email us and we&apos;ll get you set up with unlimited uploads, custom controls, and priority support.
+                Email us and we&apos;ll get you set up with unlimited uploads, custom controls, and
+                priority support.
               </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-3.5">
-                <Button asChild size="lg" className="rounded-full h-11 px-6 font-medium text-sm cursor-pointer">
-                  <a href={mailto('billing', 'Pro access request')} className="flex items-center gap-2">
+                <Button
+                  asChild
+                  size="lg"
+                  className="rounded-full h-11 px-6 font-medium text-sm cursor-pointer"
+                >
+                  <a
+                    href={mailto('billing', 'Pro access request')}
+                    className="flex items-center gap-2"
+                  >
                     Request Pro Access <ArrowRight className="h-4 w-4" />
                   </a>
                 </Button>
-                <Button variant="outline" asChild size="lg" className="rounded-full h-11 px-6 font-medium text-sm cursor-pointer">
+                <Button
+                  variant="outline"
+                  asChild
+                  size="lg"
+                  className="rounded-full h-11 px-6 font-medium text-sm cursor-pointer"
+                >
                   <Link href="/sign-up">Create free account</Link>
                 </Button>
               </div>
@@ -223,10 +249,6 @@ export default function GetProPage() {
           </Reveal>
         </Container>
       </section>
-
-      <footer className="py-12 text-center text-muted-foreground text-sm border-t border-border/30">
-        <p>© {new Date().getFullYear()} Snaphost. All rights reserved.</p>
-      </footer>
     </div>
-  );
+  )
 }

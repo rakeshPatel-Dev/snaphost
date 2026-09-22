@@ -4,38 +4,38 @@
  */
 export function sanitizeFilename(filename: string): string {
   // Remove path traversal attempts
-  let sanitized = filename.replace(/\.\.\//g, '').replace(/\.\.\\/g, '');
+  let sanitized = filename.replace(/\.\.\//g, '').replace(/\.\.\\/g, '')
 
   // Remove leading slashes and backslashes
-  sanitized = sanitized.replace(/^[\/\\]+/, '');
+  sanitized = sanitized.replace(/^[\/\\]+/, '')
 
   // Replace dangerous characters with underscore
-  sanitized = sanitized.replace(/[<>:"|?*\x00-\x1F]/g, '_');
+  sanitized = sanitized.replace(/[<>:"|?*\x00-\x1F]/g, '_')
 
   // Remove leading/trailing spaces and dots
-  sanitized = sanitized.replace(/^[\s.]+|[\s.]+$/g, '');
+  sanitized = sanitized.replace(/^[\s.]+|[\s.]+$/g, '')
 
   // Limit length to 255 characters (filesystem limit)
   if (sanitized.length > 255) {
     // Keep extension
-    const lastDot = sanitized.lastIndexOf('.');
+    const lastDot = sanitized.lastIndexOf('.')
     if (lastDot > 0) {
-      const ext = sanitized.substring(lastDot);
-      sanitized = sanitized.substring(0, 255 - ext.length) + ext;
+      const ext = sanitized.substring(lastDot)
+      sanitized = sanitized.substring(0, 255 - ext.length) + ext
     } else {
-      sanitized = sanitized.substring(0, 255);
+      sanitized = sanitized.substring(0, 255)
     }
   }
 
   // Ensure it's not empty
-  return sanitized || 'file';
+  return sanitized || 'file'
 }
 
 /**
  * Get file extension from filename
  */
 export function getFileExtension(filename: string): string {
-  const lastDot = filename.lastIndexOf('.');
-  if (lastDot === -1) return '';
-  return filename.substring(lastDot);
+  const lastDot = filename.lastIndexOf('.')
+  if (lastDot === -1) return ''
+  return filename.substring(lastDot)
 }

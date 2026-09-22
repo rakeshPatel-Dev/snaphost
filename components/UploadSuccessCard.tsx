@@ -1,12 +1,12 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Check, Share2, RotateCcw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import ShareModal from './ShareModal';
-import FileDetailsCard from './FileDetailsCard';
-import ShareLinkInput from './ShareLinkInput';
-import type { UploadSuccessCardProps } from '@/types/components';
+import { useState } from 'react'
+import { Check, Share2, RotateCcw } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import ShareModal from './ShareModal'
+import FileDetailsCard from './FileDetailsCard'
+import ShareLinkInput from './ShareLinkInput'
+import type { UploadSuccessCardProps } from '@/types/components'
 
 export default function UploadSuccessCard({
   filename,
@@ -15,7 +15,7 @@ export default function UploadSuccessCard({
   optimizedSize,
   onUploadMore,
 }: UploadSuccessCardProps) {
-  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false)
 
   return (
     <>
@@ -41,11 +41,7 @@ export default function UploadSuccessCard({
         </p>
 
         <div className="mb-4">
-          <FileDetailsCard
-            filename={filename}
-            fileSize={fileSize}
-            optimizedSize={optimizedSize}
-          />
+          <FileDetailsCard filename={filename} fileSize={fileSize} optimizedSize={optimizedSize} />
         </div>
 
         <div className="mb-6">
@@ -73,5 +69,5 @@ export default function UploadSuccessCard({
         </div>
       </div>
     </>
-  );
+  )
 }

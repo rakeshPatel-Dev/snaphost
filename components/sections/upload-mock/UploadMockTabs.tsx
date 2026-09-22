@@ -1,16 +1,15 @@
-'use client';
+'use client'
 
-import { UploadCloud, Link2 } from 'lucide-react';
-import type { UploadMockTabsProps } from '@/types/components';
+import { UploadCloud, Link2 } from 'lucide-react'
+import type { UploadMockTabsProps } from '@/types/components'
 
 const base =
-  'flex min-w-0 items-center justify-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 text-center sm:shrink-0 sm:whitespace-nowrap sm:px-3.5';
+  'flex min-w-0 items-center justify-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 text-center sm:shrink-0 sm:whitespace-nowrap sm:px-3.5'
 
 const active =
-  'bg-muted/30 text-foreground shadow-sm shadow-black/5 dark:shadow-black/20 ring-1 ring-white/5';
+  'bg-muted/30 text-foreground shadow-sm shadow-black/5 dark:shadow-black/20 ring-1 ring-white/5'
 
-const inactive =
-  'text-muted-foreground hover:bg-muted/50 hover:text-foreground shadow-none';
+const inactive = 'text-muted-foreground hover:bg-muted/50 hover:text-foreground shadow-none'
 
 export default function UploadMockTabs({
   activeTab,
@@ -48,15 +47,11 @@ export default function UploadMockTabs({
         <Link2 className="h-3.5 w-3.5" />
 
         {/* Short label — mobile only */}
-        <span className="sm:hidden">
-          Links{linksCount ? ` (${linksCount})` : ''}
-        </span>
+        <span className="sm:hidden">Links{linksCount ? ` (${linksCount})` : ''}</span>
 
         {/* Full label — sm and up */}
-        <span className="hidden sm:inline">
-          Created links ({linksCount})
-        </span>
+        <span className="hidden sm:inline">Created links ({linksCount})</span>
       </button>
     </div>
-  );
+  )
 }

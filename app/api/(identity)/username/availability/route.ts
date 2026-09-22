@@ -1,15 +1,15 @@
-import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/server/supabase-admin';
+import { NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/server/supabase-admin'
 
-const USERNAME_PATTERN = /^[a-z0-9](?:[a-z0-9_\-]{1,30}[a-z0-9])?$/;
+const USERNAME_PATTERN = /^[a-z0-9](?:[a-z0-9_\-]{1,30}[a-z0-9])?$/
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const rawUsername = searchParams.get('username') ?? '';
-  const username = rawUsername.trim().toLowerCase();
+  const { searchParams } = new URL(request.url)
+  const rawUsername = searchParams.get('username') ?? ''
+  const username = rawUsername.trim().toLowerCase()
 
   if (!username) {
-    return NextResponse.json({ error: 'Username is required' }, { status: 400 });
+    return NextResponse.json({ error: 'Username is required' }, { status: 400 })
   }
 
   if (username.length < 3 || username.length > 32 || !USERNAME_PATTERN.test(username)) {
@@ -19,24 +19,23 @@ export async function GET(request: Request) {
         available: false,
         exists: false,
         valid: false,
-        message:
-          'Use 3-32 lowercase letters, numbers, underscores, or hyphens.',
+        message: 'Use 3-32 lowercase letters, numbers, underscores, or hyphens.',
       },
       { status: 200 }
-    );
+    )
   }
 
   const { data, error } = await supabaseAdmin
     .from('users')
     .select('id')
     .eq('username', username)
-    .maybeSingle();
+    .maybeSingle()
 
   if (error) {
-    return NextResponse.json({ error: 'Failed to check username' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to check username' }, { status: 500 })
   }
 
-  const exists = Boolean(data);
+  const exists = Boolean(data)
 
   return NextResponse.json(
     {
@@ -46,5 +45,5 @@ export async function GET(request: Request) {
       valid: true,
     },
     { status: 200 }
-  );
+  )
 }

@@ -1,9 +1,9 @@
-import { AnonLinks } from '@/features/upload';
-import Container from '@/components/shared/Container';
+import { AnonLinks } from '@/features/upload'
+import Container from '@/components/shared/Container'
 
 export const metadata = {
   title: 'Anonymous links',
-};
+}
 
 export default function Page() {
   return (
@@ -21,5 +21,5 @@ export default function Page() {
         </div>
       </div>
     </Container>
-  );
+  )
 }

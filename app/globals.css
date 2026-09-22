@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 @layer theme, base, components, utilities;
@@ -51,14 +51,14 @@
   --font-mono: var(--font-geist-mono);
   --animate-shine: shine var(--duration) infinite linear;
   @keyframes shine {
-  0% {
-    background-position: 0% 0%;
+    0% {
+      background-position: 0% 0%;
     }
-  50% {
-    background-position: 100% 100%;
+    50% {
+      background-position: 100% 100%;
     }
-  to {
-    background-position: 0% 0%;
+    to {
+      background-position: 0% 0%;
     }
   }
 }
@@ -89,7 +89,11 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  font-family:
+    var(--font-sans),
+    system-ui,
+    -apple-system,
+    sans-serif;
   background-image: radial-gradient(at 50% -10%, var(--glow-color) 0px, transparent 60%);
   background-attachment: fixed;
 }
@@ -124,7 +128,9 @@ body {
 }
 
 .premium-glow {
-  box-shadow: 0 0 0 1px rgb(251 191 36 / 0.08), 0 24px 64px -32px rgb(251 191 36 / 0.14);
+  box-shadow:
+    0 0 0 1px rgb(251 191 36 / 0.08),
+    0 24px 64px -32px rgb(251 191 36 / 0.14);
 }
 
 /* Custom horizontal scrolling bar if needed */
@@ -152,9 +158,4 @@ body {
     animation: none;
     mix-blend-mode: normal;
   }
-}
-
-::view-transition-old(root), ::view-transition-new(root) {
-    animation: none;
-    mix-blend-mode: normal;
 }

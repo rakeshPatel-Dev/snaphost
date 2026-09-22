@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import type { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
-import Reveal from '@/components/motion/Reveal';
+import type { ReactNode } from 'react'
+import { cn } from '@/lib/utils'
+import Reveal from '@/components/motion/Reveal'
 
 export default function SectionHeading({
   title,
   description,
   className,
 }: {
-  title: ReactNode;
-  description?: ReactNode;
-  className?: string;
+  title: ReactNode
+  description?: ReactNode
+  className?: string
 }) {
   return (
     <div className={cn('max-w-3xl', className)}>
@@ -28,5 +28,5 @@ export default function SectionHeading({
         </Reveal>
       ) : null}
     </div>
-  );
+  )
 }

@@ -29,18 +29,18 @@ The person receiving the link can view the file in their browser and download it
 
 ## Key Features (What You Can Do)
 
-| Feature | How It Works |
-|---------|-------------|
-| **Instant upload** | Drag a file onto the page — link is ready in seconds |
-| **Supported files** | Images (PNG, JPG, WEBP) and PDFs, up to 10 MB each |
-| **Shareable links** | Each file gets a unique, short link like `snaphost.dev/f/abc12345` |
-| **File preview** | Images show inline, PDFs open in a built-in viewer |
-| **Download** | Recipients can download the original file |
-| **No account needed** | Anyone can upload and share without signing up |
-| **Anonymous uploads** | Upload without creating an account; links expire in 24 hours |
-| **User accounts** | Create a free account (email, Google, or GitHub) for a personal dashboard |
-| **Personal dashboard** | See all your uploads, rename files, set expiration dates, delete files |
-| **Custom URLs** | Signed-in users can customize their share link (e.g. `snaphost.dev/yourname/my-image`) |
+| Feature                | How It Works                                                                           |
+| ---------------------- | -------------------------------------------------------------------------------------- |
+| **Instant upload**     | Drag a file onto the page — link is ready in seconds                                   |
+| **Supported files**    | Images (PNG, JPG, WEBP) and PDFs, up to 10 MB each                                     |
+| **Shareable links**    | Each file gets a unique, short link like `snaphost.dev/f/abc12345`                     |
+| **File preview**       | Images show inline, PDFs open in a built-in viewer                                     |
+| **Download**           | Recipients can download the original file                                              |
+| **No account needed**  | Anyone can upload and share without signing up                                         |
+| **Anonymous uploads**  | Upload without creating an account; links expire in 24 hours                           |
+| **User accounts**      | Create a free account (email, Google, or GitHub) for a personal dashboard              |
+| **Personal dashboard** | See all your uploads, rename files, set expiration dates, delete files                 |
+| **Custom URLs**        | Signed-in users can customize their share link (e.g. `snaphost.dev/yourname/my-image`) |
 
 ---
 

@@ -1,4 +1,4 @@
-import type { SVGProps } from 'react';
+import type { SVGProps } from 'react'
 
 export default function AnonUpload(props: SVGProps<SVGSVGElement>) {
   return (
@@ -40,5 +40,5 @@ export default function AnonUpload(props: SVGProps<SVGSVGElement>) {
       {/* Right eye hole */}
       <circle cx="15" cy="14" r="2.5" className="fill-muted" />
     </svg>
-  );
+  )
 }

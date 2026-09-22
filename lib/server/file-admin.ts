@@ -1,21 +1,21 @@
-import 'server-only';
+import 'server-only'
 
-import { supabaseAdmin } from './supabase-admin';
-import { CONFIG } from '../config';
-import type { AdminFileRow, FileType, UploadType } from '@/types/app';
-import { buildPublicFileUrl } from '../public-file-url';
+import { supabaseAdmin } from './supabase-admin'
+import { CONFIG } from '../config'
+import type { AdminFileRow, FileType, UploadType } from '@/types/app'
+import { buildPublicFileUrl } from '../public-file-url'
 
 export async function createFileRecord(input: {
-  userId: string | null;
-  uploadType: UploadType;
-  slug: string;
-  filename: string;
-  fileType: FileType;
-  mimeType: string;
-  size: number;
-  storagePath: string;
-  expiresAt: string | null;
-  anonSessionId?: string | null;
+  userId: string | null
+  uploadType: UploadType
+  slug: string
+  filename: string
+  fileType: FileType
+  mimeType: string
+  size: number
+  storagePath: string
+  expiresAt: string | null
+  anonSessionId?: string | null
 }) {
   const { data, error } = await supabaseAdmin
     .from('files')
@@ -33,13 +33,13 @@ export async function createFileRecord(input: {
       deleted_at: null,
     })
     .select('*')
-    .single();
+    .single()
 
   if (error) {
-    throw error;
+    throw error
   }
 
-  return data as AdminFileRow;
+  return data as AdminFileRow
 }
 
 export async function listFilesForUser(userId: string) {
@@ -47,13 +47,13 @@ export async function listFilesForUser(userId: string) {
     .from('files')
     .select('*, user:users(username)')
     .eq('user_id', userId)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
 
   if (error) {
-    throw error;
+    throw error
   }
 
-  return (data ?? []) as AdminFileRow[];
+  return (data ?? []) as AdminFileRow[]
 }
 
 export async function listActiveFilesForUser(userId: string) {
@@ -61,13 +61,13 @@ export async function listActiveFilesForUser(userId: string) {
     .from('files')
     .select('id, storage_path')
     .eq('user_id', userId)
-    .is('deleted_at', null);
+    .is('deleted_at', null)
 
   if (error) {
-    throw error;
+    throw error
   }
 
-  return (data ?? []) as Array<{ id: string; storage_path: string }>;
+  return (data ?? []) as Array<{ id: string; storage_path: string }>
 }
 
 export async function countActiveFilesForUser(userId: string) {
@@ -75,13 +75,13 @@ export async function countActiveFilesForUser(userId: string) {
     .from('files')
     .select('id', { count: 'exact', head: false })
     .eq('user_id', userId)
-    .is('deleted_at', null);
+    .is('deleted_at', null)
 
   if (error) {
-    throw error;
+    throw error
   }
 
-  return (count ?? 0) as number;
+  return (count ?? 0) as number
 }
 
 export async function getFileForUser(fileId: string, userId: string) {
@@ -90,13 +90,13 @@ export async function getFileForUser(fileId: string, userId: string) {
     .select('*, user:users(username)')
     .eq('id', fileId)
     .eq('user_id', userId)
-    .maybeSingle();
+    .maybeSingle()
 
   if (error) {
-    throw error;
+    throw error
   }
 
-  return data as AdminFileRow | null;
+  return data as AdminFileRow | null
 }
 
 export async function listFilesForAnonSession(anonSessionId: string) {
@@ -105,13 +105,13 @@ export async function listFilesForAnonSession(anonSessionId: string) {
     .select('*, user:users(username)')
     .eq('anon_session_id', anonSessionId)
     .is('deleted_at', null)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
 
   if (error) {
-    throw error;
+    throw error
   }
 
-  return (data ?? []) as AdminFileRow[];
+  return (data ?? []) as AdminFileRow[]
 }
 
 export async function deleteFileForAnonSession(fileId: string, anonSessionId: string) {
@@ -121,26 +121,26 @@ export async function deleteFileForAnonSession(fileId: string, anonSessionId: st
     .eq('id', fileId)
     .eq('anon_session_id', anonSessionId)
     .select('id, storage_path')
-    .single();
+    .single()
 
   if (error) {
-    throw error;
+    throw error
   }
 
-  return data as { id: string; storage_path: string };
+  return data as { id: string; storage_path: string }
 }
 
 export async function countFilesForAnonSession(anonSessionId: string) {
   const { count, error } = await supabaseAdmin
     .from('files')
     .select('id', { count: 'exact', head: true })
-    .eq('anon_session_id', anonSessionId);
+    .eq('anon_session_id', anonSessionId)
 
   if (error) {
-    throw error;
+    throw error
   }
 
-  return count ?? 0;
+  return count ?? 0
 }
 
 export async function deleteAnonSession(anonSessionId: string) {
@@ -149,13 +149,13 @@ export async function deleteAnonSession(anonSessionId: string) {
     .delete()
     .eq('id', anonSessionId)
     .select('id')
-    .single();
+    .single()
 
   if (error) {
-    throw error;
+    throw error
   }
 
-  return data as { id: string };
+  return data as { id: string }
 }
 
 export async function updateFileForUser(
@@ -169,13 +169,13 @@ export async function updateFileForUser(
     .eq('id', fileId)
     .eq('user_id', userId)
     .select('*, user:users(username)')
-    .single();
+    .single()
 
   if (error) {
-    throw error;
+    throw error
   }
 
-  return data as AdminFileRow;
+  return data as AdminFileRow
 }
 
 export async function deleteFileForUser(fileId: string, userId: string) {
@@ -185,13 +185,13 @@ export async function deleteFileForUser(fileId: string, userId: string) {
     .eq('id', fileId)
     .eq('user_id', userId)
     .select('id, storage_path')
-    .single();
+    .single()
 
   if (error) {
-    throw error;
+    throw error
   }
 
-  return data as { id: string; storage_path: string };
+  return data as { id: string; storage_path: string }
 }
 
 export function buildFileUrl(file: AdminFileRow, username?: string | null) {
@@ -200,5 +200,5 @@ export function buildFileUrl(file: AdminFileRow, username?: string | null) {
     slug: file.slug,
     username,
     uploadType: file.upload_type,
-  });
+  })
 }

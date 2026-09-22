@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import { motion } from 'framer-motion';
-import type { ReactNode } from 'react';
-import { useMotionEnabled } from './useMotionEnabled';
+import { motion } from 'framer-motion'
+import type { ReactNode } from 'react'
+import { useMotionEnabled } from './useMotionEnabled'
 
 export default function Reveal({
   children,
@@ -10,15 +10,15 @@ export default function Reveal({
   y = 18,
   className,
 }: {
-  children: ReactNode;
-  delay?: number;
-  y?: number;
-  className?: string;
+  children: ReactNode
+  delay?: number
+  y?: number
+  className?: string
 }) {
-  const canAnimate = useMotionEnabled();
+  const canAnimate = useMotionEnabled()
 
   if (!canAnimate) {
-    return <div className={className}>{children}</div>;
+    return <div className={className}>{children}</div>
   }
 
   return (
@@ -31,5 +31,5 @@ export default function Reveal({
     >
       {children}
     </motion.div>
-  );
+  )
 }

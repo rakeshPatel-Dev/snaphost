@@ -1,18 +1,15 @@
-'use client';
+'use client'
 
-import { useRef } from 'react';
-import { motion, useDragControls } from 'framer-motion';
-import { GripVertical } from 'lucide-react';
+import { useRef } from 'react'
+import { motion, useDragControls } from 'framer-motion'
+import { GripVertical } from 'lucide-react'
 
 export default function FloatingBadge() {
-  const dragControls = useDragControls();
-  const constraintsRef = useRef<HTMLDivElement>(null);
+  const dragControls = useDragControls()
+  const constraintsRef = useRef<HTMLDivElement>(null)
 
   return (
-    <div
-      className="fixed inset-0 z-50 pointer-events-none overflow-hidden"
-      ref={constraintsRef}
-    >
+    <div className="fixed inset-0 z-50 pointer-events-none overflow-hidden" ref={constraintsRef}>
       <div className="absolute inset-x-0 bottom-4 flex justify-center pointer-events-none">
         <motion.div
           drag
@@ -48,5 +45,5 @@ export default function FloatingBadge() {
         </motion.div>
       </div>
     </div>
-  );
+  )
 }

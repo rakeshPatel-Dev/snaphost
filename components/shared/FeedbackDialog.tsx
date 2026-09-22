@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useForm, ValidationError } from '@formspree/react';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { useForm, ValidationError } from '@formspree/react'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -11,42 +11,48 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { MessageSquarePlus, Check } from 'lucide-react';
-import { toast } from 'sonner';
+} from '@/components/ui/select'
+import { MessageSquarePlus, Check } from 'lucide-react'
+import { toast } from 'sonner'
 
 export default function FeedbackDialog() {
-  const [open, setOpen] = useState(false);
-  const [state, handleSubmit] = useForm(process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT_ID || 'missing-id');
-  const [category, setCategory] = useState('');
+  const [open, setOpen] = useState(false)
+  const [state, handleSubmit] = useForm(
+    process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT_ID || 'missing-id'
+  )
+  const [category, setCategory] = useState('')
 
   const onOpenChange = (newOpen: boolean) => {
-    setOpen(newOpen);
-  };
+    setOpen(newOpen)
+  }
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    await handleSubmit(e);
+    e.preventDefault()
+    await handleSubmit(e)
     if (state.succeeded) {
-      toast.success('Thank you for your feedback!');
-      setOpen(false);
+      toast.success('Thank you for your feedback!')
+      setOpen(false)
     }
-  };
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-2 text-muted-foreground hover:text-foreground"
+        >
           <MessageSquarePlus className="h-4 w-4" />
           Feedback
         </Button>
@@ -65,7 +71,9 @@ export default function FeedbackDialog() {
               <Check className="h-6 w-6" />
             </div>
             <p className="text-sm text-muted-foreground">Thanks for your feedback!</p>
-            <Button variant="outline" onClick={() => setOpen(false)}>Close</Button>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Close
+            </Button>
           </div>
         ) : (
           <form onSubmit={onSubmit} className="space-y-4 pt-4">
@@ -106,7 +114,12 @@ export default function FeedbackDialog() {
             {category === 'other' && (
               <div className="space-y-2">
                 <Label htmlFor="otherCategory">Please specify</Label>
-                <Input id="otherCategory" name="otherCategory" placeholder="Specify category" required />
+                <Input
+                  id="otherCategory"
+                  name="otherCategory"
+                  placeholder="Specify category"
+                  required
+                />
               </div>
             )}
 
@@ -134,5 +147,5 @@ export default function FeedbackDialog() {
         )}
       </DialogContent>
     </Dialog>
-  );
+  )
 }

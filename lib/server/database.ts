@@ -1,10 +1,10 @@
-import 'server-only';
+import 'server-only'
 
-import { supabaseAdmin } from './supabase-admin';
-import { CONFIG } from '../config';
-import type { AdminFileRow, FileMetadata } from '@/types/app';
+import { supabaseAdmin } from './supabase-admin'
+import { CONFIG } from '../config'
+import type { AdminFileRow, FileMetadata } from '@/types/app'
 
-type FileRecord = AdminFileRow;
+type FileRecord = AdminFileRow
 
 /**
  * Fetch public file metadata. Slugs are only unique per owner:
@@ -18,7 +18,7 @@ export async function getFileMetadata(
   username?: string | null
 ): Promise<FileMetadata | null> {
   if (!slug) {
-    return null;
+    return null
   }
 
   // Share metadata is intentionally fetched server-side. The browser must not
@@ -26,26 +26,28 @@ export async function getFileMetadata(
   // storage internals.
   let query = supabaseAdmin
     .from('files')
-    .select('slug, filename, file_type, size, created_at, expires_at, storage_path, user:users(username)')
+    .select(
+      'slug, filename, file_type, size, created_at, expires_at, storage_path, user:users(username)'
+    )
     .eq('slug', slug)
     .is('deleted_at', null)
-    .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString());
+    .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
 
   if (username) {
-    query = query.eq('upload_type', 'custom');
+    query = query.eq('upload_type', 'custom')
   } else {
-    query = query.is('user_id', null);
+    query = query.is('user_id', null)
   }
 
-  const { data, error } = await query.maybeSingle();
+  const { data, error } = await query.maybeSingle()
 
   if (error) {
-    console.error('Unexpected error fetching file metadata:', error);
-    return null;
+    console.error('Unexpected error fetching file metadata:', error)
+    return null
   }
 
   if (!data) {
-    return null;
+    return null
   }
 
   // PostgREST embed filters do not exclude the parent row, so enforce the
@@ -54,12 +56,12 @@ export async function getFileMetadata(
   const file = data as unknown as Pick<
     FileRecord,
     'slug' | 'filename' | 'file_type' | 'size' | 'created_at' | 'expires_at' | 'storage_path'
-  > & { user?: { username: string | null }[] | { username: string | null } | null };
+  > & { user?: { username: string | null }[] | { username: string | null } | null }
 
   if (username) {
-    const ownerName = Array.isArray(file.user) ? file.user[0]?.username : file.user?.username;
+    const ownerName = Array.isArray(file.user) ? file.user[0]?.username : file.user?.username
     if (ownerName !== username) {
-      return null;
+      return null
     }
   }
 
@@ -72,14 +74,14 @@ export async function getFileMetadata(
     expiresAt: file.expires_at,
     url: getStoragePublicUrl(file.storage_path),
     downloadUrl: getStorageDownloadUrl(file.storage_path, file.filename),
-  };
+  }
 }
 
 /**
  * Generate the storage URL used for previews.
  */
 function getStoragePublicUrl(storagePath: string): string {
-  return supabaseAdmin.storage.from(CONFIG.STORAGE_BUCKET).getPublicUrl(storagePath).data.publicUrl;
+  return supabaseAdmin.storage.from(CONFIG.STORAGE_BUCKET).getPublicUrl(storagePath).data.publicUrl
 }
 
 /**
@@ -89,5 +91,5 @@ function getStoragePublicUrl(storagePath: string): string {
 function getStorageDownloadUrl(storagePath: string, filename: string): string {
   return supabaseAdmin.storage
     .from(CONFIG.STORAGE_BUCKET)
-    .getPublicUrl(storagePath, { download: filename }).data.publicUrl;
+    .getPublicUrl(storagePath, { download: filename }).data.publicUrl
 }

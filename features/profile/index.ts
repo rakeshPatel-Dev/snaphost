@@ -1,1 +1,1 @@
-export { default as ProfileGate } from '@/components/profile/ProfileGate';
+export { default as ProfileGate } from '@/components/profile/ProfileGate'

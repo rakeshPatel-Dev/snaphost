@@ -1,8 +1,8 @@
-export const DOMAIN = 'snaphost.dev';
-export const SITE_URL = `https://${DOMAIN}`;
-export const FOUNDER_SITE = 'https://rakeshpatel.me';
+export const DOMAIN = 'snaphost.dev'
+export const SITE_URL = `https://${DOMAIN}`
+export const FOUNDER_SITE = 'https://rakeshpatel.me'
 
-const inbox = (name: string) => `${name}@${DOMAIN}`;
+const inbox = (name: string) => `${name}@${DOMAIN}`
 
 export const EMAILS = {
   general: inbox('hello'),
@@ -10,9 +10,9 @@ export const EMAILS = {
   support: inbox('support'),
   security: inbox('security'),
   founder: inbox('rakesh'),
-} as const;
+} as const
 
-export type EmailKey = keyof typeof EMAILS;
+export type EmailKey = keyof typeof EMAILS
 
 export const mailto = (to: EmailKey, subject?: string) =>
-  `mailto:${EMAILS[to]}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}`;
+  `mailto:${EMAILS[to]}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}`

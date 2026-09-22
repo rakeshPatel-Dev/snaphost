@@ -1,5 +1,5 @@
-import { ProfileGate } from '@/features/profile';
+import { ProfileGate } from '@/features/profile'
 
 export default async function ProfilePage() {
-  return <ProfileGate />;
+  return <ProfileGate />
 }

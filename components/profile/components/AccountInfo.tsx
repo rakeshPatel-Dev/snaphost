@@ -1,64 +1,64 @@
-'use client';
+'use client'
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Crown, LogOut, Pencil, Trash2, User } from 'lucide-react';
-import DeleteAccountDialog from '@/components/shared/DeleteAccountDialog';
-import { cn } from '@/lib/utils';
-import { useState } from 'react';
-import { toast } from 'sonner';
-import UsernameAvailability from '@/components/auth/UsernameAvailability';
-import { useAuth } from '@/components/providers/auth-provider';
-import { useUsernameAvailability } from '@/lib/useUsernameAvailability';
-import { useUpdateMeUsernameMutation } from '@/state/api';
-import { getApiErrorMessage } from '@/lib/api-error';
-import { AUTH_ERRORS } from '@/lib/messages';
+import React from 'react'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Crown, LogOut, Pencil, Trash2, User } from 'lucide-react'
+import DeleteAccountDialog from '@/components/shared/DeleteAccountDialog'
+import { cn } from '@/lib/utils'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import UsernameAvailability from '@/components/auth/UsernameAvailability'
+import { useAuth } from '@/components/providers/auth-provider'
+import { useUsernameAvailability } from '@/lib/useUsernameAvailability'
+import { useUpdateMeUsernameMutation } from '@/state/api'
+import { getApiErrorMessage } from '@/lib/api-error'
+import { AUTH_ERRORS } from '@/lib/messages'
 
 type AccountInfoProps = {
-  isPremium: boolean;
-  tier: string;
-  email: string;
-  username: string;
-};
+  isPremium: boolean
+  tier: string
+  email: string
+  username: string
+}
 
 const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => {
-  const { signOut, refreshUser } = useAuth();
-  const [updateMeUsername] = useUpdateMeUsernameMutation();
-  const router = useRouter();
+  const { signOut, refreshUser } = useAuth()
+  const [updateMeUsername] = useUpdateMeUsernameMutation()
+  const router = useRouter()
 
-  const [editing, setEditing] = useState(false);
-  const [value, setValue] = useState(username || '');
-  const [displayUsername, setDisplayUsername] = useState(() => username || '');
+  const [editing, setEditing] = useState(false)
+  const [value, setValue] = useState(username || '')
+  const [displayUsername, setDisplayUsername] = useState(() => username || '')
   const { normalizedUsername, status, isAvailable, isChecking } = useUsernameAvailability({
     value,
     enabled: editing,
     currentUsername: username,
-  });
+  })
 
   async function saveUsername() {
-    const currentNormalizedUsername = username.trim().toLowerCase();
+    const currentNormalizedUsername = username.trim().toLowerCase()
 
     if (!normalizedUsername || normalizedUsername === currentNormalizedUsername) {
-      setEditing(false);
-      return;
+      setEditing(false)
+      return
     }
 
     if (!isAvailable) {
-      toast.error(AUTH_ERRORS.pickAvailableUsername);
-      return;
+      toast.error(AUTH_ERRORS.pickAvailableUsername)
+      return
     }
 
     try {
-      await updateMeUsername({ username: normalizedUsername }).unwrap();
-      await refreshUser();
-      toast.success('Username updated');
-      setDisplayUsername(normalizedUsername);
-      setValue(normalizedUsername);
-      setEditing(false);
+      await updateMeUsername({ username: normalizedUsername }).unwrap()
+      await refreshUser()
+      toast.success('Username updated')
+      setDisplayUsername(normalizedUsername)
+      setValue(normalizedUsername)
+      setEditing(false)
     } catch (err) {
-      toast.error(getApiErrorMessage(err, AUTH_ERRORS.failedToUpdateUsername));
+      toast.error(getApiErrorMessage(err, AUTH_ERRORS.failedToUpdateUsername))
     }
   }
 
@@ -102,8 +102,8 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
                   variant="ghost"
                   className="h-7 w-7 shrink-0 rounded-full"
                   onClick={() => {
-                    setValue(displayUsername || '');
-                    setEditing(true);
+                    setValue(displayUsername || '')
+                    setEditing(true)
                   }}
                 >
                   <Pencil className="h-4 w-4" />
@@ -161,8 +161,8 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
           <Button
             variant="ghost"
             onClick={async () => {
-              await signOut();
-              router.push('/');
+              await signOut()
+              router.push('/')
             }}
             className="gap-2 px-3 text-sm text-muted-foreground hover:text-foreground"
           >
@@ -184,7 +184,7 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AccountInfo;
+export default AccountInfo

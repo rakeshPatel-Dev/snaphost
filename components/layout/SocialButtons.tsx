@@ -1,12 +1,12 @@
-import { Button } from '@/components/ui/button';
-import { SocialIcon, SocialPlatform } from '@/components/ui/SocialIcon';
+import { Button } from '@/components/ui/button'
+import { SocialIcon, SocialPlatform } from '@/components/ui/SocialIcon'
 
 const socials: { platform?: SocialPlatform; href: string; label: string }[] = [
   { platform: 'github', href: 'https://github.com/snaphost', label: 'GitHub' },
   { platform: 'twitter', href: 'https://twitter.com/snaphost', label: 'Twitter' },
   { platform: 'linkedin', href: 'https://linkedin.com/company/snaphost', label: 'LinkedIn' },
   { platform: 'instagram', href: 'https://instagram.com/snaphost', label: 'Instagram' },
-];
+]
 
 export default function SocialButtons({ className }: { className?: string }) {
   return (
@@ -31,5 +31,5 @@ export default function SocialButtons({ className }: { className?: string }) {
         ))}
       </div>
     </div>
-  );
+  )
 }

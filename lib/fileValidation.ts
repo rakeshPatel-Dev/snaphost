@@ -1,25 +1,25 @@
-import { CONFIG } from './config';
-import { UPLOAD_ERRORS } from './messages';
+import { CONFIG } from './config'
+import { UPLOAD_ERRORS } from './messages'
 
 export interface ValidationError {
-  field: string;
-  message: string;
+  field: string
+  message: string
 }
 
-export type ValidatedMimeType = 'image/png' | 'image/jpeg' | 'image/webp' | 'application/pdf';
+export type ValidatedMimeType = 'image/png' | 'image/jpeg' | 'image/webp' | 'application/pdf'
 
 interface FileValidationResult {
-  valid: boolean;
-  errors: ValidationError[];
+  valid: boolean
+  errors: ValidationError[]
 }
 
 interface ContentValidationResult extends FileValidationResult {
-  mimeType: ValidatedMimeType | null;
+  mimeType: ValidatedMimeType | null
 }
 
 const FILE_SIGNATURES: Array<{
-  mimeType: ValidatedMimeType;
-  matches: (header: Uint8Array) => boolean;
+  mimeType: ValidatedMimeType
+  matches: (header: Uint8Array) => boolean
 }> = [
   {
     mimeType: 'image/png',
@@ -62,27 +62,27 @@ const FILE_SIGNATURES: Array<{
       header[3] === 0x46 &&
       header[4] === 0x2d,
   },
-];
+]
 
 /**
  * Identify an allowed upload format from its binary signature, not request metadata.
  */
 export async function detectFileMimeType(file: File): Promise<ValidatedMimeType | null> {
-  const header = new Uint8Array(await file.slice(0, 12).arrayBuffer());
-  return FILE_SIGNATURES.find(({ matches }) => matches(header))?.mimeType ?? null;
+  const header = new Uint8Array(await file.slice(0, 12).arrayBuffer())
+  return FILE_SIGNATURES.find(({ matches }) => matches(header))?.mimeType ?? null
 }
 
 function validateFileForMimeType(file: File, mimeType: string | null): FileValidationResult {
-  const errors: ValidationError[] = [];
+  const errors: ValidationError[] = []
 
-  const isImage = mimeType !== null && CONFIG.ALLOWED_IMAGE_TYPES.includes(mimeType);
-  const isPdf = mimeType !== null && CONFIG.ALLOWED_PDF_TYPES.includes(mimeType);
+  const isImage = mimeType !== null && CONFIG.ALLOWED_IMAGE_TYPES.includes(mimeType)
+  const isPdf = mimeType !== null && CONFIG.ALLOWED_PDF_TYPES.includes(mimeType)
 
   if (!isImage && !isPdf) {
     errors.push({
       field: 'type',
       message: UPLOAD_ERRORS.unsupportedFileType,
-    });
+    })
   }
 
   // Check file size based on type
@@ -93,7 +93,7 @@ function validateFileForMimeType(file: File, mimeType: string | null): FileValid
         CONFIG.MAX_IMAGE_SIZE / 1024 / 1024,
         (file.size / 1024 / 1024).toFixed(2)
       ),
-    });
+    })
   }
 
   if (isPdf && file.size > CONFIG.MAX_PDF_SIZE) {
@@ -103,38 +103,38 @@ function validateFileForMimeType(file: File, mimeType: string | null): FileValid
         CONFIG.MAX_PDF_SIZE / 1024 / 1024,
         (file.size / 1024 / 1024).toFixed(2)
       ),
-    });
+    })
   }
 
   return {
     valid: errors.length === 0,
     errors,
-  };
+  }
 }
 
 /**
  * Client-side preflight only. The API performs authoritative signature validation.
  */
 export function validateFile(file: File): FileValidationResult {
-  return validateFileForMimeType(file, file.type);
+  return validateFileForMimeType(file, file.type)
 }
 
 /**
  * Server-side validation using the file's binary signature instead of File.type.
  */
 export async function validateFileContent(file: File): Promise<ContentValidationResult> {
-  const mimeType = await detectFileMimeType(file);
-  const validation = validateFileForMimeType(file, mimeType);
+  const mimeType = await detectFileMimeType(file)
+  const validation = validateFileForMimeType(file, mimeType)
 
   return {
     ...validation,
     mimeType,
-  };
+  }
 }
 
 export function getFileType(mimeType: ValidatedMimeType): 'image' | 'pdf' {
   if (CONFIG.ALLOWED_IMAGE_TYPES.includes(mimeType)) {
-    return 'image';
+    return 'image'
   }
-  return 'pdf';
+  return 'pdf'
 }

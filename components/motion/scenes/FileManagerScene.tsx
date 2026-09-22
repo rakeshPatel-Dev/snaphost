@@ -1,24 +1,24 @@
-'use client';
+'use client'
 
-import { useMemo } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { FileImage, Copy, Check, Trash2, Clock, FileText } from 'lucide-react';
-import { inWindow } from '@/components/motion/usePlayback';
-import { SITE_URL } from '@/data/emails';
+import { useMemo } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { FileImage, Copy, Check, Trash2, Clock, FileText } from 'lucide-react'
+import { inWindow } from '@/components/motion/usePlayback'
+import { SITE_URL } from '@/data/emails'
 
 type DemoFile = {
-  id: string;
-  name: string;
-  date: string;
-  expiry: string;
-  icon: typeof FileImage;
-};
+  id: string
+  name: string
+  date: string
+  expiry: string
+  icon: typeof FileImage
+}
 
 const FILES: DemoFile[] = [
   { id: 'a', name: `${SITE_URL}/jane/meeting`, date: 'Sep 16', expiry: '24h', icon: FileText },
   { id: 'b', name: `${SITE_URL}/jane/notes`, date: 'Sep 17', expiry: '30 days', icon: FileText },
   { id: 'c', name: `${SITE_URL}/jane/photos`, date: 'Sep 18', expiry: 'never', icon: FileImage },
-];
+]
 
 const rowVariants = {
   initial: { opacity: 0, y: 8 },
@@ -33,7 +33,7 @@ const rowVariants = {
     scale: 0.96,
     transition: { duration: 0.22, ease: 'easeOut' as const },
   },
-};
+}
 
 const iconVariants = {
   initial: { opacity: 0, scale: 0.6, rotate: -30 },
@@ -49,26 +49,24 @@ const iconVariants = {
     rotate: 30,
     transition: { duration: 0.15, ease: 'easeOut' as const },
   },
-};
+}
 
 export default function FileManagerScene({ t }: { t: number }) {
   const rows = useMemo(() => {
-    const visible: DemoFile[] = [];
+    const visible: DemoFile[] = []
     FILES.forEach((file, i) => {
-      if (inWindow(t, 0.08 + i * 0.08, 1)) visible.push(file);
-    });
-    const removed = inWindow(t, 0.6, 0.95) ? FILES[1] : null;
-    return { visible: visible.filter((file) => file.id !== removed?.id) };
-  }, [t]);
+      if (inWindow(t, 0.08 + i * 0.08, 1)) visible.push(file)
+    })
+    const removed = inWindow(t, 0.6, 0.95) ? FILES[1] : null
+    return { visible: visible.filter((file) => file.id !== removed?.id) }
+  }, [t])
 
-  const copied = inWindow(t, 0.42, 0.58);
+  const copied = inWindow(t, 0.42, 0.58)
 
   return (
     <div className="relative flex h-55 w-full flex-col">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold tracking-tight text-foreground">
-          Everything you share
-        </p>
+        <p className="text-sm font-semibold tracking-tight text-foreground">Everything you share</p>
         <span className="rounded-full border border-border/60 bg-muted/20 px-2.5 py-0.5 font-mono text-xs font-medium text-muted-foreground">
           {rows.visible.length} / 5
         </span>
@@ -78,7 +76,7 @@ export default function FileManagerScene({ t }: { t: number }) {
         <div className="flex w-full flex-col gap-1.5">
           <AnimatePresence initial={false} mode="popLayout">
             {rows.visible.map((file) => {
-              const isCopied = copied && file.id === 'a';
+              const isCopied = copied && file.id === 'a'
               return (
                 <motion.div
                   key={file.id}
@@ -102,10 +100,9 @@ export default function FileManagerScene({ t }: { t: number }) {
                     </p>
                   </div>
                   <span
-                    className={`relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${isCopied
-                        ? 'bg-emerald-500/15 text-emerald-500'
-                        : 'text-muted-foreground'
-                      }`}
+                    className={`relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
+                      isCopied ? 'bg-emerald-500/15 text-emerald-500' : 'text-muted-foreground'
+                    }`}
                   >
                     <AnimatePresence mode="wait" initial={false}>
                       {isCopied ? (
@@ -137,7 +134,7 @@ export default function FileManagerScene({ t }: { t: number }) {
                     <Trash2 className="h-3 w-3" />
                   </span>
                 </motion.div>
-              );
+              )
             })}
           </AnimatePresence>
         </div>
@@ -147,5 +144,5 @@ export default function FileManagerScene({ t }: { t: number }) {
         Copy, rename, or delete from anywhere — retention without the cleanup.
       </p>
     </div>
-  );
+  )
 }

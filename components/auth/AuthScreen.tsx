@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import AuthForm from '@/components/auth/AuthForm';
-import Container from '@/components/shared/Container';
-import DashedGrid from '@/components/shared/DashedGrid';
-import Logo from '@/components/layout/Logo';
+import AuthForm from '@/components/auth/AuthForm'
+import Container from '@/components/shared/Container'
+import DashedGrid from '@/components/shared/DashedGrid'
+import Logo from '@/components/layout/Logo'
 
 type AuthScreenProps = {
-  mode: 'sign-in' | 'sign-up';
-};
+  mode: 'sign-in' | 'sign-up'
+}
 
 export default function AuthScreen({ mode }: AuthScreenProps) {
   return (
@@ -27,5 +27,5 @@ export default function AuthScreen({ mode }: AuthScreenProps) {
         </div>
       </Container>
     </div>
-  );
+  )
 }

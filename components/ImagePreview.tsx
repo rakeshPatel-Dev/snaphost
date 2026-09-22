@@ -1,62 +1,64 @@
-'use client';
+'use client'
 
-import { useCallback, useRef, useState } from 'react';
-import { Download, Loader2, Maximize, Minus, Plus } from 'lucide-react';
-import Logo from './layout/Logo';
-import { cn } from '@/lib/utils';
+import { useCallback, useRef, useState } from 'react'
+import { Download, Loader2, Maximize, Minus, Plus } from 'lucide-react'
+import Logo from './layout/Logo'
+import { cn } from '@/lib/utils'
 
-const MIN_ZOOM = 25;
-const MAX_ZOOM = 200;
-const ZOOM_STEP = 25;
+const MIN_ZOOM = 25
+const MAX_ZOOM = 200
+const ZOOM_STEP = 25
 
 interface ImagePreviewProps {
-  url: string;
-  filename: string;
-  downloadUrl: string;
+  url: string
+  filename: string
+  downloadUrl: string
 }
 
 export default function ImagePreview({ url, filename, downloadUrl }: ImagePreviewProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [zoom, setZoom] = useState(100);
-  const [fitZoom, setFitZoom] = useState<number | null>(null);
-  const [naturalSize, setNaturalSize] = useState<{ width: number; height: number } | null>(null);
-  const containerRef = useRef<HTMLElement>(null);
-  const renderedWidth = naturalSize ? Math.round((naturalSize.width * zoom) / 100) : undefined;
-  const renderedHeight = naturalSize ? Math.round((naturalSize.height * zoom) / 100) : undefined;
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(false)
+  const [zoom, setZoom] = useState(100)
+  const [fitZoom, setFitZoom] = useState<number | null>(null)
+  const [naturalSize, setNaturalSize] = useState<{ width: number; height: number } | null>(null)
+  const containerRef = useRef<HTMLElement>(null)
+  const renderedWidth = naturalSize ? Math.round((naturalSize.width * zoom) / 100) : undefined
+  const renderedHeight = naturalSize ? Math.round((naturalSize.height * zoom) / 100) : undefined
 
   const fitToWindow = useCallback(() => {
-    const container = containerRef.current;
-    if (!container || !naturalSize) return;
+    const container = containerRef.current
+    if (!container || !naturalSize) return
 
-    const computed = getComputedStyle(container);
-    const availWidth = container.clientWidth - parseFloat(computed.paddingLeft) - parseFloat(computed.paddingRight);
-    const availHeight = container.clientHeight - parseFloat(computed.paddingTop) - parseFloat(computed.paddingBottom);
+    const computed = getComputedStyle(container)
+    const availWidth =
+      container.clientWidth - parseFloat(computed.paddingLeft) - parseFloat(computed.paddingRight)
+    const availHeight =
+      container.clientHeight - parseFloat(computed.paddingTop) - parseFloat(computed.paddingBottom)
 
-    if (availWidth <= 0 || availHeight <= 0) return;
+    if (availWidth <= 0 || availHeight <= 0) return
 
     const fitted = Math.max(
       1,
       Math.floor(Math.min(availWidth / naturalSize.width, availHeight / naturalSize.height) * 100)
-    );
-    setZoom(fitted);
-    setFitZoom(fitted);
-  }, [naturalSize]);
+    )
+    setZoom(fitted)
+    setFitZoom(fitted)
+  }, [naturalSize])
 
   const handleZoomOut = () => {
-    setZoom((current) => Math.max(MIN_ZOOM, current - ZOOM_STEP));
-    setFitZoom(null);
-  };
+    setZoom((current) => Math.max(MIN_ZOOM, current - ZOOM_STEP))
+    setFitZoom(null)
+  }
 
   const handleZoomIn = () => {
-    setZoom((current) => Math.min(MAX_ZOOM, current + ZOOM_STEP));
-    setFitZoom(null);
-  };
+    setZoom((current) => Math.min(MAX_ZOOM, current + ZOOM_STEP))
+    setFitZoom(null)
+  }
 
   const handleResetZoom = () => {
-    setZoom(100);
-    setFitZoom(null);
-  };
+    setZoom(100)
+    setFitZoom(null)
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -64,7 +66,10 @@ export default function ImagePreview({ url, filename, downloadUrl }: ImagePrevie
         <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4 sm:px-6">
           <Logo className="hidden sm:flex" />
           <Logo className="sm:hidden [&>span]:hidden" />
-          <p className="min-w-0 flex-1 truncate text-sm font-medium text-foreground" title={filename}>
+          <p
+            className="min-w-0 flex-1 truncate text-sm font-medium text-foreground"
+            title={filename}
+          >
             {filename}
           </p>
           <div
@@ -126,7 +131,10 @@ export default function ImagePreview({ url, filename, downloadUrl }: ImagePrevie
         </div>
       </header>
 
-      <main ref={containerRef} className="relative h-[calc(100svh-3.5rem)] overflow-auto bg-muted/35 p-4 sm:p-6">
+      <main
+        ref={containerRef}
+        className="relative h-[calc(100svh-3.5rem)] overflow-auto bg-muted/35 p-4 sm:p-6"
+      >
         {isLoading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background">
             <Loader2 className="h-6 w-6 animate-spin text-accent" />
@@ -148,16 +156,20 @@ export default function ImagePreview({ url, filename, downloadUrl }: ImagePrevie
             className="mx-auto block max-w-none select-none shadow-[0_12px_36px_-24px_rgba(15,23,42,0.45)]"
             draggable={false}
             onLoad={(event) => {
-              const { naturalWidth, naturalHeight } = event.currentTarget;
-              setNaturalSize({ width: naturalWidth, height: naturalHeight });
+              const { naturalWidth, naturalHeight } = event.currentTarget
+              setNaturalSize({ width: naturalWidth, height: naturalHeight })
 
-              const container = containerRef.current;
+              const container = containerRef.current
               if (container) {
-                const computed = getComputedStyle(container);
+                const computed = getComputedStyle(container)
                 const availWidth =
-                  container.clientWidth - parseFloat(computed.paddingLeft) - parseFloat(computed.paddingRight);
+                  container.clientWidth -
+                  parseFloat(computed.paddingLeft) -
+                  parseFloat(computed.paddingRight)
                 const availHeight =
-                  container.clientHeight - parseFloat(computed.paddingTop) - parseFloat(computed.paddingBottom);
+                  container.clientHeight -
+                  parseFloat(computed.paddingTop) -
+                  parseFloat(computed.paddingBottom)
 
                 if (
                   availWidth > 0 &&
@@ -166,22 +178,24 @@ export default function ImagePreview({ url, filename, downloadUrl }: ImagePrevie
                 ) {
                   const fitted = Math.max(
                     1,
-                    Math.floor(Math.min(availWidth / naturalWidth, availHeight / naturalHeight) * 100)
-                  );
-                  setZoom(fitted);
-                  setFitZoom(fitted);
+                    Math.floor(
+                      Math.min(availWidth / naturalWidth, availHeight / naturalHeight) * 100
+                    )
+                  )
+                  setZoom(fitted)
+                  setFitZoom(fitted)
                 }
               }
 
-              setIsLoading(false);
+              setIsLoading(false)
             }}
             onError={() => {
-              setIsLoading(false);
-              setError(true);
+              setIsLoading(false)
+              setError(true)
             }}
           />
         )}
       </main>
     </div>
-  );
+  )
 }

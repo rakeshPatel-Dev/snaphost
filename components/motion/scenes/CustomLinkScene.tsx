@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { User, Pencil, Check } from 'lucide-react';
-import { inWindow } from '@/components/motion/usePlayback';
-import { reveal } from './sample';
-import { SITE_URL } from '@/data/emails';
+import { motion, AnimatePresence } from 'framer-motion'
+import { User, Pencil, Check } from 'lucide-react'
+import { inWindow } from '@/components/motion/usePlayback'
+import { reveal } from './sample'
+import { SITE_URL } from '@/data/emails'
 
-const USERNAME = 'jane';
-const NEW_PART = 'resume';
-const OLD_SLUG = '4Xk9Q2';
+const USERNAME = 'jane'
+const NEW_PART = 'resume'
+const OLD_SLUG = '4Xk9Q2'
 
 const slugVariants = {
   enter: (dir: number) => ({ opacity: 0, x: dir * 10, scale: 0.98 }),
@@ -24,17 +24,17 @@ const slugVariants = {
     scale: 0.98,
     transition: { duration: 0.18, ease: 'easeOut' as const },
   }),
-};
+}
 
 export default function CustomLinkScene({ t }: { t: number }) {
-  const typed = reveal(OLD_SLUG, t, 0.15, 0.35);
-  const customized = t >= 0.4;
-  const morphing = inWindow(t, 0.4, 0.8);
-  const newSlug = customized ? reveal(NEW_PART, t, 0.48, 0.78) : '';
-  const saving = inWindow(t, 0.8, 1);
+  const typed = reveal(OLD_SLUG, t, 0.15, 0.35)
+  const customized = t >= 0.4
+  const morphing = inWindow(t, 0.4, 0.8)
+  const newSlug = customized ? reveal(NEW_PART, t, 0.48, 0.78) : ''
+  const saving = inWindow(t, 0.8, 1)
 
   // Slide direction: new slug enters from the right, old slug exits to the left.
-  const direction = customized ? 1 : -1;
+  const direction = customized ? 1 : -1
 
   return (
     <div className="w-full space-y-4">
@@ -67,8 +67,9 @@ export default function CustomLinkScene({ t }: { t: number }) {
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className={`shrink-0 rounded px-1 py-0.5 font-semibold ${morphing ? 'bg-accent/10 text-accent' : 'bg-muted/60 text-foreground'
-                  }`}
+                className={`shrink-0 rounded px-1 py-0.5 font-semibold ${
+                  morphing ? 'bg-accent/10 text-accent' : 'bg-muted/60 text-foreground'
+                }`}
               >
                 {newSlug}
                 {morphing && <span className="motion-safe:animate-pulse text-accent">|</span>}
@@ -130,5 +131,5 @@ export default function CustomLinkScene({ t }: { t: number }) {
         </span>
       </div>
     </div>
-  );
+  )
 }

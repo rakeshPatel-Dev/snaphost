@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
+import { useState } from 'react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,8 +11,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import type { DeleteConfirmDialogProps } from '@/types/components';
+} from '@/components/ui/alert-dialog'
+import type { DeleteConfirmDialogProps } from '@/types/components'
 
 export default function DeleteConfirmDialog({
   trigger,
@@ -25,20 +25,20 @@ export default function DeleteConfirmDialog({
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
 }: DeleteConfirmDialogProps) {
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const open = controlledOpen ?? uncontrolledOpen;
-  const setOpen = controlledOnOpenChange ?? setUncontrolledOpen;
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const open = controlledOpen ?? uncontrolledOpen
+  const setOpen = controlledOnOpenChange ?? setUncontrolledOpen
 
   const handleConfirm = async () => {
     try {
-      setIsDeleting(true);
-      await onConfirm();
-      setOpen(false);
+      setIsDeleting(true)
+      await onConfirm()
+      setOpen(false)
     } finally {
-      setIsDeleting(false);
+      setIsDeleting(false)
     }
-  };
+  }
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -61,5 +61,5 @@ export default function DeleteConfirmDialog({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 }

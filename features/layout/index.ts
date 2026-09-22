@@ -1,1 +1,1 @@
-export { default as SiteChrome } from '@/components/layout/SiteChrome';
+export { default as SiteChrome } from '@/components/layout/SiteChrome'

@@ -1,56 +1,59 @@
-import { SERVER_ERRORS } from './messages';
+import { SERVER_ERRORS } from './messages'
 
 type ApiErrorShape = {
-  status?: number | string;
+  status?: number | string
   data?:
     | {
-        error?: string;
-        details?: string | string[];
+        error?: string
+        details?: string | string[]
       }
-    | string;
-  error?: string;
-  message?: string;
-};
+    | string
+  error?: string
+  message?: string
+}
 
-export function getApiErrorMessage(error: unknown, fallback: string = SERVER_ERRORS.requestFailed): string {
+export function getApiErrorMessage(
+  error: unknown,
+  fallback: string = SERVER_ERRORS.requestFailed
+): string {
   if (!error) {
-    return fallback;
+    return fallback
   }
 
   if (typeof error === 'string') {
-    return error;
+    return error
   }
 
   if (typeof error === 'object') {
-    const typedError = error as ApiErrorShape;
-    const data = typedError.data;
+    const typedError = error as ApiErrorShape
+    const data = typedError.data
 
     if (typeof data === 'string') {
-      return data;
+      return data
     }
 
     if (data && typeof data === 'object') {
       if (Array.isArray(data.details)) {
-        return data.details.join(', ');
+        return data.details.join(', ')
       }
 
       if (typeof data.details === 'string' && data.details.trim()) {
-        return data.details;
+        return data.details
       }
 
       if (typeof data.error === 'string' && data.error.trim()) {
-        return data.error;
+        return data.error
       }
     }
 
     if (typeof typedError.error === 'string' && typedError.error.trim()) {
-      return typedError.error;
+      return typedError.error
     }
 
     if (typeof typedError.message === 'string' && typedError.message.trim()) {
-      return typedError.message;
+      return typedError.message
     }
   }
 
-  return fallback;
+  return fallback
 }

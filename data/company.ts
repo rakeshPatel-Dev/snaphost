@@ -1,4 +1,4 @@
-import { EMAILS } from './emails';
+import { EMAILS } from './emails'
 
 export const companyOverviewLinks = [
   {
@@ -9,11 +9,10 @@ export const companyOverviewLinks = [
   },
   {
     title: 'Privacy Policy',
-    description:
-      'How Snaphost collects, uses, stores, and protects account and upload data.',
+    description: 'How Snaphost collects, uses, stores, and protects account and upload data.',
     href: '/company/privacy-policy',
   },
-];
+]
 
 export const termsOfServiceSections = [
   {
@@ -81,7 +80,7 @@ export const termsOfServiceSections = [
     title: '10. Contact',
     body: [`If you have questions about these Terms, contact ${EMAILS.general}.`],
   },
-];
+]
 
 export const privacyPolicySections = [
   {
@@ -155,4 +154,4 @@ export const privacyPolicySections = [
     title: '11. Contact',
     body: [`For privacy questions, contact ${EMAILS.general}.`],
   },
-];
+]
