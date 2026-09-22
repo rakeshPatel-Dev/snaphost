@@ -1,20 +1,26 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Copy, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import type { ShareLinkInputProps } from '@/types/components';
+import { useState } from 'react'
+import { Copy, Check } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
+import { copyTextToClipboard } from '@/lib/clipboard'
+import { FILE_ERRORS } from '@/lib/messages'
+import type { ShareLinkInputProps } from '@/types/components'
 
 export default function ShareLinkInput({ fileUrl }: ShareLinkInputProps) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(false)
 
-  const copyLink = () => {
-    navigator.clipboard.writeText(fileUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-    toast.success('Link copied!');
-  };
+  const copyLink = async () => {
+    const ok = await copyTextToClipboard(fileUrl)
+    if (ok) {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+      toast.success('Link copied!')
+    } else {
+      toast.error(FILE_ERRORS.failedToCopyLink)
+    }
+  }
 
   return (
     <div className="rounded-2xl bg-muted/20 border border-border/60 p-4">
@@ -34,13 +40,9 @@ export default function ShareLinkInput({ fileUrl }: ShareLinkInputProps) {
           onClick={copyLink}
           className="shrink-0 rounded-full"
         >
-          {copied ? (
-            <Check className="h-4 w-4 text-accent" />
-          ) : (
-            <Copy className="h-4 w-4" />
-          )}
+          {copied ? <Check className="h-4 w-4 text-accent" /> : <Copy className="h-4 w-4" />}
         </Button>
       </div>
     </div>
-  );
+  )
 }

@@ -1,52 +1,71 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Check, Clock, Copy, ExternalLink, File, FileImage, Save, Share2, Trash2, Upload, Zap } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
-import type { AppFile } from '@/types/app';
-import { buildPublicFileUrl } from '@/lib/public-file-url';
-import { CONFIG } from '@/lib/config';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import React, { useState } from 'react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import {
+  Check,
+  Clock,
+  Copy,
+  ExternalLink,
+  File,
+  FileImage,
+  Save,
+  Share2,
+  Trash2,
+  Upload,
+  Zap,
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog'
+import type { AppFile } from '@/types/app'
+import { buildPublicFileUrl } from '@/lib/public-file-url'
+import { copyTextToClipboard } from '@/lib/clipboard'
+import { CONFIG } from '@/lib/config'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
-type ExpirationPreset = '1d' | '7d' | '1m' | 'never';
+type ExpirationPreset = '1d' | '7d' | '1m' | 'never'
 
 function getExpirationPreset(expiresAt: string | null): ExpirationPreset {
-  if (!expiresAt) return 'never';
-  const expiresAtTime = new Date(expiresAt).getTime();
-  const diffMs = expiresAtTime - Date.now();
-  const oneDayMs = 24 * 60 * 60 * 1000;
-  if (diffMs <= oneDayMs * 2) return '1d';
-  if (diffMs <= oneDayMs * 10) return '7d';
-  return '1m';
+  if (!expiresAt) return 'never'
+  const expiresAtTime = new Date(expiresAt).getTime()
+  const diffMs = expiresAtTime - Date.now()
+  const oneDayMs = 24 * 60 * 60 * 1000
+  if (diffMs <= oneDayMs * 2) return '1d'
+  if (diffMs <= oneDayMs * 10) return '7d'
+  return '1m'
 }
 
 function getExpiresAtFromPreset(preset: ExpirationPreset): string | null {
-  if (preset === 'never') return null;
-  const nextDate = new Date();
-  if (preset === '1d') nextDate.setDate(nextDate.getDate() + 1);
-  else if (preset === '7d') nextDate.setDate(nextDate.getDate() + 7);
-  else nextDate.setMonth(nextDate.getMonth() + 1);
-  return nextDate.toISOString();
+  if (preset === 'never') return null
+  const nextDate = new Date()
+  if (preset === '1d') nextDate.setDate(nextDate.getDate() + 1)
+  else if (preset === '7d') nextDate.setDate(nextDate.getDate() + 7)
+  else nextDate.setMonth(nextDate.getMonth() + 1)
+  return nextDate.toISOString()
 }
 
 type LinkCardProps = {
-  username: string;
-  files: AppFile[];
-  savedFiles: AppFile[];
-  isPremium: boolean;
-  uploadsRemaining: number | null;
-  editingFileId: string | null;
-  copiedId: string | null;
-  setFiles: React.Dispatch<React.SetStateAction<AppFile[]>>;
-  onCopyLink: (url: string, id: string) => void;
-  onSaveFile: (file: AppFile) => void;
-  onDeleteFile: (fileId: string) => void;
-};
+  username: string
+  files: AppFile[]
+  savedFiles: AppFile[]
+  isPremium: boolean
+  uploadsRemaining: number | null
+  editingFileId: string | null
+  copiedId: string | null
+  setFiles: React.Dispatch<React.SetStateAction<AppFile[]>>
+  onCopyLink: (url: string, id: string) => void
+  onSaveFile: (file: AppFile) => void
+  onDeleteFile: (fileId: string) => void
+}
 
 const LinkCard = ({
   username,
@@ -61,37 +80,40 @@ const LinkCard = ({
   onSaveFile,
   onDeleteFile,
 }: LinkCardProps) => {
-  const [sharedId, setSharedId] = useState<string | null>(null);
+  const [sharedId, setSharedId] = useState<string | null>(null)
 
   const handleShare = async (url: string, id: string) => {
     if (navigator.share) {
       try {
-        await navigator.share({ url });
+        await navigator.share({ url })
       } catch {
         // user dismissed – do nothing
-        return;
+        return
       }
     } else {
-      await navigator.clipboard.writeText(url);
+      const copied = await copyTextToClipboard(url)
+      if (!copied) {
+        return
+      }
     }
-    setSharedId(id);
-    setTimeout(() => setSharedId(null), 2000);
-  };
+    setSharedId(id)
+    setTimeout(() => setSharedId(null), 2000)
+  }
   const hasFileChanges = (file: AppFile, savedFile?: AppFile) => {
-    if (!savedFile) return false;
-    const savedPreset = getExpirationPreset(savedFile.expires_at);
-    const currentPreset = getExpirationPreset(file.expires_at);
+    if (!savedFile) return false
+    const savedPreset = getExpirationPreset(savedFile.expires_at)
+    const currentPreset = getExpirationPreset(file.expires_at)
     return (
       savedFile.filename !== file.filename ||
       savedFile.slug !== file.slug ||
       savedPreset !== currentPreset
-    );
-  };
+    )
+  }
 
   const hasAnyUnsavedChanges = files.some((file) => {
-    const savedFile = savedFiles.find((f) => f.id === file.id);
-    return hasFileChanges(file, savedFile);
-  });
+    const savedFile = savedFiles.find((f) => f.id === file.id)
+    return hasFileChanges(file, savedFile)
+  })
 
   return (
     <section
@@ -142,34 +164,39 @@ const LinkCard = ({
       ) : (
         <div className="divide-y divide-border/50">
           {files.map((file) => {
-            const isEditing = editingFileId === file.id;
-            const isCopied = copiedId === file.id;
-            const FileIcon = file.file_type === 'pdf' ? File : FileImage;
+            const isEditing = editingFileId === file.id
+            const isCopied = copiedId === file.id
+            const FileIcon = file.file_type === 'pdf' ? File : FileImage
 
             const resolvedPublicUrl = buildPublicFileUrl({
               baseUrl: CONFIG.BASE_URL,
               slug: file.slug,
               username,
               uploadType: file.upload_type,
-            });
-            const expirationPreset = getExpirationPreset(file.expires_at);
-            const isNeverExpiring = expirationPreset === 'never';
+            })
+            const expirationPreset = getExpirationPreset(file.expires_at)
+            const isNeverExpiring = expirationPreset === 'never'
 
             function setExpirationPreset(preset: ExpirationPreset) {
-              const nextExpiration = getExpiresAtFromPreset(preset);
+              const nextExpiration = getExpiresAtFromPreset(preset)
               setFiles((currentFiles) =>
                 currentFiles.map((item) =>
                   item.id === file.id ? { ...item, expires_at: nextExpiration } : item
                 )
-              );
+              )
             }
 
-            const savedFile = savedFiles.find((f) => f.id === file.id);
-            const isModified = hasFileChanges(file, savedFile);
+            const savedFile = savedFiles.find((f) => f.id === file.id)
+            const isModified = hasFileChanges(file, savedFile)
 
             return (
-              <div key={file.id} className={cn('relative px-4 py-4 sm:px-5', isModified && 'bg-accent/[0.03]')}>
-                {isModified && <span className="absolute inset-y-3 left-0 w-0.5 rounded-full bg-accent" />}
+              <div
+                key={file.id}
+                className={cn('relative px-4 py-4 sm:px-5', isModified && 'bg-accent/[0.03]')}
+              >
+                {isModified && (
+                  <span className="absolute inset-y-3 left-0 w-0.5 rounded-full bg-accent" />
+                )}
 
                 <div className="flex flex-wrap items-center gap-2">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-accent/20 bg-accent/10 text-accent">
@@ -194,7 +221,10 @@ const LinkCard = ({
 
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   <div className="grid gap-1.5">
-                    <Label htmlFor={`filename-${file.id}`} className="text-xs font-medium text-muted-foreground">
+                    <Label
+                      htmlFor={`filename-${file.id}`}
+                      className="text-xs font-medium text-muted-foreground"
+                    >
                       Filename
                     </Label>
                     <Input
@@ -213,7 +243,10 @@ const LinkCard = ({
                   </div>
 
                   <div className="grid gap-1.5">
-                    <Label htmlFor={`slug-${file.id}`} className="text-xs font-medium text-muted-foreground">
+                    <Label
+                      htmlFor={`slug-${file.id}`}
+                      className="text-xs font-medium text-muted-foreground"
+                    >
                       Slug
                     </Label>
                     <Input
@@ -354,8 +387,8 @@ const LinkCard = ({
                       title="Delete this link?"
                       description={
                         <>
-                          <strong>{file.filename}</strong> will be permanently removed.
-                          Anyone with the link will no longer be able to access it.
+                          <strong>{file.filename}</strong> will be permanently removed. Anyone with
+                          the link will no longer be able to access it.
                         </>
                       }
                       confirmLabel="Delete link"
@@ -365,12 +398,12 @@ const LinkCard = ({
                   </div>
                 </div>
               </div>
-            );
+            )
           })}
         </div>
       )}
     </section>
-  );
-};
+  )
+}
 
-export default LinkCard;
+export default LinkCard

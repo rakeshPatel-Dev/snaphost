@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react'
 import {
   Share2,
   QrCode,
@@ -13,132 +13,137 @@ import {
   Minus,
   Plus,
   Minimize2,
-} from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import QRCode from 'react-qr-code';
-import { shareSocials } from '@/data/shareSocials';
-import { SocialIcon } from '@/components/ui/SocialIcon';
-import type { ShareModalProps } from '@/types/components';
+} from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
+import QRCode from 'react-qr-code'
+import { shareSocials } from '@/data/shareSocials'
+import { SocialIcon } from '@/components/ui/SocialIcon'
+import { copyTextToClipboard } from '@/lib/clipboard'
+import { FILE_ERRORS } from '@/lib/messages'
+import type { ShareModalProps } from '@/types/components'
 
-export default function ShareModal({
-  open,
-  onOpenChange,
-  fileUrl,
-  filename,
-}: ShareModalProps) {
-  const [showQR, setShowQR] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [qrSize, setQrSize] = useState(500);
-  const fullscreenRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
+async function copyLink(url: string, successMessage = 'Link copied!') {
+  const copied = await copyTextToClipboard(url)
+  if (copied) {
+    toast.success(successMessage)
+  } else {
+    toast.error(FILE_ERRORS.failedToCopyLink)
+  }
+}
 
-  const handleShare = (option: (typeof shareSocials)[0]) => {
+export default function ShareModal({ open, onOpenChange, fileUrl, filename }: ShareModalProps) {
+  const [showQR, setShowQR] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [qrSize, setQrSize] = useState(500)
+  const fullscreenRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  const handleShare = async (option: (typeof shareSocials)[0]) => {
     switch (option.id) {
       case 'copy':
-        navigator.clipboard.writeText(fileUrl);
-        toast.success('Link copied to clipboard!');
-        break;
+        await copyLink(fileUrl, 'Link copied to clipboard!')
+        break
       case 'twitter':
         if (option.shareUrl) {
-          window.open(option.shareUrl(fileUrl, filename), '_blank');
-          toast.success('Shared on X!');
+          window.open(option.shareUrl(fileUrl, filename), '_blank')
+          toast.success('Shared on X!')
         }
-        break;
+        break
       case 'linkedin':
         if (option.shareUrl) {
-          window.open(option.shareUrl(fileUrl, filename), '_blank');
-          toast.success('Shared on LinkedIn!');
+          window.open(option.shareUrl(fileUrl, filename), '_blank')
+          toast.success('Shared on LinkedIn!')
         }
-        break;
+        break
       case 'facebook':
         if (option.shareUrl) {
-          window.open(option.shareUrl(fileUrl, filename), '_blank');
-          toast.success('Shared on Facebook!');
+          window.open(option.shareUrl(fileUrl, filename), '_blank')
+          toast.success('Shared on Facebook!')
         }
-        break;
+        break
       case 'whatsapp':
         if (option.shareUrl) {
-          window.open(option.shareUrl(fileUrl, filename), '_blank');
-          toast.success('Shared on WhatsApp!');
+          window.open(option.shareUrl(fileUrl, filename), '_blank')
+          toast.success('Shared on WhatsApp!')
         }
-        break;
+        break
       case 'telegram':
         if (option.shareUrl) {
-          window.open(option.shareUrl(fileUrl, filename), '_blank');
-          toast.success('Shared on Telegram!');
+          window.open(option.shareUrl(fileUrl, filename), '_blank')
+          toast.success('Shared on Telegram!')
         }
-        break;
+        break
       case 'email': {
-        const subject = `Shared file: ${filename}`;
-        const body = `I wanted to share this file with you:\n\n${filename}\n\nDownload link: ${fileUrl}`;
+        const subject = `Shared file: ${filename}`
+        const body = `I wanted to share this file with you:\n\n${filename}\n\nDownload link: ${fileUrl}`
         window.open(
           `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
-          '_self',
-        );
-        toast.success('Opening email client!');
-        break;
+          '_self'
+        )
+        toast.success('Opening email client!')
+        break
       }
     }
-  };
+  }
 
   const handleFullscreen = async () => {
-    setShowQR(false);
-    setIsFullscreen(true);
-    setQrSize(500);
+    setShowQR(false)
+    setIsFullscreen(true)
+    setQrSize(500)
 
     // Wait for the overlay to mount before fullscreening it.
-    await new Promise((r) => setTimeout(r, 50));
+    await new Promise((r) => setTimeout(r, 50))
 
     try {
       if (fullscreenRef.current?.requestFullscreen) {
-        await fullscreenRef.current.requestFullscreen();
+        await fullscreenRef.current.requestFullscreen()
       } else {
-        toast.error('Fullscreen not supported in this browser');
-        setIsFullscreen(false);
+        toast.error('Fullscreen not supported in this browser')
+        setIsFullscreen(false)
       }
     } catch {
-      toast.error('Could not enter fullscreen');
-      setIsFullscreen(false);
+      toast.error('Could not enter fullscreen')
+      setIsFullscreen(false)
     }
-  };
+  }
 
   const exitFullscreen = async () => {
     try {
       if (document.fullscreenElement) {
-        await document.exitFullscreen();
+        await document.exitFullscreen()
       }
     } catch {
       // ignore
     }
-    setIsFullscreen(false);
-  };
+    setIsFullscreen(false)
+  }
 
   // Unmount overlay when the user exits fullscreen via Esc / browser UI
   useEffect(() => {
     const onChange = () => {
-      if (!document.fullscreenElement) setIsFullscreen(false);
-    };
-    document.addEventListener('fullscreenchange', onChange);
-    return () => document.removeEventListener('fullscreenchange', onChange);
-  }, []);
+      if (!document.fullscreenElement) setIsFullscreen(false)
+    }
+    document.addEventListener('fullscreenchange', onChange)
+    return () => document.removeEventListener('fullscreenchange', onChange)
+  }, [])
 
   // Ctrl + wheel / pinch to zoom the QR in fullscreen
   useEffect(() => {
-    if (!isFullscreen) return;
-    const el = scrollRef.current;
-    if (!el) return;
+    if (!isFullscreen) return
+    const el = scrollRef.current
+    if (!el) return
 
     const onWheel = (e: WheelEvent) => {
-      if (!e.ctrlKey) return;
-      e.preventDefault();
-      setQrSize((s) => Math.min(900, Math.max(120, s - e.deltaY)));
-    };
+      if (!e.ctrlKey) return
+      e.preventDefault()
+      setQrSize((s) => Math.min(900, Math.max(120, s - e.deltaY)))
+    }
 
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, [isFullscreen]);
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => el.removeEventListener('wheel', onWheel)
+  }, [isFullscreen])
 
   return (
     <>
@@ -162,9 +167,7 @@ export default function ShareModal({
             <div className="flex items-center justify-between p-4 rounded-2xl bg-muted/20 border border-border/60">
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground mb-1">File</p>
-                <p className="text-sm font-semibold text-foreground truncate">
-                  {filename}
-                </p>
+                <p className="text-sm font-semibold text-foreground truncate">{filename}</p>
               </div>
             </div>
 
@@ -186,10 +189,7 @@ export default function ShareModal({
                   size="sm"
                   variant="ghost"
                   aria-label="Copy shareable link"
-                  onClick={() => {
-                    navigator.clipboard.writeText(fileUrl);
-                    toast.success('Link copied!');
-                  }}
+                  onClick={() => void copyLink(fileUrl)}
                   className="shrink-0"
                 >
                   <Copy className="h-3.5 w-3.5" />
@@ -197,10 +197,11 @@ export default function ShareModal({
               </div>
             </div>
 
-            <div
+            <button
+              type="button"
               onClick={() => setShowQR(true)}
               aria-label="Show QR code for this file"
-              className="w-full flex rounded-full items-center justify-between p-4   border border-accent/20 hover:border-accent/30 hover:shadow-sm transition-all group h-auto"
+              className="w-full flex rounded-full items-center justify-between p-4   border border-accent/20 hover:border-accent/30 hover:shadow-sm transition-all group h-auto cursor-pointer text-left focus-visible:outline-2 focus-visible:outline-accent"
             >
               <div className="flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent/10">
@@ -208,13 +209,11 @@ export default function ShareModal({
                 </div>
                 <div className="text-left">
                   <p className="text-sm font-semibold text-foreground">QR code</p>
-                  <p className="text-xs text-muted-foreground">
-                    Scan with your camera
-                  </p>
+                  <p className="text-xs text-muted-foreground">Scan with your camera</p>
                 </div>
               </div>
               <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-accent transition-colors" />
-            </div>
+            </button>
 
             <div className="space-y-2">
               <label className="text-xs font-semibold text-muted-foreground flex items-center gap-2 uppercase tracking-wide">
@@ -223,23 +222,33 @@ export default function ShareModal({
               </label>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {shareSocials.map((option) => (
-                  <div
+                  <button
                     key={option.id}
+                    type="button"
                     aria-label={`Share via ${option.name}`}
-                    onClick={() => handleShare(option)}
-                    className={`flex flex-col items-center justify-center gap-1.5 py-3 px-2 rounded-3xl! cursor-pointer hover:bg-accent/20 font-medium  active:scale-95 h-auto ${option.className}`}
+                    onClick={() => void handleShare(option)}
+                    className={`flex flex-col items-center justify-center gap-1.5 py-3 px-2 rounded-3xl! cursor-pointer hover:bg-accent/20 font-medium  active:scale-95 h-auto focus-visible:outline-2 focus-visible:outline-accent ${option.className}`}
                   >
                     {option.platform ? (
-                      <SocialIcon platform={option.platform} className={`h-4 w-4 ${option.iconColor}`} />
+                      <SocialIcon
+                        platform={option.platform}
+                        className={`h-4 w-4 ${option.iconColor}`}
+                      />
                     ) : (
-                      <div className={`h-5 w-5 flex items-center justify-center ${option.iconColor}`}>
-                        {option.id === 'copy' ? <Copy className="h-4 w-4" /> : <Mail className="h-4 w-4" />}
+                      <div
+                        className={`h-5 w-5 flex items-center justify-center ${option.iconColor}`}
+                      >
+                        {option.id === 'copy' ? (
+                          <Copy className="h-4 w-4" />
+                        ) : (
+                          <Mail className="h-4 w-4" />
+                        )}
                       </div>
                     )}
                     <span className="text-xs leading-tight text-center line-clamp-2">
                       {option.name}
                     </span>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -260,24 +269,25 @@ export default function ShareModal({
                 <QRCode value={fileUrl} size={180} level="H" />
               </div>
               <div className="mt-6 text-center">
-                <p className="text-sm font-semibold text-foreground break-all">
-                  {fileUrl}
-                </p>
+                <p className="text-sm font-semibold text-foreground break-all">{fileUrl}</p>
                 <p className="text-xs text-muted-foreground mt-2">
                   Scan with your camera app to access this file
                 </p>
               </div>
 
               <div className="mt-6 w-full flex flex-col gap-2">
-
                 <Button
                   size="lg"
                   variant="outline"
                   className="w-full h-11 px-6 gap-2 cursor-pointer"
-                  onClick={() => {
-                    navigator.clipboard.writeText(fileUrl);
-                    toast.success('Link copied!');
-                    setShowQR(false);
+                  onClick={async () => {
+                    const copied = await copyTextToClipboard(fileUrl)
+                    if (copied) {
+                      toast.success('Link copied!')
+                      setShowQR(false)
+                    } else {
+                      toast.error(FILE_ERRORS.failedToCopyLink)
+                    }
                   }}
                 >
                   <Copy className="h-4 w-4" />
@@ -292,8 +302,6 @@ export default function ShareModal({
                   <Maximize2 className="h-4 w-4" />
                   View fullscreen
                 </Button>
-
-
               </div>
             </div>
           </div>
@@ -364,9 +372,7 @@ export default function ShareModal({
             </button>
           </div>
 
-          <span className="mt-2 text-xs text-muted-foreground tabular-nums">
-            {qrSize}px
-          </span>
+          <span className="mt-2 text-xs text-muted-foreground tabular-nums">{qrSize}px</span>
 
           <Button
             onClick={exitFullscreen}
@@ -378,5 +384,5 @@ export default function ShareModal({
         </div>
       )}
     </>
-  );
+  )
 }
