@@ -1,17 +1,23 @@
-'use client';
+'use client'
 
-import { SiNextdotjs, SiSupabase, SiUmami, SiUpstash, SiVercel } from 'react-icons/si';
-import Container from '@/components/shared/Container';
-import Reveal from '@/components/motion/Reveal';
-import SectionHeading from '@/components/shared/SectionHeading';
+import {
+  BrandNextjs,
+  BrandSupabase,
+  BrandUmami,
+  BrandUpstash,
+  BrandVercel,
+} from '@/components/icons/brand-icons'
+import Container from '@/components/shared/Container'
+import Reveal from '@/components/motion/Reveal'
+import SectionHeading from '@/components/shared/SectionHeading'
 
 const stack = [
-  { name: 'Next.js', Icon: SiNextdotjs },
-  { name: 'Supabase', Icon: SiSupabase },
-  { name: 'Upstash', Icon: SiUpstash },
-  { name: 'Vercel', Icon: SiVercel },
-  { name: 'Umami', Icon: SiUmami },
-] as const;
+  { name: 'Next.js', Icon: BrandNextjs },
+  { name: 'Supabase', Icon: BrandSupabase },
+  { name: 'Upstash', Icon: BrandUpstash },
+  { name: 'Vercel', Icon: BrandVercel },
+  { name: 'Umami', Icon: BrandUmami },
+] as const
 
 export default function LogoCloud() {
   return (
@@ -33,5 +39,5 @@ export default function LogoCloud() {
         </div>
       </Container>
     </section>
-  );
+  )
 }
