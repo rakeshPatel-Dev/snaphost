@@ -1,80 +1,70 @@
-'use client';
+'use client'
 
-import React, { useEffect, useState } from 'react';
-import { toast } from 'sonner';
-import { Trash2, ExternalLink, File, Clock, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import type { AnonymousLink } from '@/types/app';
-import { deleteAnonymousLink, fetchAnonymousLinks } from '@/services/anonymous-links';
-import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
-import { getApiErrorMessage } from '@/lib/api-error';
-import { ANON_ERRORS } from '@/lib/messages';
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { Trash2, ExternalLink, File, Clock, RefreshCw } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog'
+import { useDeleteAnonymousLinkMutation, useGetAnonymousLinksQuery } from '@/state/api'
+import { ANON_ERRORS } from '@/lib/messages'
+
+function isNoSessionError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') {
+    return false
+  }
+
+  const maybe = error as { status?: unknown; data?: unknown }
+
+  if (maybe.status !== 401 || !maybe.data || typeof maybe.data !== 'object') {
+    return false
+  }
+
+  const message = (maybe.data as { error?: unknown }).error
+  return typeof message === 'string'
+}
 
 export default function AnonLinks() {
-  const [files, setFiles] = useState<AnonymousLink[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [deleting, setDeleting] = useState<string | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
+  const { data: files = [], isLoading, isFetching, error, refetch } = useGetAnonymousLinksQuery()
+  const [deleteLink, { isLoading: isDeleting }] = useDeleteAnonymousLinkMutation()
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [refreshing, setRefreshing] = useState(false)
 
   const loadLinks = async (showRefreshToast = false) => {
+    setRefreshing(true)
     try {
-      const nextFiles = await fetchAnonymousLinks();
-      setFiles(nextFiles);
+      const nextFiles = await refetch().unwrap()
       if (showRefreshToast && nextFiles.length > 0) {
-        toast.success(`Loaded ${nextFiles.length} link${nextFiles.length === 1 ? '' : 's'}`);
+        toast.success(`Loaded ${nextFiles.length} link${nextFiles.length === 1 ? '' : 's'}`)
       }
     } catch (err) {
-      const message = getApiErrorMessage(err, 'Failed to load links');
-
-      if (message.toLowerCase().includes('session')) {
-        setFiles([]);
+      if (isNoSessionError(err)) {
         toast.info('No active anonymous session found', {
           description: 'Upload a file anonymously to start a session',
-        });
-        return;
+        })
+        return
       }
 
-      console.error('anon links load', err);
-      toast.error(ANON_ERRORS.failedToLoadLinks);
+      console.error('anon links load', err)
+      toast.error(ANON_ERRORS.failedToLoadLinks)
+    } finally {
+      setRefreshing(false)
     }
-  };
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function load() {
-      setLoading(true);
-      await loadLinks(false);
-      if (mounted) setLoading(false);
-    }
-
-    load();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  }
 
   async function handleDelete(id: string) {
-    setDeleting(id);
+    setDeletingId(id)
     try {
-      await deleteAnonymousLink(id);
-      setFiles((s) => s.filter((f) => f.id !== id));
-      toast.success('Link deleted successfully');
+      await deleteLink(id).unwrap()
+      toast.success('Link deleted successfully')
     } catch (err) {
-      console.error('delete anon', err);
-      toast.error(ANON_ERRORS.failedToDeleteLink);
+      console.error('delete anon', err)
+      toast.error(ANON_ERRORS.failedToDeleteLink)
     } finally {
-      setDeleting(null);
+      setDeletingId(null)
     }
   }
 
-  async function handleRefresh() {
-    setRefreshing(true);
-    await loadLinks(true);
-    setRefreshing(false);
-  }
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="flex flex-col items-center gap-3">
@@ -82,7 +72,19 @@ export default function AnonLinks() {
           <p className="text-sm text-muted-foreground">Loading your links…</p>
         </div>
       </div>
-    );
+    )
+  }
+
+  if (error && !isNoSessionError(error)) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-12 px-4 text-center">
+        <File className="h-5 w-5 text-muted-foreground" />
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-foreground">Could not load your links</p>
+          <p className="text-xs text-muted-foreground">{ANON_ERRORS.failedToLoadLinks}</p>
+        </div>
+      </div>
+    )
   }
 
   if (files.length === 0) {
@@ -91,12 +93,10 @@ export default function AnonLinks() {
         <File className="h-5 w-5 text-muted-foreground" />
         <div className="space-y-1">
           <p className="text-sm font-medium text-foreground">No links yet</p>
-          <p className="text-xs text-muted-foreground">
-            Upload a file anonymously to see it here.
-          </p>
+          <p className="text-xs text-muted-foreground">Upload a file anonymously to see it here.</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -111,11 +111,11 @@ export default function AnonLinks() {
           type="button"
           variant="ghost"
           size="sm"
-          onClick={handleRefresh}
-          disabled={refreshing}
+          onClick={() => loadLinks(true)}
+          disabled={refreshing || isFetching}
           className="gap-1.5 text-xs"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`h-3.5 w-3.5 ${refreshing || isFetching ? 'animate-spin' : ''}`} />
           Refresh
         </Button>
       </div>
@@ -161,11 +161,11 @@ export default function AnonLinks() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    disabled={deleting === file.id}
+                    disabled={deletingId === file.id || isDeleting}
                     aria-label="Delete link"
                     className="text-muted-foreground hover:text-destructive"
                   >
-                    {deleting === file.id ? (
+                    {deletingId === file.id ? (
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-destructive border-t-transparent" />
                     ) : (
                       <Trash2 className="h-4 w-4" />
@@ -183,5 +183,5 @@ export default function AnonLinks() {
         ))}
       </div>
     </div>
-  );
+  )
 }
