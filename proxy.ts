@@ -1,13 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
 
 function buildContentSecurityPolicy(nonce: string) {
-  const isDevelopment = process.env.NODE_ENV === 'development';
-  const developmentScriptSource = isDevelopment ? " 'unsafe-eval'" : '';
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  const developmentScriptSource = isDevelopment ? " 'unsafe-eval'" : ''
   // Next's development overlay and Turbopack inject styles at runtime without
   // a nonce. In production, allow only Sonner's pinned runtime stylesheet.
   const styleSource = isDevelopment
     ? "'self' 'unsafe-inline'"
-    : `'self' 'nonce-${nonce}' 'sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY='`;
+    : `'self' 'nonce-${nonce}' 'sha256-StEaX+se6YS7pqjzrzMIA0KaX9zF/8zAhvQXZAe5epY='`
 
   return [
     "default-src 'self'",
@@ -21,33 +21,31 @@ function buildContentSecurityPolicy(nonce: string) {
     "img-src 'self' blob: data: https://xbywqnrququdipqhqtgn.supabase.co",
     "font-src 'self'",
     "connect-src 'self' https://*.supabase.co https://cloud.umami.is https://vitals.vercel-insights.com https://*.vercel-insights.com",
-    "frame-src https://*.supabase.co",
+    'frame-src https://*.supabase.co',
     "media-src 'self' blob: https://*.supabase.co",
     "worker-src 'self' blob:",
     "manifest-src 'self'",
     'upgrade-insecure-requests',
-  ].join('; ');
+  ].join('; ')
 }
 
 export function proxy(request: NextRequest) {
-  const nonce = crypto.randomUUID().replaceAll('-', '');
-  const contentSecurityPolicy = buildContentSecurityPolicy(nonce);
-  const requestHeaders = new Headers(request.headers);
+  const nonce = crypto.randomUUID().replaceAll('-', '')
+  const contentSecurityPolicy = buildContentSecurityPolicy(nonce)
+  const requestHeaders = new Headers(request.headers)
 
   // Next.js reads this request header to nonce its framework scripts and styles.
-  requestHeaders.set('Content-Security-Policy', contentSecurityPolicy);
-  requestHeaders.set('x-nonce', nonce);
+  requestHeaders.set('Content-Security-Policy', contentSecurityPolicy)
+  requestHeaders.set('x-nonce', nonce)
 
   const response = NextResponse.next({
     request: { headers: requestHeaders },
-  });
+  })
 
-  response.headers.set('Content-Security-Policy', contentSecurityPolicy);
-  return response;
+  response.headers.set('Content-Security-Policy', contentSecurityPolicy)
+  return response
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|icon0.svg|icon1.png|apple-icon.png).*)',
-  ],
-};
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|icon1.png|apple-icon.png).*)'],
+}

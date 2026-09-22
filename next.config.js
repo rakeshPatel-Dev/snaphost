@@ -9,6 +9,21 @@ const nextConfig = {
     ],
   },
 
+  async redirects() {
+    return [
+      {
+        source: '/signup',
+        destination: '/sign-up',
+        permanent: true,
+      },
+      {
+        source: '/login',
+        destination: '/sign-in',
+        permanent: true,
+      },
+    ]
+  },
+
   async headers() {
     return [
       {
@@ -27,8 +42,8 @@ const nextConfig = {
           },
         ],
       },
-    ];
+    ]
   },
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
