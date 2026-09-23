@@ -16,6 +16,7 @@
   "dependencies": {
     "@formspree/react": "^3.0.0",
     "@reduxjs/toolkit": "^2.12.0",
+    "@sentry/nextjs": "^10.75.2",
     "@supabase/supabase-js": "^2.106.0",
     "@upstash/qstash": "^2.11.3",
     "@upstash/ratelimit": "^2.1.0",
