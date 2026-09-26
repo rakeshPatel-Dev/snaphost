@@ -29,7 +29,10 @@ export const metadata: Metadata = {
     template: '%s | Snaphost',
   },
   icons: {
-    icon: [{ url: '/icon1.png', type: 'image/png', sizes: '32x32' }],
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon1.png', type: 'image/png', sizes: '32x32' },
+    ],
     apple: '/apple-icon.png',
   },
   description:
