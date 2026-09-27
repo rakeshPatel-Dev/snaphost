@@ -18,7 +18,7 @@ function buildContentSecurityPolicy(nonce: string) {
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://cloud.umami.is https://cdn.vercel-insights.com https://va.vercel-scripts.com${developmentScriptSource}`,
     `style-src ${styleSource}`,
     "style-src-attr 'unsafe-inline'",
-    "img-src 'self' blob: data: https://xbywqnrququdipqhqtgn.supabase.co",
+    "img-src 'self' blob: data: https://xbywqnrququdipqhqtgn.supabase.co https://*.googleusercontent.com https://avatars.githubusercontent.com",
     "font-src 'self'",
     "connect-src 'self' https://*.supabase.co https://cloud.umami.is https://vitals.vercel-insights.com https://*.vercel-insights.com",
     'frame-src https://*.supabase.co',
