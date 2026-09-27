@@ -1,13 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { Heart } from 'lucide-react'
 import { copyrightText, footerLinks, companyLinks } from '@/data/footer'
 import Container from '@/components/shared/Container'
 import Logo from './Logo'
 import SocialButtons from './SocialButtons'
 import FeedbackDialog from '../shared/FeedbackDialog'
-import { FOUNDER_SITE } from '@/data/emails'
 
 const productLinks = [
   { label: 'Upload', href: '/upload' },
@@ -86,17 +84,6 @@ export default function Footer() {
               </li>
             ))}
           </ul>
-          <p className="flex items-center gap-1 text-xs text-muted-foreground">
-            Made with <Heart className="h-3 w-3 fill-accent text-accent" /> by{' '}
-            <a
-              href={FOUNDER_SITE}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 transition-colors hover:text-foreground"
-            >
-              Rakesh Patel
-            </a>
-          </p>
         </div>
       </Container>
     </footer>
