@@ -20,7 +20,7 @@ function buildContentSecurityPolicy(nonce: string) {
     "style-src-attr 'unsafe-inline'",
     "img-src 'self' blob: data: https://xbywqnrququdipqhqtgn.supabase.co https://*.googleusercontent.com https://avatars.githubusercontent.com",
     "font-src 'self'",
-    "connect-src 'self' https://*.supabase.co https://cloud.umami.is https://vitals.vercel-insights.com https://*.vercel-insights.com",
+    "connect-src 'self' https://*.supabase.co https://cloud.umami.is https://vitals.vercel-insights.com https://*.vercel-insights.com https://formspree.io https://formly.email",
     'frame-src https://*.supabase.co',
     "media-src 'self' blob: https://*.supabase.co",
     "worker-src 'self' blob:",
