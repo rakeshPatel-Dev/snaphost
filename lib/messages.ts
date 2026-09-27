@@ -35,6 +35,14 @@ export const UPLOAD_ERRORS = {
     "You've reached your plan's link limit. Delete an old link or upgrade for more.",
 } as const
 
+// ─── Forms (bug reports via formly.email) ──────────────────
+export const FORM_ERRORS = {
+  /** Report request never reached formly.email, or it replied without a message */
+  reportFailed: 'Something went wrong sending your report. Please try again.',
+  /** Access key missing from the deployment env */
+  notConfigured: 'Forms are not configured on this deployment.',
+} as const
+
 // ─── Anonymous sessions ────────────────────────────────────
 export const ANON_ERRORS = {
   /** No session cookie present */

@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { useForm, ValidationError } from '@formspree/react'
 import { Bug, Check, ImagePlus, X } from 'lucide-react'
 import {
   Dialog,
@@ -15,6 +14,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { formatFileSize } from '@/shared/utils/file-format'
+import { CONFIG } from '@/lib/config'
+import { FORM_ERRORS, UPLOAD_ERRORS } from '@/lib/messages'
+
+const FORMLY_ENDPOINT = 'https://formly.email/submit'
+const ACCESS_KEY = process.env.NEXT_PUBLIC_FORMLY_EMAIL_ACCESS_KEY || ''
+/** formly.email free plan allows one 5MB attachment per submission. */
+const MAX_ATTACHMENT_BYTES = 5 * 1024 * 1024
 
 type ReportIssueModalProps = {
   open: boolean
@@ -23,15 +29,15 @@ type ReportIssueModalProps = {
 
 type Screenshot = {
   file: File
-  url: string | null
+  url: string
 }
 
 export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModalProps) {
-  const [state, handleSubmit, resetForm] = useForm(
-    process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT_ID || 'missing-id'
-  )
   const [screenshot, setScreenshot] = useState<Screenshot | null>(null)
-  const [submitFailed, setSubmitFailed] = useState(false)
+  const [screenshotError, setScreenshotError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [succeeded, setSucceeded] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const screenshotUrlRef = useRef<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -44,45 +50,108 @@ export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModa
     []
   )
 
-  const selectScreenshot = (file: File | null) => {
+  // Release the preview only. The input's own value is what gets submitted, so
+  // clearing it here would silently drop the attachment while the thumbnail
+  // still looked attached.
+  const releasePreview = () => {
     if (screenshotUrlRef.current) {
       URL.revokeObjectURL(screenshotUrlRef.current)
       screenshotUrlRef.current = null
     }
+    setScreenshot(null)
+  }
+
+  const discardScreenshot = () => {
+    if (fileInputRef.current) fileInputRef.current.value = ''
+    releasePreview()
+    setScreenshotError(null)
+  }
+
+  const selectScreenshot = (file: File | null) => {
+    releasePreview()
     if (!file) {
-      setScreenshot(null)
+      setScreenshotError(null)
       return
     }
-    const url = file.type.startsWith('image/') ? URL.createObjectURL(file) : null
+
+    const reject = (message: string) => {
+      if (fileInputRef.current) fileInputRef.current.value = ''
+      setScreenshotError(message)
+    }
+
+    if (!CONFIG.ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      reject(UPLOAD_ERRORS.unsupportedFileType)
+      return
+    }
+    if (file.size > MAX_ATTACHMENT_BYTES) {
+      reject(
+        UPLOAD_ERRORS.imageTooLarge(
+          MAX_ATTACHMENT_BYTES / 1024 / 1024,
+          (file.size / 1024 / 1024).toFixed(2)
+        )
+      )
+      return
+    }
+
+    setScreenshotError(null)
+    const url = URL.createObjectURL(file)
     screenshotUrlRef.current = url
     setScreenshot({ file, url })
   }
 
   const handleOpenChange = (next: boolean) => {
     if (next) {
-      resetForm()
-      setSubmitFailed(false)
+      setSubmitError(null)
+      setSucceeded(false)
     } else {
-      selectScreenshot(null)
+      discardScreenshot()
     }
     onOpenChange(next)
   }
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    const form = e.currentTarget
+
+    if (!ACCESS_KEY) {
+      setSubmitError(FORM_ERRORS.notConfigured)
+      return
+    }
+
+    const body = new FormData(form)
+    body.set('access_key', ACCESS_KEY)
+
+    setSubmitting(true)
+    setSubmitError(null)
     try {
-      await handleSubmit(e)
+      const response = await fetch(FORMLY_ENDPOINT, {
+        method: 'POST',
+        body,
+        headers: { Accept: 'application/json' },
+      })
+
+      // An accepted report is answered with a 302 to formly.email/thank-you and
+      // never JSON, so the redirect itself is the success signal. Rejections
+      // come back as JSON without redirecting, using `message` or `error`.
+      if (!response.redirected) {
+        const payload = await response.json().catch(() => null)
+        setSubmitError(payload?.message || payload?.error || FORM_ERRORS.reportFailed)
+        return
+      }
+
+      setSucceeded(true)
+      form.reset()
     } catch {
-      setSubmitFailed(true)
+      setSubmitError(FORM_ERRORS.reportFailed)
+    } finally {
+      setSubmitting(false)
     }
   }
-
-  const hasFormError = !!state.errors && state.errors.getFormErrors().length > 0
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="gap-0 overflow-hidden rounded-4xl border border-border/60 bg-card/80 p-0 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)] backdrop-blur-xl sm:max-w-lg">
-        {state.succeeded ? (
+        {succeeded ? (
           <div className="flex flex-col items-center px-6 py-12 text-center sm:px-10">
             <div className="flex size-12 items-center justify-center rounded-full bg-accent/10 text-accent">
               <Check className="size-6" aria-hidden="true" />
@@ -130,7 +199,6 @@ export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModa
                   required
                   autoFocus
                 />
-                <ValidationError prefix="Message" field="message" errors={state.errors} />
               </div>
 
               <div className="space-y-2">
@@ -146,7 +214,6 @@ export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModa
                   Email <span className="text-muted-foreground">(optional)</span>
                 </Label>
                 <Input id="report-email" name="email" type="email" autoComplete="email" />
-                <ValidationError prefix="Email" field="email" errors={state.errors} />
               </div>
 
               <div className="space-y-2">
@@ -157,25 +224,21 @@ export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModa
                   id="report-screenshot"
                   name="attachment"
                   type="file"
-                  accept="image/png,image/jpeg,image/webp"
+                  accept={CONFIG.ALLOWED_IMAGE_TYPES.join(',')}
+                  aria-invalid={!!screenshotError}
+                  aria-describedby="report-screenshot-error"
                   className="hidden"
                   ref={fileInputRef}
                   onChange={(e) => selectScreenshot(e.target.files?.[0] ?? null)}
                 />
                 {screenshot ? (
                   <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-muted/20 px-3 py-2.5">
-                    {screenshot.url ? (
-                      // eslint-disable-next-line @next/next/no-img-element -- local object-URL preview
-                      <img
-                        src={screenshot.url}
-                        alt=""
-                        className="size-10 shrink-0 rounded-lg border border-border/60 object-cover"
-                      />
-                    ) : (
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                        <ImagePlus className="size-4" aria-hidden="true" />
-                      </div>
-                    )}
+                    {/* eslint-disable-next-line @next/next/no-img-element -- local object-URL preview */}
+                    <img
+                      src={screenshot.url}
+                      alt=""
+                      className="size-10 shrink-0 rounded-lg border border-border/60 object-cover"
+                    />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-foreground">
                         {screenshot.file.name}
@@ -186,10 +249,7 @@ export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModa
                     </div>
                     <button
                       type="button"
-                      onClick={() => {
-                        if (fileInputRef.current) fileInputRef.current.value = ''
-                        selectScreenshot(null)
-                      }}
+                      onClick={discardScreenshot}
                       aria-label="Remove screenshot"
                       className="flex size-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
                     >
@@ -205,11 +265,16 @@ export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModa
                     Attach a screenshot
                   </label>
                 )}
+                {screenshotError && (
+                  <p id="report-screenshot-error" role="alert" className="text-sm text-destructive">
+                    {screenshotError}
+                  </p>
+                )}
               </div>
 
-              {(submitFailed || hasFormError) && (
+              {submitError && (
                 <p role="alert" className="text-sm text-destructive">
-                  Something went wrong sending your report. Please try again.
+                  {submitError}
                 </p>
               )}
             </div>
@@ -223,12 +288,8 @@ export default function ReportIssueModal({ open, onOpenChange }: ReportIssueModa
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                disabled={state.submitting}
-                className="h-10 w-full px-4 sm:w-auto"
-              >
-                {state.submitting ? 'Sending…' : 'Send report'}
+              <Button type="submit" disabled={submitting} className="h-10 w-full px-4 sm:w-auto">
+                {submitting ? 'Sending…' : 'Send report'}
               </Button>
             </div>
           </form>
