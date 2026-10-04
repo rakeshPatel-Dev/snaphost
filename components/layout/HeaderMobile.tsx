@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Menu, UserRound, LogOut, Trash2 } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { AnimatedThemeToggler } from '../ui/animated-theme-toggler'
+import SnaphostLogo from '@/components/icons/SnaphostLogo'
 import DeleteAccountDialog from '@/components/shared/DeleteAccountDialog'
 import { useState } from 'react'
 import { useAuth } from '@/components/providers/auth-provider'
@@ -53,7 +54,12 @@ export default function HeaderMobile() {
         >
           <SheetHeader className="border-b border-border/50 px-5 py-4">
             <SheetTitle className="text-left text-base font-semibold tracking-tight">
-              <Link href="/" onClick={() => setOpen(false)}>
+              <Link
+                href="/"
+                onClick={() => setOpen(false)}
+                className="inline-flex items-center gap-2"
+              >
+                <SnaphostLogo color="currentColor" className="h-4 w-auto" />
                 snaphost
               </Link>
             </SheetTitle>
