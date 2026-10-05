@@ -43,10 +43,13 @@ export async function createFileRecord(input: {
 }
 
 export async function listFilesForUser(userId: string) {
+  const now = new Date().toISOString()
   const { data, error } = await supabaseAdmin
     .from('files')
     .select('*, user:users(username)')
     .eq('user_id', userId)
+    .is('deleted_at', null)
+    .or(`expires_at.is.null,expires_at.gt.${now}`)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -71,11 +74,13 @@ export async function listActiveFilesForUser(userId: string) {
 }
 
 export async function countActiveFilesForUser(userId: string) {
+  const now = new Date().toISOString()
   const { error, count } = await supabaseAdmin
     .from('files')
     .select('id', { count: 'exact', head: false })
     .eq('user_id', userId)
     .is('deleted_at', null)
+    .or(`expires_at.is.null,expires_at.gt.${now}`)
 
   if (error) {
     throw error
