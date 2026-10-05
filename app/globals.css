@@ -58,7 +58,6 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --animate-shine: shine var(--duration) infinite linear;
-  --animate-brand-loader: brand-loader 1.4s ease-in-out infinite;
   @keyframes shine {
     0% {
       background-position: 0% 0%;
@@ -69,27 +68,6 @@
     to {
       background-position: 0% 0%;
     }
-  }
-  @keyframes brand-loader {
-    0%,
-    100% {
-      transform: scale(0.84) rotate(0deg);
-    }
-    50% {
-      transform: scale(1.08) rotate(180deg);
-    }
-  }
-}
-
-.brand-loader-mark {
-  animation: var(--animate-brand-loader);
-  transform-origin: center;
-  will-change: transform;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .brand-loader-mark {
-    animation: none;
   }
 }
 

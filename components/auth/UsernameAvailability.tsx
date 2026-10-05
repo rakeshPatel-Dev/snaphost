@@ -1,9 +1,9 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { LoaderCircle } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import BrandLoader from '@/components/shared/BrandLoader'
 
 type UsernameAvailabilityState = {
   id: string
@@ -58,9 +58,7 @@ export default function UsernameAvailability({
           statusTone === 'neutral' && 'text-muted-foreground'
         )}
       >
-        {isChecking ? (
-          <LoaderCircle className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
-        ) : null}
+        {isChecking ? <BrandLoader size="xs" label="Checking username" /> : null}
         <span>
           {isChecking
             ? 'Checking username...'

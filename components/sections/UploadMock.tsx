@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Loader2, Link2, Copy, Check, RefreshCcw } from 'lucide-react'
+import { Link2, Copy, Check, RefreshCcw } from 'lucide-react'
 import UploadMockTabs from './upload-mock/UploadMockTabs'
 import UploadDropzone from './upload-mock/UploadDropzone'
 import AnonymousLinksDialog from './upload-mock/AnonymousLinksDialog'
 import AnonymousLinkCard from './upload-mock/AnonymousLinkCard'
+import BrandLoader from '@/components/shared/BrandLoader'
 import type { AnonymousLink } from '@/types/app'
 import {
   deleteAnonymousLink,
@@ -229,7 +230,7 @@ export function UploadMock({
 
             {uploadState === 'uploading' && (
               <div className="flex flex-col items-center justify-center gap-3 rounded-4xl border border-border/60 bg-muted/20 px-6 py-12 text-center">
-                <Loader2 className="h-7 w-7 animate-spin text-accent" />
+                <BrandLoader size="md" label="Uploading demo file" />
                 <div>
                   <p className="text-sm font-medium tracking-tight text-foreground">
                     Preparing your link…

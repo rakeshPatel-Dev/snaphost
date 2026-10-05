@@ -1,7 +1,8 @@
 'use client'
 
-import { Upload, Loader2 } from 'lucide-react'
+import { Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import BrandLoader from '@/components/shared/BrandLoader'
 import type { UploadFormProps } from '@/types/components'
 
 export default function UploadForm({
@@ -57,7 +58,7 @@ export default function UploadForm({
       >
         {isUploading ? (
           <>
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            <BrandLoader size="sm" label="Uploading file" />
             Uploading...
           </>
         ) : (

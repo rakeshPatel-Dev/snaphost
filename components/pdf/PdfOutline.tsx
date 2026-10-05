@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
+import BrandLoader from '@/components/shared/BrandLoader'
 
 interface OutlineNode {
   title: string
@@ -104,7 +105,10 @@ export default function PdfOutline({ doc, onSelectPage }: PdfOutlineProps) {
         Outline
       </div>
       {loading ? (
-        <p className="px-1 text-xs text-muted-foreground">Loading outline...</p>
+        <div className="flex items-center gap-2 px-1 text-xs text-muted-foreground">
+          <BrandLoader size="sm" label="Loading outline" />
+          Loading outline…
+        </div>
       ) : !outline || outline.length === 0 ? (
         <p className="px-1 text-xs text-muted-foreground">No outline bookmarks available.</p>
       ) : (

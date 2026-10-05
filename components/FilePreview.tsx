@@ -2,10 +2,11 @@
 
 import Link from 'next/link'
 import { useEffect } from 'react'
-import { Loader2, Unlink } from 'lucide-react'
+import { Unlink } from 'lucide-react'
 import ImagePreview from './ImagePreview'
 import PdfPreview from './PdfPreview'
 import FloatingBadge from './Floating'
+import BrandLoader from './shared/BrandLoader'
 import { Button } from './ui/button'
 import { useGetFileQuery } from '@/state/api'
 import { getApiErrorMessage } from '@/lib/api-error'
@@ -33,8 +34,8 @@ export default function FilePreview({ fileId, isAnonymous = false, username }: F
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-6 w-6 animate-spin text-accent" />
+      <div className="flex min-h-screen items-center justify-center">
+        <BrandLoader size="lg" label="Loading file" />
       </div>
     )
   }

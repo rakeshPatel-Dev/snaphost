@@ -1,7 +1,8 @@
 'use client'
 
 import { useCallback, useRef, useState } from 'react'
-import { Download, Loader2, Maximize, Minus, Plus } from 'lucide-react'
+import { Download, Maximize, Minus, Plus } from 'lucide-react'
+import BrandLoader from './shared/BrandLoader'
 import Logo from './layout/Logo'
 import { cn } from '@/lib/utils'
 
@@ -137,7 +138,7 @@ export default function ImagePreview({ url, filename, downloadUrl }: ImagePrevie
       >
         {isLoading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background">
-            <Loader2 className="h-6 w-6 animate-spin text-accent" />
+            <BrandLoader size="md" label="Loading image" />
           </div>
         )}
 

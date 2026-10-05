@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { Trash2, ExternalLink, File, Clock, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog'
+import BrandLoader from '@/components/shared/BrandLoader'
 import { useDeleteAnonymousLinkMutation, useGetAnonymousLinksQuery } from '@/state/api'
 import { ANON_ERRORS } from '@/lib/messages'
 import posthog from 'posthog-js'
@@ -73,7 +74,7 @@ export default function AnonLinks() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+          <BrandLoader size="sm" label="Loading anonymous links" />
           <p className="text-sm text-muted-foreground">Loading your links…</p>
         </div>
       </div>
@@ -120,7 +121,11 @@ export default function AnonLinks() {
           disabled={refreshing || isFetching}
           className="gap-1.5 text-xs"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${refreshing || isFetching ? 'animate-spin' : ''}`} />
+          {refreshing || isFetching ? (
+            <BrandLoader size="xs" label="Refreshing links" />
+          ) : (
+            <RefreshCw className="h-3.5 w-3.5" />
+          )}
           Refresh
         </Button>
       </div>
@@ -171,7 +176,7 @@ export default function AnonLinks() {
                     className="text-muted-foreground hover:text-destructive"
                   >
                     {deletingId === file.id ? (
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-destructive border-t-transparent" />
+                      <BrandLoader size="xs" label="Deleting link" />
                     ) : (
                       <Trash2 className="h-4 w-4" />
                     )}
