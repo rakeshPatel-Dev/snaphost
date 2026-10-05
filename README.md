@@ -243,6 +243,7 @@ Fetch file metadata.
 - **Storage**: Supabase Storage (object storage)
 - **PDF Viewer**: react-pdf
 - **Auth**: Supabase Auth (email/password + OAuth providers)
+- **Analytics**: PostHog (product analytics, pageviews, user identify)
 - **Icons**: Lucide React
 - **Notifications**: Sonner (toast)
 
@@ -405,6 +406,8 @@ npm run lint            # Check linting
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY`       | Yes               | Supabase anonymous key                                                         |
 | `SUPABASE_SERVICE_ROLE_KEY`           | Yes               | Supabase service role key (server only)                                        |
 | `NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS` | No                | OAuth providers to show on auth screen (e.g. `google,github`)                  |
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN`   | No                | PostHog project API key (from project settings)                                |
+| `NEXT_PUBLIC_POSTHOG_HOST`            | No                | PostHog ingestion host (e.g. `https://us.i.posthog.com`)                       |
 | `NEXT_PUBLIC_BASE_URL`                | No                | Custom domain (default: localhost:3000, production: https://sh.rakeshpatel.me) |
 | `QSTASH_CURRENT_SIGNING_KEY`          | Production        | Verifies scheduled cleanup requests from QStash                                |
 | `QSTASH_NEXT_SIGNING_KEY`             | Production        | Supports QStash signing-key rotation                                           |
