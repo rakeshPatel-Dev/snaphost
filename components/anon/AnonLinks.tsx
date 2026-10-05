@@ -185,7 +185,6 @@ export default function AnonLinks() {
                 title="Delete this anonymous link?"
                 description={`This will permanently remove "${file.filename}" and its link. This action cannot be undone.`}
                 confirmLabel="Delete link"
-                destructiveClassName="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                 onConfirm={() => handleDelete(file.id)}
               />
             </div>

@@ -407,7 +407,6 @@ const LinkCard = ({
                           </>
                         }
                         confirmLabel="Delete link"
-                        destructiveClassName="bg-red-600 text-white hover:bg-red-700"
                         onConfirm={() => onDeleteFile(file.id)}
                       />
                     </div>

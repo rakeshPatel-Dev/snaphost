@@ -87,7 +87,6 @@ export default function AnonymousLinkCard({
               title="Are you sure you want to delete this link?"
               description="The file will be removed from storage and this browser's history."
               confirmLabel="Yes, delete"
-              destructiveClassName="rounded-full bg-destructive/99 text-destructive-foreground hover:bg-destructive/90"
               onConfirm={() => onDelete(id)}
             />
           </div>
