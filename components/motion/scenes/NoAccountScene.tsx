@@ -9,27 +9,11 @@ import AnonymousLinkCard from '@/components/sections/upload-mock/AnonymousLinkCa
 import { inWindow } from '@/components/motion/usePlayback'
 import { getDemoAnonymousLink, demoAnonymousLinkUrl, noop } from './sample'
 
-const tabVariants = {
-  enter: (dir: number) => ({ opacity: 0, x: dir * 16, scale: 0.99 }),
-  center: {
-    opacity: 1,
-    x: 0,
-    scale: 1,
-    transition: { duration: 0.28, ease: 'easeOut' as const },
-  },
-  exit: (dir: number) => ({
-    opacity: 0,
-    x: dir * -16,
-    scale: 0.99,
-    transition: { duration: 0.2, ease: 'easeOut' as const },
-  }),
-}
-
 const fade = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
-  transition: { duration: 0.3, ease: 'easeOut' as const },
+  initial: { opacity: 0, y: 12, scale: 0.97 },
+  animate: { opacity: 1, y: 0, scale: 1 },
+  exit: { opacity: 0, y: -8, scale: 0.98 },
+  transition: { duration: 0.35, ease: 'easeOut' as const },
 }
 
 const toastFade = {
@@ -66,9 +50,6 @@ export default function NoAccountScene({ t }: { t: number }) {
     Math.floor((remaining % 3600) / 60)
   )}:${pad(remaining % 60)}`
 
-  // Direction: moving from upload -> links is "forward" (slide left),
-  // moving links -> upload is "backward" (slide right).
-  const direction = onUploadTab ? -1 : 1
   const activeKey = onUploadTab ? 'upload' : `links-${phase}`
 
   const dropzone = (
@@ -182,16 +163,8 @@ export default function NoAccountScene({ t }: { t: number }) {
       />
 
       <div className="relative flex-1">
-        <AnimatePresence mode="wait" initial={false} custom={direction}>
-          <motion.div
-            key={activeKey}
-            custom={direction}
-            variants={tabVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            className="absolute inset-0"
-          >
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div key={activeKey} {...fade} className="absolute inset-0">
             {onUploadTab ? dropzone : linksTab}
           </motion.div>
         </AnimatePresence>
