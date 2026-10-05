@@ -53,18 +53,25 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
     }
 
     try {
-      await updateMeUsername({ username: normalizedUsername }).unwrap()
-      await refreshUser()
-      if (posthogEnabled) {
-        posthog.capture('username_updated')
-      }
-      toast.success('Username updated')
+      await toast.promise(
+        updateMeUsername({ username: normalizedUsername })
+          .unwrap()
+          .then(async () => {
+            await refreshUser()
+            if (posthogEnabled) {
+              posthog.capture('username_updated')
+            }
+          }),
+        {
+          loading: 'Saving username…',
+          success: 'Username updated',
+          error: (err) => getApiErrorMessage(err, AUTH_ERRORS.failedToUpdateUsername),
+        }
+      )
       setDisplayUsername(normalizedUsername)
       setValue(normalizedUsername)
       setEditing(false)
-    } catch (err) {
-      toast.error(getApiErrorMessage(err, AUTH_ERRORS.failedToUpdateUsername))
-    }
+    } catch {}
   }
 
   return (

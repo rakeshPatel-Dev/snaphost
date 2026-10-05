@@ -89,18 +89,22 @@ export function UploadMock({
     setUploadState('uploading')
 
     try {
-      const newLink = await uploadAnonymousFile(file)
+      const uploadPromise = uploadAnonymousFile(file)
+      toast.promise(uploadPromise, {
+        loading: TOAST_LABELS.anonUpload.loading,
+        success: TOAST_LABELS.anonUpload.success,
+        error: (err) => getApiErrorMessage(err, ANON_ERRORS.uploadFailed),
+      })
+      const newLink = await uploadPromise
       setLinks((current) => [newLink, ...current.filter((item) => item.id !== newLink.id)])
       setCurrentFile(newLink)
       setUploadState('completed')
-      toast.success(TOAST_LABELS.anonUpload.success)
       void refreshLinks()
       return newLink
     } catch (err) {
       const message = getApiErrorMessage(err, ANON_ERRORS.uploadFailed)
       setError(message)
       setUploadState('idle')
-      toast.error(message)
     }
   }
 
