@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
     if (uploadType === 'anonymous') {
       const anonymousDaily = await limitAnonymousUploads(ip)
       if (!anonymousDaily.success) {
-        return rateLimitResponse(anonymousDaily, ANON_ERRORS.linkLimitReached)
+        return rateLimitResponse(anonymousDaily, ANON_ERRORS.dailyUploadLimitReached)
       }
     }
 
