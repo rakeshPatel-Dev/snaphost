@@ -16,11 +16,7 @@ const TierBanner = ({ isPremium }: { isPremium: boolean }) => {
             Want more control? Upgrade to Pro
           </p>
         </div>
-        <Button
-          asChild
-          size="sm"
-          className="h-8 rounded-full px-4 text-xs font-medium transition-all hover:bg-accent hover:text-background"
-        >
+        <Button asChild size="sm" className="text-xs">
           <Link href="/getpro" className="flex items-center gap-1.5">
             Get Pro access
             <ArrowRight className="h-3 w-3" />
