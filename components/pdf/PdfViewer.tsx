@@ -225,9 +225,9 @@ export default function PdfViewer({ url, filename, downloadUrl }: PdfViewerProps
               <div className="flex size-14 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
                 <Unlink className="size-7" strokeWidth={1.7} aria-hidden="true" />
               </div>
-              <p className="text-sm font-medium text-foreground">Failed to load PDF</p>
+              <p className="text-sm font-medium text-foreground">We couldn&apos;t load this PDF</p>
               <p className="text-xs text-muted-foreground">
-                The file may be corrupted or cannot be displayed.
+                The file may be damaged or unavailable. Try refreshing the page.
               </p>
             </div>
           )}

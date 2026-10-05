@@ -67,7 +67,7 @@ export default function FilePreview({ fileId, isAnonymous = false, username }: F
                   ? 'This snap link may have expired or the file may have been deleted.'
                   : getApiErrorMessage(
                       error,
-                      'Something went wrong while loading this file. Please try again.'
+                      "We couldn't load this file. Refresh the page and try again."
                     )}
             </p>
 

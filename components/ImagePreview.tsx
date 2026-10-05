@@ -144,7 +144,9 @@ export default function ImagePreview({ url, filename, downloadUrl }: ImagePrevie
 
         {error ? (
           <div className="flex h-full items-center justify-center px-6 text-center">
-            <p className="text-sm text-muted-foreground">Failed to load image</p>
+            <p className="text-sm text-muted-foreground">
+              We couldn&apos;t load this image. Try refreshing the page.
+            </p>
           </div>
         ) : (
           // The source is intentionally unoptimized so the viewer can render its native dimensions.

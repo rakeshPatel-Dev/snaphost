@@ -86,7 +86,7 @@ export default function AnonLinks() {
       <div className="flex flex-col items-center justify-center gap-3 py-12 px-4 text-center">
         <File className="h-5 w-5 text-muted-foreground" />
         <div className="space-y-1">
-          <p className="text-sm font-medium text-foreground">Could not load your links</p>
+          <p className="text-sm font-medium text-foreground">We couldn&apos;t load your links</p>
           <p className="text-xs text-muted-foreground">{ANON_ERRORS.failedToLoadLinks}</p>
         </div>
       </div>

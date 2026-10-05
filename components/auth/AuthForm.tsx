@@ -116,7 +116,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
       }
     } catch (err) {
       console.error('Auth form error', err)
-      toast.error(getAuthErrorMessage(err))
+      toast.error(
+        getAuthErrorMessage(err, isSignIn ? AUTH_ERRORS.signInFailed : AUTH_ERRORS.signUpFailed)
+      )
     } finally {
       setLoading(false)
     }
