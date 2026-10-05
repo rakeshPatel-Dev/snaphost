@@ -14,7 +14,13 @@ import {
   Plus,
   Minimize2,
 } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import QRCode from 'react-qr-code'
@@ -93,41 +99,42 @@ export default function ShareModal({ open, onOpenChange, fileUrl, filename }: Sh
     setIsFullscreen(true)
     setQrSize(500)
 
-    // Wait for the overlay to mount before fullscreening it.
-    await new Promise((r) => setTimeout(r, 50))
-
     try {
       if (fullscreenRef.current?.requestFullscreen) {
         await fullscreenRef.current.requestFullscreen()
       } else {
         toast.error('Fullscreen not supported in this browser')
         setIsFullscreen(false)
+        setShowQR(true)
       }
     } catch {
       toast.error('Could not enter fullscreen')
       setIsFullscreen(false)
+      setShowQR(true)
     }
   }
 
-  const exitFullscreen = async () => {
-    try {
-      if (document.fullscreenElement) {
-        await document.exitFullscreen()
-      }
-    } catch {
-      // ignore
-    }
+  const exitFullscreen = () => {
     setIsFullscreen(false)
+    setShowQR(true)
+
+    if (document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => {
+        toast.error('Could not exit fullscreen')
+      })
+    }
   }
 
-  // Unmount overlay when the user exits fullscreen via Esc / browser UI
   useEffect(() => {
     const onChange = () => {
-      if (!document.fullscreenElement) setIsFullscreen(false)
+      if (!document.fullscreenElement && isFullscreen) {
+        setIsFullscreen(false)
+        setShowQR(true)
+      }
     }
     document.addEventListener('fullscreenchange', onChange)
     return () => document.removeEventListener('fullscreenchange', onChange)
-  }, [])
+  }, [isFullscreen])
 
   // Ctrl + wheel / pinch to zoom the QR in fullscreen
   useEffect(() => {
@@ -148,51 +155,57 @@ export default function ShareModal({ open, onOpenChange, fileUrl, filename }: Sh
   return (
     <>
       {/* ============ Main share dialog ============ */}
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-lg rounded-4xl border border-border/60 bg-card/80 backdrop-blur-xl p-0 gap-0 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)] overflow-hidden">
-          <div className="p-6 pb-4 border-b border-border/50">
+      <Dialog open={open && !isFullscreen} onOpenChange={onOpenChange}>
+        <DialogContent className="gap-0 overflow-hidden rounded-4xl border border-border/60 bg-card/80 p-0 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.18)] backdrop-blur-xl sm:max-w-lg">
+          <div className="border-b border-border/50 p-6 pb-4">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent/10">
-                  <Share2 className="h-4 w-4 text-accent" />
+              <DialogTitle className="flex items-center gap-3 text-lg font-semibold tracking-tight text-foreground">
+                <div className="flex size-9 items-center justify-center rounded-full bg-accent/10">
+                  <Share2 className="size-4 text-accent" />
                 </div>
-                <span className="text-lg font-semibold tracking-tight text-foreground">
-                  Share this file
-                </span>
+                Share this file
               </DialogTitle>
+              <DialogDescription className="pl-12 text-sm text-muted-foreground">
+                Copy the link or choose where you want to share it.
+              </DialogDescription>
             </DialogHeader>
           </div>
 
-          <div className="p-6 space-y-5">
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-muted/20 border border-border/60">
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground mb-1">File</p>
-                <p className="text-sm font-semibold text-foreground truncate">{filename}</p>
+          <div className="space-y-5 p-6">
+            <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-border/60 bg-muted/20 p-4">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                <Link2 className="size-4" />
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-foreground">{filename}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">Ready to share</p>
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-muted-foreground flex items-center gap-2 uppercase tracking-wide">
-                <Link2 className="h-3.5 w-3.5 text-accent" />
+              <label className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+                <Link2 className="size-3.5 text-accent" />
                 Shareable link
               </label>
-              <div className="flex items-center gap-2 p-1 rounded-2xl bg-muted/20 border border-border/60">
+              <div className="flex items-center gap-2 rounded-2xl border border-border/60 bg-muted/20 p-1">
                 <input
                   type="text"
                   value={fileUrl}
                   readOnly
-                  title="Shareable link"
-                  aria-label="Shareable link"
-                  className="flex-1 text-xs bg-transparent rounded px-3 py-2 outline-none truncate font-mono text-foreground"
+                  title="Click to copy link"
+                  aria-label="Shareable link. Click to copy"
+                  onClick={() => void copyLink(fileUrl, 'Link copied to clipboard!')}
+                  className="min-w-0 flex-1 cursor-pointer truncate rounded px-3 py-2 font-mono text-xs text-foreground outline-none transition-colors hover:text-accent"
                 />
                 <Button
                   size="sm"
-                  variant="ghost"
+                  variant="outline"
                   aria-label="Copy shareable link"
-                  onClick={() => void copyLink(fileUrl)}
-                  className="shrink-0"
+                  onClick={() => void copyLink(fileUrl, 'Link copied to clipboard!')}
+                  className="h-8 shrink-0 rounded-full bg-background px-3 text-xs"
                 >
-                  <Copy className="h-3.5 w-3.5" />
+                  <Copy className="size-3.5" />
+                  Copy link
                 </Button>
               </div>
             </div>
@@ -201,24 +214,24 @@ export default function ShareModal({ open, onOpenChange, fileUrl, filename }: Sh
               type="button"
               onClick={() => setShowQR(true)}
               aria-label="Show QR code for this file"
-              className="w-full flex rounded-full items-center justify-between p-4   border border-accent/20 hover:border-accent/30 hover:shadow-sm transition-all group h-auto cursor-pointer text-left focus-visible:outline-2 focus-visible:outline-accent"
+              className="group flex h-auto w-full cursor-pointer items-center justify-between rounded-2xl border border-accent/20 p-4 text-left transition-all hover:border-accent/30 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-accent"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent/10">
-                  <QrCode className="h-4 w-4 text-accent" />
+                <div className="flex size-9 items-center justify-center rounded-full bg-accent/10">
+                  <QrCode className="size-4 text-accent" />
                 </div>
                 <div className="text-left">
                   <p className="text-sm font-semibold text-foreground">QR code</p>
                   <p className="text-xs text-muted-foreground">Scan with your camera</p>
                 </div>
               </div>
-              <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-accent transition-colors" />
+              <ExternalLink className="size-4 text-muted-foreground transition-colors group-hover:text-accent" />
             </button>
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-muted-foreground flex items-center gap-2 uppercase tracking-wide">
-                <Share2 className="h-3.5 w-3.5 text-accent" />
-                Share via social media
+              <label className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+                <Share2 className="size-3.5 text-accent" />
+                Share with
               </label>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {shareSocials.map((option) => (
@@ -227,7 +240,7 @@ export default function ShareModal({ open, onOpenChange, fileUrl, filename }: Sh
                     type="button"
                     aria-label={`Share via ${option.name}`}
                     onClick={() => void handleShare(option)}
-                    className={`flex flex-col items-center justify-center gap-1.5 py-3 px-2 rounded-3xl! cursor-pointer hover:bg-accent/20 font-medium  active:scale-95 h-auto focus-visible:outline-2 focus-visible:outline-accent ${option.className}`}
+                    className={`flex h-auto cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl px-2 py-3 font-medium active:scale-95 focus-visible:outline-2 focus-visible:outline-accent ${option.className}`}
                   >
                     {option.platform ? (
                       <SocialIcon
@@ -265,43 +278,24 @@ export default function ShareModal({ open, onOpenChange, fileUrl, filename }: Sh
             </h3>
 
             <div className="flex flex-col items-center">
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-border">
+              <button
+                type="button"
+                onClick={handleFullscreen}
+                aria-label="Open QR code in fullscreen"
+                title="Open fullscreen"
+                className="group relative cursor-pointer rounded-2xl border border-border bg-white p-6 shadow-sm focus-visible:outline-2 focus-visible:outline-accent"
+              >
                 <QRCode value={fileUrl} size={180} level="H" />
-              </div>
+                <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-2xl bg-black/55 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                  <Maximize2 className="size-5" />
+                  <span className="text-xs font-semibold">View fullscreen</span>
+                </span>
+              </button>
               <div className="mt-6 text-center">
                 <p className="text-sm font-semibold text-foreground break-all">{fileUrl}</p>
                 <p className="text-xs text-muted-foreground mt-2">
                   Scan with your camera app to access this file
                 </p>
-              </div>
-
-              <div className="mt-6 w-full flex flex-col gap-2">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full h-11 px-6 gap-2 cursor-pointer"
-                  onClick={async () => {
-                    const copied = await copyTextToClipboard(fileUrl)
-                    if (copied) {
-                      toast.success('Link copied!')
-                      setShowQR(false)
-                    } else {
-                      toast.error(FILE_ERRORS.failedToCopyLink)
-                    }
-                  }}
-                >
-                  <Copy className="h-4 w-4" />
-                  Copy link instead
-                </Button>
-
-                <Button
-                  size="lg"
-                  className="w-full h-11 px-6 gap-2 cursor-pointer"
-                  onClick={handleFullscreen}
-                >
-                  <Maximize2 className="h-4 w-4" />
-                  View fullscreen
-                </Button>
               </div>
             </div>
           </div>
@@ -309,80 +303,85 @@ export default function ShareModal({ open, onOpenChange, fileUrl, filename }: Sh
       </Dialog>
 
       {/* ============ Fullscreen overlay ============ */}
-      {isFullscreen && (
-        <div
-          ref={fullscreenRef}
-          className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center p-6 overflow-hidden"
+      <div
+        ref={fullscreenRef}
+        aria-hidden={!isFullscreen}
+        className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-background p-6 transition-opacity ${
+          isFullscreen ? 'opacity-100' : 'pointer-events-none invisible opacity-0'
+        }`}
+      >
+        <button
+          type="button"
+          onClick={exitFullscreen}
+          aria-label="Exit fullscreen"
+          title="Exit fullscreen"
+          className="absolute top-4 right-4 p-2 rounded-full hover:bg-muted transition-colors z-10"
         >
-          <button
-            onClick={exitFullscreen}
-            aria-label="Exit fullscreen"
-            className="absolute top-4 right-4 p-2 rounded-full hover:bg-muted transition-colors z-10"
+          <X className="h-5 w-5" />
+        </button>
+
+        {/* Resizable / scrollable QR area */}
+        <div
+          ref={scrollRef}
+          className="flex-1 w-full overflow-auto flex items-center justify-center p-4"
+        >
+          <div
+            className="bg-white rounded-3xl shadow-lg border border-border shrink-0 transition-[padding] duration-150"
+            style={{ padding: `${Math.max(12, qrSize * 0.08)}px` }}
           >
-            <X className="h-5 w-5" />
+            <QRCode value={fileUrl} size={qrSize} level="H" />
+          </div>
+        </div>
+
+        <p className="mt-4 text-sm font-semibold text-foreground break-all text-center max-w-md">
+          {fileUrl}
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Scan with your camera app to access this file
+        </p>
+
+        {/* Resize controls */}
+        <div className="mt-5 w-full max-w-md flex items-center gap-3 px-4">
+          <button
+            type="button"
+            onClick={() => setQrSize((s) => Math.max(120, s - 40))}
+            aria-label="Decrease QR size"
+            className="h-9 w-9 shrink-0 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
+          >
+            <Minus className="h-4 w-4" />
           </button>
 
-          {/* Resizable / scrollable QR area */}
-          <div
-            ref={scrollRef}
-            className="flex-1 w-full overflow-auto flex items-center justify-center p-4"
+          <input
+            type="range"
+            min={120}
+            max={900}
+            step={10}
+            value={qrSize}
+            onChange={(e) => setQrSize(Number(e.target.value))}
+            aria-label="QR code size"
+            className="flex-1 accent-accent cursor-pointer"
+          />
+
+          <button
+            type="button"
+            onClick={() => setQrSize((s) => Math.min(900, s + 40))}
+            aria-label="Increase QR size"
+            className="h-9 w-9 shrink-0 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
           >
-            <div
-              className="bg-white rounded-3xl shadow-lg border border-border shrink-0 transition-[padding] duration-150"
-              style={{ padding: `${Math.max(12, qrSize * 0.08)}px` }}
-            >
-              <QRCode value={fileUrl} size={qrSize} level="H" />
-            </div>
-          </div>
-
-          <p className="mt-4 text-sm font-semibold text-foreground break-all text-center max-w-md">
-            {fileUrl}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Scan with your camera app to access this file
-          </p>
-
-          {/* Resize controls */}
-          <div className="mt-5 w-full max-w-md flex items-center gap-3 px-4">
-            <button
-              onClick={() => setQrSize((s) => Math.max(120, s - 40))}
-              aria-label="Decrease QR size"
-              className="h-9 w-9 shrink-0 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
-            >
-              <Minus className="h-4 w-4" />
-            </button>
-
-            <input
-              type="range"
-              min={120}
-              max={900}
-              step={10}
-              value={qrSize}
-              onChange={(e) => setQrSize(Number(e.target.value))}
-              aria-label="QR code size"
-              className="flex-1 accent-accent cursor-pointer"
-            />
-
-            <button
-              onClick={() => setQrSize((s) => Math.min(900, s + 40))}
-              aria-label="Increase QR size"
-              className="h-9 w-9 shrink-0 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
-            >
-              <Plus className="h-4 w-4" />
-            </button>
-          </div>
-
-          <span className="mt-2 text-xs text-muted-foreground tabular-nums">{qrSize}px</span>
-
-          <Button
-            onClick={exitFullscreen}
-            className="mt-4 w-full max-w-xs h-11 px-6 gap-2 cursor-pointer"
-          >
-            <Minimize2 className="h-4 w-4" />
-            Exit fullscreen
-          </Button>
+            <Plus className="h-4 w-4" />
+          </button>
         </div>
-      )}
+
+        <span className="mt-2 text-xs text-muted-foreground tabular-nums">{qrSize}px</span>
+
+        <Button
+          onClick={exitFullscreen}
+          className="mt-4 w-full max-w-xs h-11 px-6 gap-2 cursor-pointer"
+        >
+          <Minimize2 className="h-4 w-4" />
+          Exit fullscreen
+        </Button>
+      </div>
     </>
   )
 }
