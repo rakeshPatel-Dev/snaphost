@@ -167,7 +167,9 @@ export const AnimatedThemeToggler = ({
       localStorage.setItem('theme', newTheme ? 'dark' : 'light')
     }
 
-    if (typeof document.startViewTransition !== 'function') {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (prefersReducedMotion || typeof document.startViewTransition !== 'function') {
       applyTheme()
       return
     }
