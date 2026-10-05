@@ -36,7 +36,6 @@ export default function ProfileDashboard({
   const [savedFiles, setSavedFiles] = useState<AppFile[]>(initialFiles)
   const [prevInitialFiles, setPrevInitialFiles] = useState(initialFiles)
   const [editingFileId, setEditingFileId] = useState<string | null>(null)
-  const [copiedId, setCopiedId] = useState<string | null>(null)
   const [updateFile] = useUpdateFileMutation()
   const [deleteFileMutation] = useDeleteFileMutation()
   const { data: uploadQuota } = useGetMeUploadQuotaQuery()
@@ -58,13 +57,11 @@ export default function ProfileDashboard({
       ? 'Your free plan supports up to 5 active links. Delete an existing link or upgrade to upload more.'
       : 'Your daily upload limit has been reached. Please try again later or upgrade your plan.'
 
-  async function copyLink(url: string, id: string) {
+  async function copyLink(url: string) {
     const op = copyTextToClipboard(url).then((copied) => {
       if (!copied) {
         throw new Error('Copy failed')
       }
-      setCopiedId(id)
-      setTimeout(() => setCopiedId(null), 2000)
       if (posthogEnabled) {
         posthog.capture('file_link_copied')
       }
@@ -182,9 +179,7 @@ export default function ProfileDashboard({
           files={files}
           savedFiles={savedFiles}
           isPremium={isPremium}
-          uploadsRemaining={planUploadsRemaining}
           editingFileId={editingFileId}
-          copiedId={copiedId}
           setFiles={setFiles}
           onCopyLink={copyLink}
           onSaveFile={saveFile}

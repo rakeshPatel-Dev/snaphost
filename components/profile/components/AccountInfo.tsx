@@ -38,6 +38,7 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
     enabled: editing,
     currentUsername: username,
   })
+  const planSummary = isPremium ? 'Unlimited active links' : 'Up to 5 active links'
 
   async function saveUsername() {
     const currentNormalizedUsername = username.trim().toLowerCase()
@@ -82,18 +83,24 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
           editing && value !== displayUsername && 'border-accent/30'
         )}
       >
-        <h2 className="text-lg font-semibold tracking-tight">Account</h2>
-        <span
-          className={cn(
-            'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium',
-            isPremium
-              ? 'border-amber-400/25 bg-amber-400/10 text-amber-500'
-              : 'border-border/60 bg-muted/20 text-muted-foreground'
-          )}
-        >
-          {isPremium ? <Crown className="h-4 w-4" /> : <User className="h-4 w-4" />}
-          {tier.charAt(0).toUpperCase() + tier.slice(1)}
-        </span>
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight">Account</h2>
+          <p className="mt-1 text-xs text-muted-foreground">Your identity and plan details</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">{planSummary}</span>
+          <span
+            className={cn(
+              'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium',
+              isPremium
+                ? 'border-amber-400/25 bg-amber-400/10 text-amber-500'
+                : 'border-border/60 bg-muted/20 text-muted-foreground'
+            )}
+          >
+            {isPremium ? <Crown className="h-4 w-4" /> : <User className="h-4 w-4" />}
+            {tier.charAt(0).toUpperCase() + tier.slice(1)}
+          </span>
+        </div>
       </div>
 
       <div className="grid gap-5 px-5 py-6 sm:grid-cols-2">
@@ -105,7 +112,7 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
             {!editing ? (
               <div className="flex h-10 items-center gap-2 rounded-full border border-border/60 bg-muted/20 pl-4 pr-2">
                 <span className="min-w-0 flex-1 truncate font-mono text-sm text-foreground/80">
-                  {displayUsername || 'yourname'}
+                  {displayUsername ? `@${displayUsername}` : 'Add a username'}
                 </span>
                 <Button
                   title="Edit username"
@@ -138,18 +145,21 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
                   <Button
                     type="button"
                     onClick={saveUsername}
-                    disabled={isChecking}
+                    disabled={isChecking || value.trim().toLowerCase() === displayUsername}
                     className="h-9 px-4 text-sm"
                   >
-                    Save
+                    Save changes
                   </Button>
                   <Button
                     type="button"
                     variant="ghost"
-                    onClick={() => setEditing(false)}
+                    onClick={() => {
+                      setValue(displayUsername)
+                      setEditing(false)
+                    }}
                     className="h-9 px-4 text-sm text-muted-foreground hover:text-foreground"
                   >
-                    Cancel
+                    Discard
                   </Button>
                 </div>
               </div>
@@ -161,14 +171,14 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
           <Label className="text-xs font-medium text-muted-foreground">Email</Label>
           <div
             id="email"
-            className="flex h-10 items-center truncate rounded-full border border-border/60 bg-muted/20 px-4 text-sm text-foreground/80"
+            className="flex h-10 items-center truncate rounded-full border border-border/60 bg-muted/15 px-4 text-sm text-foreground/80"
           >
             {email}
           </div>
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/50 px-5 py-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/50 bg-muted/[0.12] px-5 py-4">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -179,7 +189,7 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
             className="gap-2 px-3 text-sm text-muted-foreground hover:text-foreground"
           >
             <LogOut className="h-4 w-4" />
-            Sign Out
+            Sign out
           </Button>
 
           <DeleteAccountDialog
@@ -189,7 +199,7 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
                 className="gap-2 px-3 text-sm text-destructive hover:bg-destructive/10 hover:text-destructive"
               >
                 <Trash2 className="h-4 w-4" />
-                Delete Account
+                Delete account
               </Button>
             }
           />
