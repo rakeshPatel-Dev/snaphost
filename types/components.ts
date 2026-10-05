@@ -92,6 +92,7 @@ export type ImagePreviewProps = {
 export type PdfPreviewProps = {
   url: string
   filename: string
+  downloadUrl: string
 }
 
 export type ShareLinkInputProps = {

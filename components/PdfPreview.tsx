@@ -1,31 +1,18 @@
 'use client'
 
-import { useState } from 'react'
-import { Loader2 } from 'lucide-react'
+import dynamic from 'next/dynamic'
+import type { PdfPreviewProps } from '@/types/components'
+import BrandLoader from '@/components/shared/BrandLoader'
 
-interface PdfPreviewProps {
-  url: string
-  filename: string
-}
-
-export default function PdfPreview({ url, filename }: PdfPreviewProps) {
-  const [isLoading, setIsLoading] = useState(true)
-
-  return (
-    <div className="w-full min-h-screen">
-      {isLoading && (
-        <div className="fixed inset-0 flex items-center justify-center bg-background z-10">
-          <Loader2 className="h-6 w-6 animate-spin text-accent" />
-        </div>
-      )}
-
-      <iframe
-        src={url}
-        title={filename}
-        className="w-full h-screen border-0"
-        onLoad={() => setIsLoading(false)}
-        allowFullScreen
-      />
+const PdfViewer = dynamic(() => import('./pdf/PdfViewer'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-screen items-center justify-center bg-background">
+      <BrandLoader size="lg" label="Loading PDF viewer" />
     </div>
-  )
+  ),
+})
+
+export default function PdfPreview({ url, filename, downloadUrl }: PdfPreviewProps) {
+  return <PdfViewer url={url} filename={filename} downloadUrl={downloadUrl} />
 }

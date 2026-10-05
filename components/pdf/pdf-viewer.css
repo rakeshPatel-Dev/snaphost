@@ -1,0 +1,111 @@
+.textLayer,
+.pdfviewer-textLayer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  line-height: 1;
+  text-align: initial;
+  -webkit-text-size-adjust: none;
+  forced-color-adjust: none;
+  transform-origin: 0 0;
+  z-index: 2;
+  opacity: 1;
+  caret-color: CanvasText;
+  pointer-events: auto;
+}
+
+.textLayer span,
+.textLayer br,
+.pdfviewer-textLayer span,
+.pdfviewer-textLayer br {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+}
+
+.textLayer > :not(.markedContent),
+.textLayer .markedContent span:not(.markedContent),
+.pdfviewer-textLayer > :not(.markedContent),
+.pdfviewer-textLayer .markedContent span:not(.markedContent) {
+  z-index: 1;
+}
+
+.textLayer .endOfContent,
+.pdfviewer-textLayer .endOfContent {
+  display: block;
+  position: absolute;
+  inset: 100% 0 0;
+  z-index: 0;
+  user-select: none;
+}
+
+.textLayer .highlight,
+.pdfviewer-textLayer .highlight,
+.textLayer mark {
+  margin: -1px;
+  padding: 1px;
+  background-color: var(--pdf-viewer-highlight, rgba(5, 150, 105, 0.25));
+  border-radius: 2px;
+}
+
+.textLayer .highlight.selected,
+.pdfviewer-textLayer .highlight.selected,
+.textLayer mark.selected {
+  background-color: var(--pdf-viewer-highlight-selected, rgba(5, 150, 105, 0.45));
+}
+
+.textLayer ::selection,
+.pdfviewer-textLayer ::selection {
+  background: var(--pdf-viewer-highlight, rgba(5, 150, 105, 0.25));
+  color: transparent !important;
+  -webkit-text-fill-color: transparent;
+}
+
+.textLayer ::-moz-selection,
+.pdfviewer-textLayer ::-moz-selection {
+  background: var(--pdf-viewer-highlight, rgba(5, 150, 105, 0.25));
+  color: transparent !important;
+}
+
+.annotationLayer,
+.pdfviewer-annotationLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.annotationLayer section,
+.pdfviewer-annotationLayer section {
+  position: absolute;
+  pointer-events: auto;
+}
+
+.annotationLayer .linkAnnotation > a,
+.pdfviewer-annotationLayer .linkAnnotation > a {
+  position: absolute;
+  font-size: 1em;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.annotationLayer .linkAnnotation > a:hover,
+.pdfviewer-annotationLayer .linkAnnotation > a:hover {
+  background: var(--pdf-viewer-highlight, rgba(5, 150, 105, 0.15));
+}
+
+.pdfviewer-page {
+  position: relative;
+  overflow: hidden;
+  background: white;
+}
+
+.pdfviewer-canvas {
+  position: absolute;
+  inset: 0;
+}

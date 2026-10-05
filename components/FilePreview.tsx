@@ -72,7 +72,7 @@ export default function FilePreview({ fileId, isAnonymous = false, username }: F
 
             <div className="mt-8 flex flex-col items-center justify-center gap-2 sm:flex-row">
               <Button asChild className="w-full h-10 px-4 sm:w-auto">
-                <Link href="/upload">Upload new file</Link>
+                <Link href="/#dropzone">Upload new file</Link>
               </Button>
               <Button asChild variant="outline" className="w-full h-10 px-4 sm:w-auto">
                 <Link href="/">Go to Snaphost</Link>
@@ -93,7 +93,11 @@ export default function FilePreview({ fileId, isAnonymous = false, username }: F
           downloadUrl={metadata.downloadUrl}
         />
       ) : (
-        <PdfPreview url={metadata.url} filename={metadata.filename} />
+        <PdfPreview
+          url={metadata.url}
+          filename={metadata.filename}
+          downloadUrl={metadata.downloadUrl}
+        />
       )}
       <FloatingBadge />
     </div>
