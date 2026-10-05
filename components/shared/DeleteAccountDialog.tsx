@@ -16,7 +16,7 @@ export default function DeleteAccountDialog({
   title = 'Delete account?',
   description = 'This will permanently delete your account and all uploaded links. This action cannot be undone.',
   confirmLabel = 'Yes, delete everything',
-  destructiveClassName = 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+  destructiveClassName = 'bg-destructive/99 text-destructive-foreground hover:bg-destructive/90',
   open,
   onOpenChange,
 }: DeleteAccountDialogProps) {

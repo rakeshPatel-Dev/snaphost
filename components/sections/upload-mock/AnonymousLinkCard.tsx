@@ -84,10 +84,10 @@ export default function AnonymousLinkCard({
                   <Trash2 className="h-4 w-4" />
                 </Button>
               }
-              title="Delete this link?"
+              title="Are you sure you want to delete this link?"
               description="The file will be removed from storage and this browser's history."
-              confirmLabel="Delete"
-              destructiveClassName="rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              confirmLabel="Yes, delete"
+              destructiveClassName="rounded-full bg-destructive/99 text-destructive-foreground hover:bg-destructive/90"
               onConfirm={() => onDelete(id)}
             />
           </div>
