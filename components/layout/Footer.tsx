@@ -8,7 +8,7 @@ import SocialButtons from './SocialButtons'
 import FeedbackDialog from '../shared/FeedbackDialog'
 
 const productLinks = [
-  { label: 'Upload', href: '/upload' },
+  { label: 'Anonymous upload', href: '/#dropzone' },
   { label: 'Sign up', href: '/sign-up' },
   { label: 'Sign in', href: '/sign-in' },
   { label: 'Dashboard', href: '/profile' },

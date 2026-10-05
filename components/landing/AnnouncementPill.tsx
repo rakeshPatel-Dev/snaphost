@@ -6,7 +6,7 @@ import { ShineBorder } from '@/components/ui/shine-border'
 const AnnouncementContent = {
   title: 'Snaphost Beta is live!',
   description: 'Upload now',
-  link: '/upload',
+  link: '/#dropzone',
 }
 
 const AnnouncementPill = () => {

@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import { toast } from 'sonner'
+import { Upload } from 'lucide-react'
 import UploadForm from './UploadForm'
 import UploadSuccessCard from './UploadSuccessCard'
 import { validateFile } from '@/lib/fileValidation'
@@ -13,7 +14,12 @@ import { useUploadFileMutation } from '@/state/api'
 import posthog from 'posthog-js'
 import { posthogEnabled } from '@/lib/posthog'
 
-export default function UploadBox() {
+interface UploadBoxProps {
+  disabled?: boolean
+  disabledMessage?: string
+}
+
+export default function UploadBox({ disabled = false, disabledMessage }: UploadBoxProps) {
   const dispatch = useAppDispatch()
   const isDragging = useAppSelector((state) => state.upload.isDragging)
   const error = useAppSelector((state) => state.upload.error)
@@ -22,6 +28,7 @@ export default function UploadBox() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    if (disabled) return
     e.preventDefault()
     dispatch(setDragging(true))
   }
@@ -31,6 +38,7 @@ export default function UploadBox() {
   }
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    if (disabled) return
     e.preventDefault()
     dispatch(setDragging(false))
 
@@ -41,6 +49,7 @@ export default function UploadBox() {
   }
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (disabled) return
     const files = e.currentTarget.files
     if (files && files.length > 0) {
       handleFileUpload(files[0])
@@ -48,6 +57,7 @@ export default function UploadBox() {
   }
 
   const handleFileUpload = async (file: File) => {
+    if (disabled) return
     dispatch(setError(null))
 
     const validation = validateFile(file)
@@ -96,7 +106,6 @@ export default function UploadBox() {
       const errorMsg = getApiErrorMessage(error, UPLOAD_ERRORS.uploadFailed)
       console.error('Upload error:', error)
       dispatch(setError(errorMsg))
-      toast.error(errorMsg)
     }
   }
 
@@ -117,6 +126,20 @@ export default function UploadBox() {
         optimizedSize={uploadSuccess.optimizedSize}
         onUploadMore={resetUpload}
       />
+    )
+  }
+
+  if (disabled) {
+    return (
+      <div className="rounded-4xl border border-border/60 bg-muted/20 p-8 text-center sm:p-10">
+        <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
+          <Upload className="size-5" aria-hidden="true" />
+        </div>
+        <h3 className="mt-4 text-base font-semibold text-foreground">Uploads are paused</h3>
+        <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
+          {disabledMessage ?? 'You have reached the upload limit for your plan.'}
+        </p>
+      </div>
     )
   }
 

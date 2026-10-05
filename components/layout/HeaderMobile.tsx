@@ -33,7 +33,7 @@ export default function HeaderMobile() {
     { name: 'Pricing', href: '/#pricing' },
     { name: 'FAQ', href: '/#faq' },
     { name: 'Company', href: '/company' },
-    { name: 'Upload', href: '/upload' },
+    ...(!isSignedIn ? [{ name: 'Upload anonymously', href: '/#dropzone' }] : []),
     ...(isSignedIn ? [{ name: 'Profile Dashboard', href: '/profile' }] : []),
   ]
 

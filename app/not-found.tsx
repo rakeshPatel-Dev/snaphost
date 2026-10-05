@@ -28,7 +28,7 @@ export default function NotFound() {
           </Button>
 
           <Button variant="outline" asChild size="lg" className="h-11 px-6 cursor-pointer">
-            <Link href="/upload" className="flex items-center gap-2">
+            <Link href="/#dropzone" className="flex items-center gap-2">
               Upload a file
             </Link>
           </Button>

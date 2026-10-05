@@ -13,7 +13,7 @@ import {
   Save,
   Share2,
   Trash2,
-  Upload,
+  X,
   Zap,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -146,16 +146,10 @@ const LinkCard = ({
               )}
             >
               {uploadsRemaining > 0
-                ? `${uploadsRemaining} upload${uploadsRemaining === 1 ? '' : 's'} left today`
-                : 'Daily upload limit reached'}
+                ? `${uploadsRemaining} upload${uploadsRemaining === 1 ? '' : 's'} available`
+                : 'Free plan upload limit reached'}
             </span>
           )}
-          <Button asChild size="sm" className="h-8 gap-1.5 rounded-full px-3 text-xs">
-            <Link href="/upload" className="flex items-center gap-1.5">
-              <Upload className="h-4 w-4" />
-              Upload more
-            </Link>
-          </Button>
         </div>
       </div>
 
@@ -163,7 +157,7 @@ const LinkCard = ({
         <div className="flex flex-col items-center justify-center gap-4 px-6 py-14 text-center">
           <p className="text-sm font-medium tracking-tight text-foreground">No uploads yet.</p>
           <Button asChild size="lg">
-            <Link href="/upload">
+            <Link href="#profile-upload">
               <Zap className="h-4 w-4" />
               Upload a file
             </Link>
@@ -196,6 +190,22 @@ const LinkCard = ({
 
             const savedFile = savedFiles.find((f) => f.id === file.id)
             const isModified = hasFileChanges(file, savedFile)
+
+            function cancelChanges() {
+              if (!savedFile) return
+              setFiles((currentFiles) =>
+                currentFiles.map((item) =>
+                  item.id === file.id
+                    ? {
+                        ...item,
+                        filename: savedFile.filename,
+                        slug: savedFile.slug,
+                        expires_at: savedFile.expires_at,
+                      }
+                    : item
+                )
+              )
+            }
 
             return (
               <div
@@ -257,19 +267,33 @@ const LinkCard = ({
                     >
                       Slug
                     </Label>
-                    <Input
-                      id={`slug-${file.id}`}
-                      value={file.slug}
-                      onChange={(e) =>
-                        setFiles((currentFiles) =>
-                          currentFiles.map((item) =>
-                            item.id === file.id ? { ...item, slug: e.target.value } : item
+                    <div className="relative">
+                      <Input
+                        id={`slug-${file.id}`}
+                        value={file.slug}
+                        onChange={(e) =>
+                          setFiles((currentFiles) =>
+                            currentFiles.map((item) =>
+                              item.id === file.id ? { ...item, slug: e.target.value } : item
+                            )
                           )
-                        )
-                      }
-                      className="h-9 rounded-full border-border/60 bg-muted/20 px-4 font-mono text-sm"
-                      placeholder="my-slug"
-                    />
+                        }
+                        className="h-9 min-w-0 rounded-full border-border/60 bg-muted/20 px-4 pr-10 font-mono text-sm"
+                        placeholder="my-slug"
+                      />
+                      {isModified && (
+                        <button
+                          type="button"
+                          aria-label="Cancel changes"
+                          title="Cancel changes"
+                          className="absolute top-1/2 right-1 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
+                          disabled={isEditing}
+                          onClick={cancelChanges}
+                        >
+                          <X className="size-3.5" />
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   <div className="grid gap-1.5">
@@ -306,7 +330,10 @@ const LinkCard = ({
                       <Input
                         value={resolvedPublicUrl}
                         readOnly
-                        className="h-9 min-w-0 flex-1 cursor-text truncate rounded-full border-border/60 bg-muted/20 px-4 font-mono text-xs text-muted-foreground focus-visible:ring-0"
+                        title="Click to copy link"
+                        aria-label="Public URL. Click to copy link"
+                        onClick={() => onCopyLink(resolvedPublicUrl, file.id)}
+                        className="h-9 min-w-0 flex-1 cursor-pointer truncate rounded-full border-border/60 bg-muted/20 px-4 font-mono text-xs text-muted-foreground transition-colors hover:border-accent/40 hover:bg-accent/[0.03] focus-visible:ring-0"
                       />
                       <Button
                         size="icon"

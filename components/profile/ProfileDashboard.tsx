@@ -2,7 +2,10 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { useDeleteFileMutation, useUpdateFileMutation, useGetMeUploadQuotaQuery } from '@/state/api'
+import Link from 'next/link'
+import { Globe2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useDeleteFileMutation, useGetMeUploadQuotaQuery, useUpdateFileMutation } from '@/state/api'
 import { getApiErrorMessage } from '@/lib/api-error'
 import { copyTextToClipboard } from '@/lib/clipboard'
 import { FILE_ERRORS, TOAST_LABELS } from '@/lib/messages'
@@ -14,6 +17,7 @@ import TierBanner from './components/TierBanner'
 import LinkCard from './components/LinkCard'
 import posthog from 'posthog-js'
 import { posthogEnabled } from '@/lib/posthog'
+import UploadBox from '@/components/UploadBox'
 
 type ProfileDashboardProps = {
   initialUsername: string
@@ -44,6 +48,15 @@ export default function ProfileDashboard({
   }
 
   const isPremium = tier === 'premium'
+  const planUploadsRemaining = isPremium ? null : Math.max(0, 5 - files.length)
+  const dailyUploadsRemaining = uploadQuota?.remaining ?? null
+  const isUploadLimitReached =
+    (planUploadsRemaining !== null && planUploadsRemaining === 0) ||
+    (dailyUploadsRemaining !== null && dailyUploadsRemaining === 0)
+  const uploadLimitMessage =
+    planUploadsRemaining === 0
+      ? 'Your free plan supports up to 5 active links. Delete an existing link or upgrade to upload more.'
+      : 'Your daily upload limit has been reached. Please try again later or upgrade your plan.'
 
   async function copyLink(url: string, id: string) {
     const op = copyTextToClipboard(url).then((copied) => {
@@ -91,8 +104,7 @@ export default function ProfileDashboard({
         success: TOAST_LABELS.saveFile.success,
         error: (err) => getApiErrorMessage(err, FILE_ERRORS.failedToUpdateFile),
       })
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, FILE_ERRORS.failedToUpdateFile))
+    } catch {
     } finally {
       setEditingFileId(null)
     }
@@ -117,8 +129,7 @@ export default function ProfileDashboard({
         success: TOAST_LABELS.deleteFile.success,
         error: (err) => getApiErrorMessage(err, FILE_ERRORS.failedToDeleteFile),
       })
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, FILE_ERRORS.failedToDeleteFile))
+    } catch {
     } finally {
       setEditingFileId(null)
     }
@@ -137,12 +148,41 @@ export default function ProfileDashboard({
 
         <AccountInfo isPremium={isPremium} username={initialUsername} email={email} tier={tier} />
 
+        <section
+          id="profile-upload"
+          className="rounded-4xl border border-border/60 bg-card/80 p-4 shadow-sm backdrop-blur-xl sm:p-6"
+        >
+          <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-widest text-accent">Workspace</p>
+              <h2 className="mt-1 text-xl font-semibold tracking-tight text-foreground">
+                Upload a file
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Create a managed share link for your account.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button asChild variant="outline" size="sm" className="h-8 rounded-full px-3 text-xs">
+                <Link href="/#dropzone">
+                  <Globe2 className="size-3.5" aria-hidden="true" />
+                  Upload anonymously
+                </Link>
+              </Button>
+              <span className="rounded-full border border-border/60 bg-muted/20 px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                {isPremium ? 'Premium uploads' : `${planUploadsRemaining} plan slots left`}
+              </span>
+            </div>
+          </div>
+          <UploadBox disabled={isUploadLimitReached} disabledMessage={uploadLimitMessage} />
+        </section>
+
         <LinkCard
           username={initialUsername}
           files={files}
           savedFiles={savedFiles}
           isPremium={isPremium}
-          uploadsRemaining={uploadQuota?.remaining ?? null}
+          uploadsRemaining={planUploadsRemaining}
           editingFileId={editingFileId}
           copiedId={copiedId}
           setFiles={setFiles}
