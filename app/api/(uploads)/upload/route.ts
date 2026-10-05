@@ -1,4 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { after, NextRequest, NextResponse } from 'next/server'
+import { SeverityNumber } from '@opentelemetry/api-logs'
+import { posthogLogger, posthogLoggerProvider, posthogLogsConfigured } from '@/instrumentation'
 import { validateFileContent, getFileType } from '@/lib/fileValidation'
 import { sanitizeFilename } from '@/lib/sanitizeFilename'
 import { createFileIdSync } from '@/lib/generateFileId'
@@ -267,6 +269,21 @@ export async function POST(request: NextRequest) {
 
     const response = NextResponse.json(responseBody, { status: 201 })
 
+    if (posthogLogsConfigured) {
+      posthogLogger.emit({
+        body: 'upload_completed',
+        severityNumber: SeverityNumber.INFO,
+        attributes: {
+          'upload.type': uploadType,
+          'file.type': fileType,
+          'expiration.configured': Boolean(fileRecord.expires_at),
+        },
+      })
+      after(async () => {
+        await posthogLoggerProvider.forceFlush()
+      })
+    }
+
     if (rawAnonToken) {
       response.cookies.set({
         name: 'anon_session',
@@ -311,6 +328,16 @@ export async function POST(request: NextRequest) {
     }
 
     console.error('Upload route error:', error)
+    if (posthogLogsConfigured) {
+      posthogLogger.emit({
+        body: 'upload_failed',
+        severityNumber: SeverityNumber.ERROR,
+        attributes: { 'upload.type': currentUploadType ?? 'undetermined' },
+      })
+      after(async () => {
+        await posthogLoggerProvider.forceFlush()
+      })
+    }
     return NextResponse.json({ error: SERVER_ERRORS.internalError }, { status: 500 })
   }
 }

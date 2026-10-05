@@ -15,6 +15,8 @@ import { useUsernameAvailability } from '@/lib/useUsernameAvailability'
 import { useUpdateMeUsernameMutation } from '@/state/api'
 import { getApiErrorMessage } from '@/lib/api-error'
 import { AUTH_ERRORS } from '@/lib/messages'
+import posthog from 'posthog-js'
+import { posthogEnabled } from '@/lib/posthog'
 
 type AccountInfoProps = {
   isPremium: boolean
@@ -53,6 +55,9 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
     try {
       await updateMeUsername({ username: normalizedUsername }).unwrap()
       await refreshUser()
+      if (posthogEnabled) {
+        posthog.capture('username_updated')
+      }
       toast.success('Username updated')
       setDisplayUsername(normalizedUsername)
       setValue(normalizedUsername)

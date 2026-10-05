@@ -24,6 +24,8 @@ import type { AppFile } from '@/types/app'
 import { buildPublicFileUrl } from '@/lib/public-file-url'
 import { copyTextToClipboard } from '@/lib/clipboard'
 import { CONFIG } from '@/lib/config'
+import posthog from 'posthog-js'
+import { posthogEnabled } from '@/lib/posthog'
 import {
   Select,
   SelectContent,
@@ -83,9 +85,11 @@ const LinkCard = ({
   const [sharedId, setSharedId] = useState<string | null>(null)
 
   const handleShare = async (url: string, id: string) => {
+    let shareMethod: 'native' | 'clipboard'
     if (navigator.share) {
       try {
         await navigator.share({ url })
+        shareMethod = 'native'
       } catch {
         // user dismissed – do nothing
         return
@@ -95,6 +99,10 @@ const LinkCard = ({
       if (!copied) {
         return
       }
+      shareMethod = 'clipboard'
+    }
+    if (posthogEnabled) {
+      posthog.capture('file_link_shared', { share_method: shareMethod })
     }
     setSharedId(id)
     setTimeout(() => setSharedId(null), 2000)

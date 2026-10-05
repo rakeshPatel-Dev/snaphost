@@ -10,6 +10,8 @@ import { UPLOAD_ERRORS, TOAST_LABELS } from '@/lib/messages'
 import { useAppDispatch, useAppSelector } from '@/state/store'
 import { resetUploadState, setDragging, setError, setSuccess } from '@/state/slices/uploadSlice'
 import { useUploadFileMutation } from '@/state/api'
+import posthog from 'posthog-js'
+import { posthogEnabled } from '@/lib/posthog'
 
 export default function UploadBox() {
   const dispatch = useAppDispatch()
@@ -73,6 +75,14 @@ export default function UploadBox() {
               optimizedSize: data.optimizedSize,
             })
           )
+
+          if (posthogEnabled) {
+            posthog.capture('file_uploaded', {
+              file_type: file.type === 'application/pdf' ? 'pdf' : 'image',
+              file_size_bytes: file.size,
+              optimized: Boolean(data.optimizedSize),
+            })
+          }
 
           return true
         })

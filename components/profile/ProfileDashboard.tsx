@@ -12,6 +12,8 @@ import Container from '@/components/shared/Container'
 import AccountInfo from './components/AccountInfo'
 import TierBanner from './components/TierBanner'
 import LinkCard from './components/LinkCard'
+import posthog from 'posthog-js'
+import { posthogEnabled } from '@/lib/posthog'
 
 type ProfileDashboardProps = {
   initialUsername: string
@@ -50,6 +52,9 @@ export default function ProfileDashboard({
       }
       setCopiedId(id)
       setTimeout(() => setCopiedId(null), 2000)
+      if (posthogEnabled) {
+        posthog.capture('file_link_copied')
+      }
     })
 
     await toast.promise(op, {
@@ -72,6 +77,12 @@ export default function ProfileDashboard({
         .then((data) => {
           setFiles((c) => c.map((item) => (item.id === file.id ? data.file : item)))
           setSavedFiles((c) => c.map((item) => (item.id === file.id ? data.file : item)))
+          if (posthogEnabled) {
+            posthog.capture('file_link_updated', {
+              file_type: file.file_type,
+              has_expiration: Boolean(file.expires_at),
+            })
+          }
           return true
         })
 
@@ -95,6 +106,9 @@ export default function ProfileDashboard({
         .then(() => {
           setFiles((c) => c.filter((item) => item.id !== fileId))
           setSavedFiles((c) => c.filter((item) => item.id !== fileId))
+          if (posthogEnabled) {
+            posthog.capture('file_link_deleted')
+          }
           return true
         })
 

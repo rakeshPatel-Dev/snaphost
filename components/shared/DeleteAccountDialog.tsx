@@ -7,6 +7,8 @@ import type { DeleteAccountDialogProps } from '@/types/components'
 import { useAuth } from '@/components/providers/auth-provider'
 import { getApiErrorMessage } from '@/lib/api-error'
 import { ACCOUNT_ERRORS, TOAST_LABELS } from '@/lib/messages'
+import posthog from 'posthog-js'
+import { posthogEnabled } from '@/lib/posthog'
 
 export default function DeleteAccountDialog({
   trigger,
@@ -25,6 +27,9 @@ export default function DeleteAccountDialog({
     const op = deleteAccount()
       .unwrap()
       .then(async () => {
+        if (posthogEnabled) {
+          posthog.capture('account_deleted')
+        }
         await signOut()
         window.location.href = redirectUrl
       })

@@ -1,8 +1,10 @@
 'use client'
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
+import posthog from 'posthog-js'
+import { posthogEnabled } from '@/lib/posthog'
 import { supabase } from '@/lib/supabase'
 
 type AuthContextValue = {
@@ -18,23 +20,52 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const identifiedUserId = useRef<string | null>(null)
   const router = useRouter()
 
   useEffect(() => {
     let mounted = true
+
+    const updateUser = (nextUser: User | null) => {
+      if (posthogEnabled) {
+        if (!nextUser) {
+          if (identifiedUserId.current) {
+            posthog.reset()
+            identifiedUserId.current = null
+          }
+        } else if (identifiedUserId.current !== nextUser.id) {
+          if (identifiedUserId.current) {
+            posthog.reset()
+          }
+
+          const name = nextUser.user_metadata.full_name ?? nextUser.user_metadata.name
+          const personProperties: { email?: string; name?: string; username?: string } = {}
+
+          if (nextUser.email) personProperties.email = nextUser.email
+          if (typeof name === 'string') personProperties.name = name
+          if (typeof nextUser.user_metadata.username === 'string') {
+            personProperties.username = nextUser.user_metadata.username
+          }
+
+          posthog.identify(nextUser.id, personProperties)
+          identifiedUserId.current = nextUser.id
+        }
+      }
+
+      setUser(nextUser)
+      setIsLoading(false)
+    }
 
     const loadUser = async () => {
       try {
         const { data } = await supabase.auth.getUser()
 
         if (mounted) {
-          setUser(data.user ?? null)
-          setIsLoading(false)
+          updateUser(data.user ?? null)
         }
       } catch {
         if (mounted) {
-          setUser(null)
-          setIsLoading(false)
+          updateUser(null)
         }
       }
     }
@@ -59,8 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
-      setUser(session?.user ?? null)
-      setIsLoading(false)
+      updateUser(session?.user ?? null)
     })
 
     return () => {

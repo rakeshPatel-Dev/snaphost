@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog'
 import { useDeleteAnonymousLinkMutation, useGetAnonymousLinksQuery } from '@/state/api'
 import { ANON_ERRORS } from '@/lib/messages'
+import posthog from 'posthog-js'
+import { posthogEnabled } from '@/lib/posthog'
 
 function isNoSessionError(error: unknown): boolean {
   if (!error || typeof error !== 'object') {
@@ -55,6 +57,9 @@ export default function AnonLinks() {
     setDeletingId(id)
     try {
       await deleteLink(id).unwrap()
+      if (posthogEnabled) {
+        posthog.capture('anonymous_link_deleted')
+      }
       toast.success('Link deleted successfully')
     } catch (err) {
       console.error('delete anon', err)

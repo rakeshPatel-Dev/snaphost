@@ -11,6 +11,7 @@ import ReduxProvider from '@/components/providers/redux-provider'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { MotionConfig } from 'framer-motion'
 import { Analytics } from '@vercel/analytics/next'
+import { PostHogProvider } from '@/components/providers/posthog-provider'
 import { SITE_URL } from '@/data/emails'
 
 const geistSans = Geist({
@@ -120,14 +121,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       >
         <ReduxProvider>
           <AuthProvider>
-            <ThemeProvider>
-              <TooltipProvider>
-                <MotionConfig reducedMotion="user">
-                  <Toaster position="top-right" closeButton duration={3000} />
-                  <SiteChrome>{children}</SiteChrome>
-                </MotionConfig>
-              </TooltipProvider>
-            </ThemeProvider>
+            <PostHogProvider>
+              <ThemeProvider>
+                <TooltipProvider>
+                  <MotionConfig reducedMotion="user">
+                    <Toaster position="top-right" closeButton duration={3000} />
+                    <SiteChrome>{children}</SiteChrome>
+                  </MotionConfig>
+                </TooltipProvider>
+              </ThemeProvider>
+            </PostHogProvider>
           </AuthProvider>
         </ReduxProvider>
         <Analytics />

@@ -18,6 +18,8 @@ import { useUsernameAvailability } from '@/lib/useUsernameAvailability'
 import { AUTH_ERRORS } from '@/lib/messages'
 import { getAuthErrorMessage } from '@/lib/auth-errors'
 import { Field, FieldLabel } from '../ui/field'
+import posthog from 'posthog-js'
+import { posthogEnabled } from '@/lib/posthog'
 
 type AuthFormProps = {
   mode: 'sign-in' | 'sign-up'
@@ -68,6 +70,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
       if (isSignIn) {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
+        if (posthogEnabled) {
+          posthog.capture('user_signed_in', { auth_method: 'email_password' })
+        }
         toast.success('Signed in successfully')
         router.push('/profile')
         return
@@ -99,6 +104,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
       if (error) throw error
 
       if (data.session) {
+        if (posthogEnabled) {
+          posthog.capture('account_created', { auth_method: 'email_password' })
+        }
         toast.success('Account created')
         router.push('/profile')
       } else {
