@@ -8,7 +8,7 @@ export async function generateMetadata({
   params: Promise<{ fileId: string }>
 }): Promise<Metadata> {
   const { fileId } = await params
-  return getFilePageMetadata(fileId)
+  return getFilePageMetadata(fileId, { canonicalPath: `/f/${fileId}` })
 }
 
 export default async function FilePage({

@@ -8,7 +8,10 @@ export async function generateMetadata({
   params: Promise<{ username: string; slug: string }>
 }): Promise<Metadata> {
   const { username, slug } = await params
-  return getFilePageMetadata(slug, { username })
+  return getFilePageMetadata(slug, {
+    username,
+    canonicalPath: `/${username}/${slug}`,
+  })
 }
 
 export default async function UserFilePage({

@@ -8,7 +8,10 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  return getFilePageMetadata(slug, { isAnonymous: true })
+  return getFilePageMetadata(slug, {
+    isAnonymous: true,
+    canonicalPath: `/anon/${slug}`,
+  })
 }
 
 export default async function AnonymousFilePage({ params }: { params: Promise<{ slug: string }> }) {
