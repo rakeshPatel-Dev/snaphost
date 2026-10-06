@@ -1,0 +1,44 @@
+# SnapHost
+
+> SnapHost is an instant file-sharing web app for images and PDFs. Upload a file, get a public
+> link in seconds. Works with no account at all: anonymous links auto-expire after 24 hours.
+
+## What SnapHost does
+
+- Accepts PNG, JPG, WEBP, and PDF uploads up to 10 MB per file (50 MB on Pro).
+- Returns a public share link immediately after upload.
+- Anonymous uploads need no signup; links expire after 24 hours automatically.
+- Signed-in users get a dashboard to rename files, change slugs, set per-file expiry, and delete uploads.
+- Signed-in users with a username get readable share URLs of the form `snaphost.dev/<username>/<slug>`.
+- Pro tier adds unlimited active links, password-protected links, custom expiry, priority CDN, and 50 MB uploads.
+
+## Plans
+
+| Plan | Active links | Max file size | Custom URL | Expiry control | Dashboard |
+| --- | --- | --- | --- | --- | --- |
+| Anonymous (free) | 3 | 10 MB | No | 24 hours, automatic | No |
+| Starter (free) | 5 | 10 MB | Yes | User-controlled | Yes |
+| Pro | Unlimited | 50 MB | Yes | User-controlled | Yes |
+
+Pro is activated manually after a payment is confirmed (Digital Wallet or Bank Transfer), typically within 24 hours.
+
+## Pages
+
+- [Home](https://snaphost.dev/): Product overview, feature list, pricing table, and FAQ.
+- [Get Pro](https://snaphost.dev/getpro): Pro feature breakdown, upgrade steps, plan comparison, and Pro FAQ.
+- [Privacy Policy](https://snaphost.dev/company/privacy-policy): What data is collected and how it is stored, used, and deleted.
+- [Terms of Service](https://snaphost.dev/company/terms-of-service): Acceptable use, ownership of uploads, link expiry, and liability.
+- [Company](https://snaphost.dev/company): Index of legal and policy pages.
+- [Sitemap](https://snaphost.dev/sitemap.xml) and [robots.txt](https://snaphost.dev/robots.txt).
+
+## Technical notes
+
+- Shared file pages live at `/f/<slug>`, `/anon/<slug>`, and `/<username>/<slug>`. These are user-uploaded
+  content pages, not marketing content, and expire with the underlying link.
+- Authentication and dashboard pages (`/sign-in`, `/sign-up`, `/profile`, `/anon/links`, `/auth/*`) are
+  marked `noindex` and excluded from the sitemap.
+- Supported types are validated server-side by magic bytes; the declared browser MIME type is never trusted.
+
+## Optional
+
+- [Full text version of this document](https://snaphost.dev/llms-full.txt)

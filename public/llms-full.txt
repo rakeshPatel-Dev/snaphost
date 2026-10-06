@@ -1,0 +1,113 @@
+# SnapHost — full reference
+
+> SnapHost is an instant file-sharing web app for images and PDFs. Upload a file, get a public link
+> in seconds. No account is required; anonymous links auto-expire after 24 hours.
+
+Canonical site: https://snaphost.dev
+
+## Home — https://snaphost.dev/
+
+SnapHost lets anyone upload an image or PDF and receive a shareable link within seconds. There is no
+signup wall: anonymous uploads work immediately and their links expire automatically after 24 hours,
+which makes SnapHost useful for one-off shares such as sending a screenshot, a design mock, or a
+document to someone once.
+
+Supported formats are PNG, JPG, WEBP, and PDF, up to 10 MB per file. Uploads are validated on the
+server by inspecting file signatures rather than trusting the browser-declared MIME type.
+
+Signed-in users get a management dashboard where they can view every active link, rename a file,
+change its slug, adjust the expiry date, copy the link, or delete the upload entirely.
+
+### Core features
+
+1. Instant sharing — upload an image or PDF and get a public link in seconds, with no folder structure
+   or setup required.
+2. No account required — anonymous uploads need no signup and no password; links auto-expire after
+   24 hours so nothing lingers.
+3. Custom links — registered users can claim a username and pick their own slug for readable links
+   such as `snaphost.dev/alex/quarterly-report`.
+4. Flexible expiration — signed-in users choose how long a link stays live (1 day, 7 days, 30 days,
+   or never). Anonymous links are always capped at 24 hours.
+5. File management — one dashboard lists all active links with copy, rename, and delete actions.
+
+### Plans
+
+- Anonymous: up to 3 active links, 10 MB per file, links expire after 24 hours, no dashboard.
+- Starter: up to 5 active links, 10 MB per file, custom URL paths, user-controlled expiry, dashboard.
+- Pro: unlimited active links, up to 50 MB per file, password-protected links, custom expiry dates,
+  priority CDN delivery, priority support.
+
+Pro is activated manually. A request is sent by email, payment is confirmed by Digital Wallet or
+Bank Transfer, and the account is upgraded within 24 hours. There is no recurring billing.
+
+### FAQ
+
+**Do I need an account to upload files?**
+No. You can upload and share files anonymously right away. Anonymous uploads expire after 24 hours,
+while signed-in users can manage uploads from a dashboard and control expiration on a per-file basis.
+
+**What is the upload size limit for files?**
+Both images and PDFs can be uploaded up to 10MB each. Supported image formats are PNG, JPG, and WEBP,
+and PDF uploads are enabled out of the box. Pro raises the limit to 50 MB.
+
+**What do the share links look like?**
+Signed-in uploads use direct links in the form `baseurl/username/filename`. Anonymous uploads use a
+short anon path so you can share them immediately without creating an account.
+
+**Can I change a file name or slug after upload?**
+Yes. Signed-in users can open the profile dashboard to rename files, update slugs, and adjust
+expiration times without re-uploading.
+
+**What happens if I delete my account?**
+Your user record, uploaded files, and related public links are removed from the app. The account
+deletion flow cleans up storage and app data before removing the authentication account.
+
+**Where can I manage my uploads?**
+Signed-in users can manage uploads from the profile page, where filenames, slugs, expiration
+settings, and delete actions are available in one place.
+
+## Get Pro — https://snaphost.dev/getpro
+
+The Pro page lists what the paid tier unlocks: unlimited uploads with no daily link caps,
+password-protected links, custom expiry dates, priority CDN delivery, 50 MB uploads, custom link
+slugs, and priority support. It also contains a free-versus-Pro comparison table and instructions for
+requesting access: email the billing address, send payment proof, and the account is activated
+manually, usually within a day.
+
+### Pro FAQ
+
+**How fast is Pro activation?**
+Pro upgrades are processed manually right now. Once we receive your email and payment details, we
+typically activate Pro within 24 hours.
+
+**What payment methods do you accept?**
+We currently accept Digital Wallet and Bank Transfer. After you email us, we will send you the
+payment details and confirm once received.
+
+**What happens after I request access?**
+We review your email, confirm the payment, and manually upgrade your account to Pro status — usually
+within a day.
+
+**Can I cancel Pro anytime?**
+Yes. Since upgrades are manual, just email us to switch back to the free tier — no lock-in and no
+recurring billing.
+
+## Privacy Policy — https://snaphost.dev/company/privacy-policy
+
+The privacy policy explains the data SnapHost collects to power uploads, accounts, and sharing. It
+covers the categories of data involved (account records, uploaded files and their metadata,
+anonymous session tokens, and analytics), how long data is retained, and what happens when an
+account is deleted.
+
+## Terms of Service — https://snaphost.dev/company/terms-of-service
+
+The terms describe acceptable use of the platform, user responsibility for uploaded content, how link
+expiry and deletion work, account termination, and the limits of liability.
+
+## Indexing and access
+
+- Marketing pages are indexable and listed in https://snaphost.dev/sitemap.xml.
+- Authentication, dashboard, and API routes are marked `noindex` via both meta robots and the
+  `X-Robots-Tag` header.
+- Shared file pages are indexable while the link is live and return `noindex` once the file is
+  missing or expired.
