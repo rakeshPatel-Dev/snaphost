@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import type { TouchEvent } from 'react'
 import { Download, Unlink } from 'lucide-react'
 import * as pdfjs from 'pdfjs-dist'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
@@ -26,6 +27,36 @@ interface PdfViewerProps {
   downloadUrl: string
 }
 
+const MIN_SCALE = 0.25
+const MAX_SCALE = 3
+const WHEEL_ZOOM_SENSITIVITY = 0.0026
+const PINCH_ZOOM_SENSITIVITY = 1.12
+
+function clampScale(value: number) {
+  return Math.min(MAX_SCALE, Math.max(MIN_SCALE, Number(value.toFixed(2))))
+}
+
+function getTouchDistance(touches: {
+  item(index: number): { clientX: number; clientY: number } | null
+}) {
+  const first = touches.item(0)
+  const second = touches.item(1)
+  if (!first || !second) return 0
+  return Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY)
+}
+
+function getTouchCenter(touches: {
+  item(index: number): { clientX: number; clientY: number } | null
+}) {
+  const first = touches.item(0)
+  const second = touches.item(1)
+  if (!first || !second) return null
+  return {
+    x: (first.clientX + second.clientX) / 2,
+    y: (first.clientY + second.clientY) / 2,
+  }
+}
+
 export default function PdfViewer({ url, filename, downloadUrl }: PdfViewerProps) {
   const [doc, setDoc] = useState<PDFDocumentProxy | null>(null)
   const [loading, setLoading] = useState(true)
@@ -37,6 +68,20 @@ export default function PdfViewer({ url, filename, downloadUrl }: PdfViewerProps
   const [showOutline, setShowOutline] = useState(false)
 
   const containerRef = useRef<HTMLDivElement>(null)
+  const scaleRef = useRef(scale)
+  const pinchStartRef = useRef<{ distance: number; scale: number } | null>(null)
+  const pinchFrameRef = useRef<number | null>(null)
+  const anchorFrameRef = useRef<number | null>(null)
+  const pendingPinchRef = useRef<{
+    scale: number
+    clientX: number
+    clientY: number
+    baseScale: number
+  } | null>(null)
+
+  useEffect(() => {
+    scaleRef.current = scale
+  }, [scale])
 
   const [prevUrl, setPrevUrl] = useState(url)
   if (url !== prevUrl) {
@@ -82,11 +127,11 @@ export default function PdfViewer({ url, filename, downloadUrl }: PdfViewerProps
   const zoomPercent = Math.round(scale * 100)
 
   const handleZoomIn = useCallback(() => {
-    setScale((s) => Math.min(3.0, Number((s + 0.25).toFixed(2))))
+    setScale((s) => clampScale(s + 0.25))
   }, [])
 
   const handleZoomOut = useCallback(() => {
-    setScale((s) => Math.max(0.25, Number((s - 0.25).toFixed(2))))
+    setScale((s) => clampScale(s - 0.25))
   }, [])
 
   const handleResetZoom = useCallback(() => {
@@ -111,6 +156,139 @@ export default function PdfViewer({ url, filename, downloadUrl }: PdfViewerProps
   }, [doc])
 
   const handleFitToWidth = fitToWidth
+
+  const applyZoomAtPoint = useCallback(
+    (nextScale: number, clientX: number, clientY: number, baseScale: number) => {
+      const container = containerRef.current
+      if (!container) {
+        setScale(nextScale)
+        return
+      }
+
+      const rect = container.getBoundingClientRect()
+      const anchorX = (clientX - rect.left + container.scrollLeft) / baseScale
+      const anchorY = (clientY - rect.top + container.scrollTop) / baseScale
+      scaleRef.current = nextScale
+      setScale(nextScale)
+
+      if (anchorFrameRef.current !== null) {
+        window.cancelAnimationFrame(anchorFrameRef.current)
+      }
+      anchorFrameRef.current = window.requestAnimationFrame(() => {
+        const currentContainer = containerRef.current
+        if (!currentContainer) return
+        const currentRect = currentContainer.getBoundingClientRect()
+        currentContainer.scrollLeft = Math.max(
+          0,
+          anchorX * nextScale - (clientX - currentRect.left)
+        )
+        currentContainer.scrollTop = Math.max(0, anchorY * nextScale - (clientY - currentRect.top))
+        anchorFrameRef.current = null
+      })
+    },
+    []
+  )
+
+  const schedulePinchScale = useCallback(
+    (nextScale: number, clientX: number, clientY: number, baseScale: number) => {
+      pendingPinchRef.current = {
+        scale: clampScale(nextScale),
+        clientX,
+        clientY,
+        baseScale,
+      }
+      if (pinchFrameRef.current !== null) return
+
+      pinchFrameRef.current = window.requestAnimationFrame(() => {
+        const pendingPinch = pendingPinchRef.current
+        if (pendingPinch) {
+          applyZoomAtPoint(
+            pendingPinch.scale,
+            pendingPinch.clientX,
+            pendingPinch.clientY,
+            pendingPinch.baseScale
+          )
+        }
+        pinchFrameRef.current = null
+      })
+    },
+    [applyZoomAtPoint]
+  )
+
+  const zoomFromWheel = useCallback(
+    (deltaY: number, clientX: number, clientY: number) => {
+      const currentScale = scaleRef.current
+      const nextScale = clampScale(currentScale * Math.exp(-deltaY * WHEEL_ZOOM_SENSITIVITY))
+      applyZoomAtPoint(nextScale, clientX, clientY, currentScale)
+    },
+    [applyZoomAtPoint]
+  )
+
+  const handleTouchStart = useCallback((event: TouchEvent<HTMLElement>) => {
+    if (event.touches.length !== 2) return
+
+    const distance = getTouchDistance(event.touches)
+    if (distance > 0) pinchStartRef.current = { distance, scale: scaleRef.current }
+  }, [])
+
+  const handleTouchMove = useCallback(
+    (event: TouchEvent<HTMLElement>) => {
+      const pinchStart = pinchStartRef.current
+      const center = getTouchCenter(event.touches)
+      if (!pinchStart || !center || event.touches.length !== 2) return
+
+      event.preventDefault()
+      const distance = getTouchDistance(event.touches)
+      if (distance > 0) {
+        schedulePinchScale(
+          pinchStart.scale * Math.pow(distance / pinchStart.distance, PINCH_ZOOM_SENSITIVITY),
+          center.x,
+          center.y,
+          pinchStart.scale
+        )
+      }
+    },
+    [schedulePinchScale]
+  )
+
+  const handleTouchEnd = useCallback(() => {
+    pinchStartRef.current = null
+  }, [])
+
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const handleNativeWheel = (event: globalThis.WheelEvent) => {
+      if (!event.ctrlKey && !event.metaKey) return
+
+      event.preventDefault()
+      zoomFromWheel(event.deltaY, event.clientX, event.clientY)
+    }
+
+    const preventNativePinch = (event: globalThis.TouchEvent) => {
+      if (event.touches.length === 2) event.preventDefault()
+    }
+
+    container.addEventListener('wheel', handleNativeWheel, { passive: false })
+    container.addEventListener('touchmove', preventNativePinch, { passive: false })
+
+    return () => {
+      container.removeEventListener('wheel', handleNativeWheel)
+      container.removeEventListener('touchmove', preventNativePinch)
+    }
+  }, [zoomFromWheel])
+
+  useEffect(() => {
+    return () => {
+      if (pinchFrameRef.current !== null) {
+        window.cancelAnimationFrame(pinchFrameRef.current)
+      }
+      if (anchorFrameRef.current !== null) {
+        window.cancelAnimationFrame(anchorFrameRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (!doc || !containerRef.current) return
@@ -212,7 +390,15 @@ export default function PdfViewer({ url, filename, downloadUrl }: PdfViewerProps
         )}
         {showOutline && doc && <PdfOutline doc={doc} onSelectPage={handleSelectPage} />}
 
-        <main ref={containerRef} className="relative flex-1 overflow-auto bg-muted/30 p-4 sm:p-6">
+        <main
+          ref={containerRef}
+          className="relative flex-1 overflow-auto bg-muted/30 p-4 sm:p-6"
+          style={{ touchAction: 'pan-x pan-y' }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
+        >
           {loading && (
             <div className="flex h-full min-h-[50vh] flex-col items-center justify-center gap-3">
               <BrandLoader size="lg" label="Loading PDF" />
