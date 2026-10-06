@@ -1,14 +1,35 @@
 import { privacyPolicySections } from '@/data/company'
 import Container from '@/components/shared/Container'
+import JsonLd from '@/components/shared/JsonLd'
+import { breadcrumbSchema, createPageMetadata, graph, SITE_NAME, webPageSchema } from '@/lib/seo'
 
-export const metadata = {
-  title: 'Privacy Policy',
-  description: 'Privacy Policy for Snaphost.',
-}
+export const metadata = createPageMetadata({
+  title: `Privacy Policy — What Data ${SITE_NAME} Collects`,
+  description: `How ${SITE_NAME} collects, uses, stores, and deletes data: uploaded files, account records, anonymous sessions, analytics, and cookies.`,
+  path: '/company/privacy-policy',
+  keywords: ['privacy policy', 'data privacy', 'data processing', 'gdpr', 'file upload privacy'],
+})
+
+const TRAIL = [
+  { name: 'Home', path: '/' },
+  { name: 'Company', path: '/company' },
+  { name: 'Privacy Policy', path: '/company/privacy-policy' },
+]
 
 export default function PrivacyPolicyPage() {
   return (
     <main className="py-20 sm:py-24">
+      <JsonLd
+        data={graph(
+          webPageSchema({
+            name: `${SITE_NAME} Privacy Policy`,
+            description: `How ${SITE_NAME} collects, uses, stores, and deletes user data.`,
+            path: '/company/privacy-policy',
+            breadcrumbTrail: TRAIL,
+          }),
+          breadcrumbSchema(TRAIL)
+        )}
+      />
       <Container className="max-w-3xl">
         <h1 className="text-4xl font-semibold leading-[1.06] tracking-tight text-foreground sm:text-5xl">
           Privacy Policy

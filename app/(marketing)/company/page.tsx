@@ -4,11 +4,27 @@ import { companyOverviewLinks } from '@/data/company'
 import Container from '@/components/shared/Container'
 import SectionHeading from '@/components/shared/SectionHeading'
 import Reveal from '@/components/motion/Reveal'
+import JsonLd from '@/components/shared/JsonLd'
+import {
+  breadcrumbSchema,
+  createPageMetadata,
+  graph,
+  LEGAL_PAGE_KEYWORDS,
+  SITE_NAME,
+  webPageSchema,
+} from '@/lib/seo'
 
-export const metadata = {
-  title: 'Company',
-  description: 'Legal and policy information for Snaphost.',
-}
+export const metadata = createPageMetadata({
+  title: 'Legal, Privacy & Terms',
+  description: `Read the ${SITE_NAME} privacy policy and terms of service. Learn what data we collect, how uploads are handled, and the rules for using the platform.`,
+  path: '/company',
+  keywords: LEGAL_PAGE_KEYWORDS,
+})
+
+const TRAIL = [
+  { name: 'Home', path: '/' },
+  { name: 'Company', path: '/company' },
+]
 
 const iconMap = {
   'Terms of Service': Scale,
@@ -18,6 +34,20 @@ const iconMap = {
 export default function CompanyPage() {
   return (
     <main className="py-20 sm:py-24">
+      <JsonLd
+        data={graph(
+          webPageSchema({
+            name: `${SITE_NAME} — Company`,
+            description: 'Legal and policy information for SnapHost.',
+            path: '/company',
+            breadcrumbTrail: TRAIL,
+          }),
+          breadcrumbSchema([
+            ...TRAIL,
+            ...companyOverviewLinks.map((card) => ({ name: card.title, path: card.href })),
+          ])
+        )}
+      />
       <Container>
         <SectionHeading
           title="Legal and policy information"

@@ -1,14 +1,35 @@
 import { termsOfServiceSections } from '@/data/company'
 import Container from '@/components/shared/Container'
+import JsonLd from '@/components/shared/JsonLd'
+import { breadcrumbSchema, createPageMetadata, graph, SITE_NAME, webPageSchema } from '@/lib/seo'
 
-export const metadata = {
-  title: 'Terms of Service',
-  description: 'Terms of Service for Snaphost.',
-}
+export const metadata = createPageMetadata({
+  title: `Terms of Service — Using ${SITE_NAME}`,
+  description: `The rules for using ${SITE_NAME}: acceptable use, ownership of uploaded content, link expiry, account deletion, and liability limits.`,
+  path: '/company/terms-of-service',
+  keywords: ['terms of service', 'user agreement', 'acceptable use', 'file sharing terms'],
+})
+
+const TRAIL = [
+  { name: 'Home', path: '/' },
+  { name: 'Company', path: '/company' },
+  { name: 'Terms of Service', path: '/company/terms-of-service' },
+]
 
 export default function TermsOfServicePage() {
   return (
     <main className="py-20 sm:py-24">
+      <JsonLd
+        data={graph(
+          webPageSchema({
+            name: `${SITE_NAME} Terms of Service`,
+            description: `The rules and responsibilities for using ${SITE_NAME}.`,
+            path: '/company/terms-of-service',
+            breadcrumbTrail: TRAIL,
+          }),
+          breadcrumbSchema(TRAIL)
+        )}
+      />
       <Container className="max-w-3xl">
         <h1 className="text-4xl font-semibold leading-[1.06] tracking-tight text-foreground sm:text-5xl">
           Terms of Service

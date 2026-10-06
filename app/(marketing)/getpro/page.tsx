@@ -10,6 +10,24 @@ import { proFaqs } from '@/data/faq'
 import { PREMIUM_FEATURES } from '@/data/PremiumFeatures'
 import { EMAILS, mailto } from '@/data/emails'
 import Reveal from '@/components/motion/Reveal'
+import JsonLd from '@/components/shared/JsonLd'
+import {
+  breadcrumbSchema,
+  createPageMetadata,
+  faqSchema,
+  graph,
+  PRO_FEATURE_KEYWORDS,
+  proPlanSchema,
+  SITE_NAME,
+  webPageSchema,
+} from '@/lib/seo'
+
+export const metadata = createPageMetadata({
+  title: `Get ${SITE_NAME} Pro — Unlimited Links, Custom URLs, 50 MB Uploads`,
+  description: `Upgrade to ${SITE_NAME} Pro for unlimited active links, password-protected links, custom expiry dates, priority CDN, 50 MB uploads, and priority support. Manual activation within 24 hours.`,
+  path: '/getpro',
+  keywords: PRO_FEATURE_KEYWORDS,
+})
 
 const PRO_PERK_DESCS: Record<string, string> = {
   'Unlimited uploads': 'No daily link caps — share as often as you need.',
@@ -27,6 +45,25 @@ const proPerks = [
 export default function GetProPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <JsonLd
+        data={graph(
+          webPageSchema({
+            name: `Get ${SITE_NAME} Pro`,
+            description: `Upgrade to ${SITE_NAME} Pro for unlimited links and custom controls.`,
+            path: '/getpro',
+            breadcrumbTrail: [
+              { name: 'Home', path: '/' },
+              { name: 'Get Pro', path: '/getpro' },
+            ],
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Get Pro', path: '/getpro' },
+          ]),
+          proPlanSchema(),
+          faqSchema(proFaqs)
+        )}
+      />
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-16 sm:pt-24 pb-20 sm:pb-32 border-b border-border/30">
         <DashedGrid absolute zIndex={-10} opacity={0.4} />
