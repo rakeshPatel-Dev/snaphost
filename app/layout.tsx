@@ -12,7 +12,22 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { MotionConfig } from 'framer-motion'
 import { Analytics } from '@vercel/analytics/next'
 import { PostHogProvider } from '@/components/providers/posthog-provider'
+import JsonLd from '@/components/shared/JsonLd'
 import { SITE_URL } from '@/data/emails'
+import {
+  absoluteUrl,
+  DEFAULT_DESCRIPTION,
+  DEFAULT_KEYWORDS,
+  DEFAULT_TITLE,
+  graph,
+  OG_IMAGE_ALT,
+  OG_IMAGE_PATH,
+  OG_IMAGE_SIZE,
+  organizationSchema,
+  SITE_LOCALE,
+  SITE_NAME,
+  websiteSchema,
+} from '@/lib/seo'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -25,10 +40,22 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Snaphost — Instant file sharing',
-    template: '%s | Snaphost',
+    default: DEFAULT_TITLE,
+    template: `%s | ${SITE_NAME}`,
   },
+  description: DEFAULT_DESCRIPTION,
+  applicationName: SITE_NAME,
+  generator: 'Next.js',
+  keywords: DEFAULT_KEYWORDS,
+  category: 'technology',
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  referrer: 'origin-when-cross-origin',
+  formatDetection: { telephone: false, address: false, email: false },
+  manifest: '/manifest.json',
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
@@ -36,32 +63,53 @@ export const metadata: Metadata = {
       { url: '/favicon.ico', sizes: '48x48' },
     ],
     apple: '/apple-icon.png',
+    shortcut: '/favicon.ico',
   },
-  description:
-    'Upload images and PDFs and get a clean, shareable link in seconds. No account needed, and links expire automatically.',
-  keywords: [
-    'file hosting',
-    'image upload',
-    'pdf sharing',
-    'instant file share',
-    'anonymous file upload',
-  ],
-  authors: [{ name: 'Snaphost' }],
-  creator: 'Snaphost',
-  metadataBase: new URL(SITE_URL),
+  appleWebApp: {
+    capable: true,
+    title: SITE_NAME,
+    statusBarStyle: 'default',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
   openGraph: {
-    title: 'Snaphost — Instant file sharing',
-    description:
-      'Upload images and PDFs and get a clean, shareable link in seconds. No account needed, and links expire automatically.',
-    url: SITE_URL,
-    siteName: 'Snaphost',
     type: 'website',
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    locale: SITE_LOCALE,
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: [
+      {
+        url: absoluteUrl(OG_IMAGE_PATH),
+        width: OG_IMAGE_SIZE.width,
+        height: OG_IMAGE_SIZE.height,
+        alt: OG_IMAGE_ALT,
+        type: 'image/png',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Snaphost — Instant file sharing',
-    description:
-      'Upload images and PDFs and get a clean, shareable link in seconds. No account needed, and links expire automatically.',
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: [
+      {
+        url: absoluteUrl(OG_IMAGE_PATH),
+        alt: OG_IMAGE_ALT,
+        width: OG_IMAGE_SIZE.width,
+        height: OG_IMAGE_SIZE.height,
+      },
+    ],
   },
 }
 
@@ -83,8 +131,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <meta name="apple-mobile-web-app-title" content="Snaphost" />
-        <meta name="application-name" content="Snaphost" />
         <Script
           id="theme-bootstrap"
           nonce={nonce}
@@ -119,6 +165,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         suppressHydrationWarning
         className="min-h-screen bg-background text-foreground flex flex-col"
       >
+        <JsonLd id="ld-json-site" data={graph(organizationSchema(), websiteSchema())} />
         <ReduxProvider>
           <AuthProvider>
             <PostHogProvider>

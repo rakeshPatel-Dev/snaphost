@@ -1,6 +1,13 @@
 {
   "name": "Snaphost - Share Files Instantly",
   "short_name": "Snaphost",
+  "description": "Upload images and PDFs and get a clean, shareable link in seconds. No account needed, and links expire automatically.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": ["utilities", "productivity", "business"],
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -27,7 +34,29 @@
       "purpose": "maskable"
     }
   ],
+  "shortcuts": [
+    {
+      "name": "Upload a file",
+      "short_name": "Upload",
+      "url": "/",
+      "description": "Upload an image or PDF and get a shareable link"
+    },
+    {
+      "name": "Your anonymous links",
+      "short_name": "Anon links",
+      "url": "/anon/links",
+      "description": "Review anonymous links from this browser session"
+    },
+    {
+      "name": "Get Pro",
+      "short_name": "Pro",
+      "url": "/getpro",
+      "description": "Upgrade to Pro for unlimited links and larger uploads"
+    }
+  ],
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
-  "display": "standalone"
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "portrait-primary"
 }
