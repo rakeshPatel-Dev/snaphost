@@ -3,6 +3,8 @@ import Container from '@/components/shared/Container'
 
 export const metadata = {
   title: 'Anonymous links',
+  description: 'Review and delete the anonymous links created in this browser session.',
+  robots: { index: false, follow: false },
 }
 
 export default function Page() {

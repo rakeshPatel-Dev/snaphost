@@ -1,9 +1,17 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { checkEmailContent } from '@/data/checkEmail'
 import { Button } from '@/components/ui/button'
 import Container from '@/components/shared/Container'
 import DashedGrid from '@/components/shared/DashedGrid'
 import Logo from '@/components/layout/Logo'
+import { NO_INDEX } from '@/lib/seo'
+
+export const metadata: Metadata = {
+  title: 'Check your email',
+  description: 'Confirm your email address to finish setting up your SnapHost account.',
+  robots: NO_INDEX,
+}
 
 type Props = {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
