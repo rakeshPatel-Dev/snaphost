@@ -2,13 +2,33 @@ import 'server-only'
 
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
+import { NextResponse } from 'next/server'
 
-type RateLimitResult = {
+export type RateLimitResult = {
   success: boolean
   limit: number
   remaining: number
   reset: number
   unavailable?: boolean
+}
+
+export function rateLimitResponse(result: RateLimitResult, message: string) {
+  if (result.unavailable) {
+    return NextResponse.json({ error: 'Service temporarily unavailable' }, { status: 503 })
+  }
+
+  const retryAfter = Math.max(1, Math.ceil((result.reset - Date.now()) / 1000))
+  return NextResponse.json(
+    { error: message },
+    {
+      status: 429,
+      headers: {
+        'Retry-After': String(retryAfter),
+        'X-RateLimit-Remaining': String(result.remaining),
+        'X-RateLimit-Reset': String(result.reset),
+      },
+    }
+  )
 }
 
 const redisUrl = process.env.UPSTASH_REDIS_REST_URL
@@ -48,6 +68,14 @@ const premiumAccountDailyLimit = redis
     })
   : null
 
+const bundleCreationDailyLimit = redis
+  ? new Ratelimit({
+      redis,
+      limiter: Ratelimit.fixedWindow(20, '24 h'),
+      prefix: 'snaphost:bundle:create:daily',
+    })
+  : null
+
 function unavailable(): RateLimitResult {
   console.error('Upload rate limiting is unavailable: missing Upstash Redis configuration.')
   return { success: false, limit: 0, remaining: 0, reset: 0, unavailable: true }
@@ -56,7 +84,7 @@ function unavailable(): RateLimitResult {
 export function getClientIp(headers: Headers): string {
   // The hosting proxy must overwrite these headers; this app is deployed behind Vercel/Supabase.
   const forwardedFor = headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-  return headers.get('cf-connecting-ip') ?? forwardedFor ?? headers.get('x-real-ip') ?? 'unknown'
+  return forwardedFor ?? headers.get('x-real-ip') ?? 'unknown'
 }
 
 export async function limitUploadIpBurst(ip: string): Promise<RateLimitResult> {
@@ -73,6 +101,10 @@ export async function limitAccountUploads(
 ): Promise<RateLimitResult> {
   const limiter = tier === 'premium' ? premiumAccountDailyLimit : freeAccountDailyLimit
   return limiter ? limiter.limit(userId) : unavailable()
+}
+
+export async function limitBundleCreations(userId: string): Promise<RateLimitResult> {
+  return bundleCreationDailyLimit ? bundleCreationDailyLimit.limit(userId) : unavailable()
 }
 
 export type AccountUploadQuota = {
