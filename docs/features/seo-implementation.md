@@ -161,7 +161,7 @@ Notes:
 [lib/file-page-metadata.ts](../../lib/file-page-metadata.ts) also checks for bundles before files:
 
 - When a slug resolves to a published bundle, title becomes `<bundle name> | Snaphost — Instant file
-  sharing`.
+sharing`.
 - Description follows the pattern `View {fileCount} shared files in this bundle on SnapHost.`
 - `og:image` uses the first image file's URL if the bundle contains one, otherwise the default OG
   image; `og:type` is `website`.
