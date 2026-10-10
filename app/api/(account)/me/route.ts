@@ -2,6 +2,37 @@ import { NextResponse } from 'next/server'
 import { getCurrentAppUser, updateCurrentAppUserUsername } from '@/lib/server/auth-user'
 import { getAuthUserFromRequest } from '@/lib/server/auth-server'
 
+const RESERVED_USERNAMES = new Set([
+  'admin',
+  'administrator',
+  'anon',
+  'anonymous',
+  'api',
+  'app',
+  'auth',
+  'bundle',
+  'bundles',
+  'dashboard',
+  'f',
+  'file',
+  'files',
+  'help',
+  'login',
+  'logout',
+  'root',
+  'settings',
+  'signin',
+  'signout',
+  'signup',
+  'support',
+  'system',
+  'u',
+  'upload',
+  'user',
+  'users',
+  'www',
+])
+
 export async function GET(request: Request) {
   const authUser = await getAuthUserFromRequest(request)
 
@@ -47,6 +78,10 @@ export async function PATCH(request: Request) {
       { error: 'Username must be 3–32 characters using letters, numbers, underscores, or hyphens' },
       { status: 400 }
     )
+  }
+
+  if (RESERVED_USERNAMES.has(username)) {
+    return NextResponse.json({ error: 'This username is reserved' }, { status: 400 })
   }
 
   try {

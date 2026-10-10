@@ -32,14 +32,14 @@
 - `anon_sessions` (only `token_hash` SHA-256 stored; `expires_at`, `revoked_at`)
 - `files` (owner `user_id` nullable, `anon_session_id` nullable, `upload_type` enum `anonymous|custom`, `slug`, filename, `file_type` enum `image|pdf`, `mime_type` verified, `size`, `storage_path`, `expires_at` nullable, `deleted_at` soft-delete). Constraints enforce ownership/type consistency and anon expiry ≤ 24h. Unique indexes: global unique `slug` for anonymous (`user_id IS NULL`), per-user unique `(user_id,slug)` for custom.
 - `app_storage_quota` singleton (5 GiB default, `used_bytes` tracked; trigger `enforce_global_storage_quota()` prevents insert/update that would exceed quota; serialized via `FOR UPDATE`).
-- See [database.sql](database.sql) and [docs/codebase-audit.md](docs/codebase-audit.md) for details/RLS.
+- See [database.sql](database.sql) and [docs/audits/codebase-audit.md](docs/audits/codebase-audit.md) for details/RLS.
 
 ## Flows
 
 - **Upload (anonymous/custom):** `POST /api/(uploads)/upload/route.ts`. Steps: IP burst + tier/account/anon rate limits (before multipart parsing); extract file; determine `uploadType` (force anonymous or auth user); validate content via magic bytes (`validateFileContent`, sets `verifiedMimeType`, fileType); sanitize filename; generate slug (`createFileIdSync`, base64url, bias-free, 12 chars → ~72 bits entropy); enforce free-tier active file cap (custom free ≤ 5); set `expiresAt` (anon → +24h; custom optional future date); upload to Supabase storage with verified contentType/derived ext; handle/create anon session (issue httpOnly `anon_session` cookie if new, storing only SHA-256 hash); insert file record (service-role via `lib/server/*`); return `{ success, fileId(slug), filename, url, expiresAt }`. Cleans up storage on errors (including trigger-rejected anon session limit). Max duration 60s.
 - **Anonymous links management:** session-scoped routes in `app/api/(anonymous)/anon/files/**` and UI [AnonLinks](components/anon/AnonLinks.tsx); list/delete scoped to `anon_session_id` (cookie → hash lookup). Anon links expire after 24h.
 - **Custom/user files:** account-scoped under `app/api/(account)/me/**` (profile, files CRUD, account deletion). User links use `/u/:username/:slug` when username exists, else short `/f/:slug`/share URL; [public-file-url.ts](lib/public-file-url.ts)/[buildFileUrl](lib/server/file-admin.ts) handle building.
-- **File metadata/preview:** share metadata fetched server-side (service-role) where needed; anon/public read of raw rows is not exposed to anon/authenticated roles ([docs/codebase-audit.md#7](docs/codebase-audit.md#7)).
+- **File metadata/preview:** share metadata fetched server-side (service-role) where needed; anon/public read of raw rows is not exposed to anon/authenticated roles ([docs/audits/codebase-audit.md#7](docs/audits/codebase-audit.md#7)).
 - **Auth:** Supabase Auth (email/password, Google, GitHub). `getAuthUserFromRequest` and `getCurrentAppUser` create/lookup app user; in-memory 30s TTL cache keyed by `authUserId` with invalidation on writes ([lib/server/auth-user.ts](lib/server/auth-user.ts)).
 
 ## Security, abuse protection & headers
@@ -67,7 +67,7 @@
 
 ## Testing conventions
 
-- **No test suite exists.** Do not assume any test framework/scripts. Check [README.md](README.md) and [docs/](docs/) before proposing tests. If unclear, **ask** before adding tests, test configs, or dependencies. ([docs/codebase-audit.md](docs/codebase-audit.md))
+- **No test suite exists.** Do not assume any test framework/scripts. Check [README.md](README.md) and [docs/](docs/) before proposing tests. If unclear, **ask** before adding tests, test configs, or dependencies. ([docs/audits/codebase-audit.md](docs/audits/codebase-audit.md))
 
 ## Environment & config
 
