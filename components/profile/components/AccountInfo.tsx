@@ -88,12 +88,19 @@ const AccountInfo = ({ isPremium, tier, email, username }: AccountInfoProps) => 
           <p className="mt-1 text-xs text-muted-foreground">Your identity and plan details</p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground">{planSummary}</span>
+          <span
+            className={cn(
+              'text-xs',
+              isPremium ? 'font-medium text-[var(--premium)]' : 'text-muted-foreground'
+            )}
+          >
+            {planSummary}
+          </span>
           <span
             className={cn(
               'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium',
               isPremium
-                ? 'border-amber-400/25 bg-amber-400/10 text-amber-500'
+                ? 'border-[var(--premium-border)] bg-[var(--premium-soft)] text-[var(--premium)]'
                 : 'border-border/60 bg-muted/20 text-muted-foreground'
             )}
           >

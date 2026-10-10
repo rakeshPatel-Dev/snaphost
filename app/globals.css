@@ -34,6 +34,9 @@
   --pdf-viewer-accent: var(--accent);
   --pdf-viewer-highlight: rgba(5, 150, 105, 0.25);
   --pdf-viewer-highlight-selected: rgba(5, 150, 105, 0.4);
+  --premium: #f59e0b;
+  --premium-soft: rgb(245 158 11 / 0.08);
+  --premium-border: rgb(245 158 11 / 0.2);
 }
 
 @theme inline {
@@ -100,6 +103,9 @@
   --pdf-viewer-accent: var(--accent);
   --pdf-viewer-highlight: rgba(16, 185, 129, 0.25);
   --pdf-viewer-highlight-selected: rgba(16, 185, 129, 0.4);
+  --premium: #fbbf24;
+  --premium-soft: rgb(251 191 36 / 0.08);
+  --premium-border: rgb(251 191 36 / 0.2);
 }
 
 body {
@@ -141,12 +147,6 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-}
-
-.premium-glow {
-  box-shadow:
-    0 0 0 1px rgb(251 191 36 / 0.08),
-    0 24px 64px -32px rgb(251 191 36 / 0.14);
 }
 
 /* Custom horizontal scrolling bar if needed */
