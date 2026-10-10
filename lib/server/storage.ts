@@ -1,5 +1,7 @@
 import 'server-only'
 
+import crypto from 'crypto'
+
 import { supabase } from '../supabase'
 import { supabaseAdmin } from './supabase-admin'
 import { CONFIG } from '../config'
@@ -28,7 +30,7 @@ export async function uploadFileToStorage(
 
   try {
     const { data, error } = await bucket.upload(storagePath, file, {
-      cacheControl: '31536000', // 1 year cache
+      cacheControl: '3600', // 1 hour cache
       contentType: mimeType,
       upsert: false,
     })
@@ -43,6 +45,36 @@ export async function uploadFileToStorage(
     const message = err instanceof Error ? err.message : 'Upload failed'
     console.error('Upload exception:', err)
     return { path: '', error: message }
+  }
+}
+
+export async function uploadBundleFileToStorage(
+  bundleId: string,
+  fileId: string,
+  file: File,
+  mimeType: ValidatedMimeType
+): Promise<{ path: string; error: string | null }> {
+  const ext = STORAGE_EXTENSIONS[mimeType]
+  const token = crypto.randomUUID().replace(/-/g, '')
+  const storagePath = `uploads/${bundleId}/${fileId}/${token}${ext}`
+  const bucket = supabase.storage.from(CONFIG.STORAGE_BUCKET)
+
+  try {
+    const { data, error } = await bucket.upload(storagePath, file, {
+      cacheControl: '3600',
+      contentType: mimeType,
+      upsert: false,
+    })
+
+    if (error) {
+      console.error('Bundle storage upload error:', error)
+      return { path: '', error: error.message }
+    }
+
+    return { path: data.path, error: null }
+  } catch (err) {
+    console.error('Bundle storage upload exception:', err)
+    return { path: '', error: err instanceof Error ? err.message : 'Upload failed' }
   }
 }
 

@@ -30,6 +30,7 @@ export async function getFileMetadata(
       'slug, filename, file_type, size, created_at, expires_at, storage_path, user:users(username)'
     )
     .eq('slug', slug)
+    .is('bundle_id', null)
     .is('deleted_at', null)
     .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString())
 
@@ -66,7 +67,7 @@ export async function getFileMetadata(
   }
 
   return {
-    slug: file.slug,
+    slug: file.slug ?? '',
     filename: file.filename,
     fileType: file.file_type,
     size: file.size,

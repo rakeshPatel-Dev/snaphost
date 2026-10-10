@@ -4,6 +4,7 @@ import { supabaseAdmin } from './supabase-admin'
 import { CONFIG } from '../config'
 import type { AdminFileRow, FileType, UploadType } from '@/types/app'
 import { buildPublicFileUrl } from '../public-file-url'
+import { countPublishedBundlesForUser } from './bundle-admin'
 
 export async function createFileRecord(input: {
   userId: string | null
@@ -48,6 +49,7 @@ export async function listFilesForUser(userId: string) {
     .from('files')
     .select('*, user:users(username)')
     .eq('user_id', userId)
+    .is('bundle_id', null)
     .is('deleted_at', null)
     .or(`expires_at.is.null,expires_at.gt.${now}`)
     .order('created_at', { ascending: false })
@@ -79,6 +81,7 @@ export async function countActiveFilesForUser(userId: string) {
     .from('files')
     .select('id', { count: 'exact', head: false })
     .eq('user_id', userId)
+    .is('bundle_id', null)
     .is('deleted_at', null)
     .or(`expires_at.is.null,expires_at.gt.${now}`)
 
@@ -89,12 +92,21 @@ export async function countActiveFilesForUser(userId: string) {
   return (count ?? 0) as number
 }
 
+export async function countTotalActiveLinksForUser(userId: string) {
+  const [activeFiles, publishedBundles] = await Promise.all([
+    countActiveFilesForUser(userId),
+    countPublishedBundlesForUser(userId),
+  ])
+  return activeFiles + publishedBundles
+}
+
 export async function getFileForUser(fileId: string, userId: string) {
   const { data, error } = await supabaseAdmin
     .from('files')
     .select('*, user:users(username)')
     .eq('id', fileId)
     .eq('user_id', userId)
+    .is('bundle_id', null)
     .maybeSingle()
 
   if (error) {
@@ -110,6 +122,7 @@ export async function listFilesForAnonSession(anonSessionId: string) {
     .select('*, user:users(username)')
     .eq('anon_session_id', anonSessionId)
     .is('deleted_at', null)
+    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -140,6 +153,8 @@ export async function countFilesForAnonSession(anonSessionId: string) {
     .from('files')
     .select('id', { count: 'exact', head: true })
     .eq('anon_session_id', anonSessionId)
+    .is('deleted_at', null)
+    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
 
   if (error) {
     throw error
@@ -173,6 +188,7 @@ export async function updateFileForUser(
     .update(updates)
     .eq('id', fileId)
     .eq('user_id', userId)
+    .is('bundle_id', null)
     .select('*, user:users(username)')
     .single()
 
@@ -189,6 +205,7 @@ export async function deleteFileForUser(fileId: string, userId: string) {
     .delete()
     .eq('id', fileId)
     .eq('user_id', userId)
+    .is('bundle_id', null)
     .select('id, storage_path')
     .single()
 
@@ -202,7 +219,7 @@ export async function deleteFileForUser(fileId: string, userId: string) {
 export function buildFileUrl(file: AdminFileRow, username?: string | null) {
   return buildPublicFileUrl({
     baseUrl: CONFIG.BASE_URL,
-    slug: file.slug,
+    slug: file.slug ?? '',
     username,
     uploadType: file.upload_type,
   })

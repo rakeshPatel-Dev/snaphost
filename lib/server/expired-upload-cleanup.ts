@@ -1,7 +1,7 @@
 import 'server-only'
 
-import { CONFIG } from '@/lib/config'
 import { supabaseAdmin } from '@/lib/server/supabase-admin'
+import { CONFIG } from '@/lib/config'
 
 const BATCH_SIZE = 100
 
@@ -147,14 +147,81 @@ async function purgeExpiredFiles(): Promise<CleanupTotals> {
   return totals
 }
 
+async function purgeEmptyBundles(): Promise<CleanupTotals> {
+  const totals: CleanupTotals = { scanned: 0, deleted: 0, failures: 0 }
+  const cutoff = new Date(Date.now() - CONFIG.DRAFT_BUNDLE_TTL_MS).toISOString()
+
+  while (true) {
+    const { data, error } = await supabaseAdmin
+      .from('bundles')
+      .select('id, status, updated_at, files(id, storage_path)')
+      .eq('status', 'draft')
+      .lte('updated_at', cutoff)
+      .is('deleted_at', null)
+      .limit(BATCH_SIZE)
+
+    if (error) throw new Error(`Failed to load stale bundles: ${error.message}`)
+
+    const bundles = (data ?? []) as Array<{
+      id: string
+      status: string
+      updated_at: string
+      files: ExpiredFile[] | null
+    }>
+    if (bundles.length === 0) {
+      break
+    }
+
+    for (const bundle of bundles) {
+      const { data: current, error: currentError } = await supabaseAdmin
+        .from('bundles')
+        .select('id, status, updated_at, files(id, storage_path)')
+        .eq('id', bundle.id)
+        .eq('status', 'draft')
+        .lte('updated_at', cutoff)
+        .is('deleted_at', null)
+        .maybeSingle()
+
+      if (currentError) {
+        totals.failures += 1
+        continue
+      }
+      if (!current) continue
+
+      const files = (current.files ?? []) as ExpiredFile[]
+      totals.scanned += 1
+      if (!(await removeStoragePaths(files.map((file) => file.storage_path)))) {
+        totals.failures += 1
+        continue
+      }
+      const { error: deleteError } = await supabaseAdmin
+        .from('bundles')
+        .delete()
+        .eq('id', bundle.id)
+        .eq('status', 'draft')
+        .lte('updated_at', cutoff)
+      if (deleteError) totals.failures += 1
+      else totals.deleted += 1
+    }
+
+    if (totals.failures > 0 || bundles.length < BATCH_SIZE) {
+      break
+    }
+  }
+
+  return totals
+}
+
 export async function cleanUpExpiredUploads() {
   const sessions = await purgeExpiredAnonymousSessions()
   const files = await purgeExpiredFiles()
-  const failures = sessions.failures + files.failures
+  const bundles = await purgeEmptyBundles()
+  const failures = sessions.failures + files.failures + bundles.failures
 
   return {
     sessions,
     files,
+    bundles,
     failures,
   }
 }
