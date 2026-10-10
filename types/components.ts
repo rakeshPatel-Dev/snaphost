@@ -1,5 +1,5 @@
 import type { ReactNode, RefObject } from 'react'
-import type { AnonymousLink, AppFile, UploadSuccess } from './app'
+import type { AnonymousLink, AppBundle, AppFile, UploadSuccess } from './app'
 
 export type ThemeProviderProps = {
   children: ReactNode
@@ -120,6 +120,7 @@ export type ProfileDashboardProps = {
   email: string
   tier: 'free' | 'premium'
   files: AppFile[]
+  bundles: AppBundle[]
 }
 
 export type UploadFormProps = {
@@ -131,4 +132,5 @@ export type UploadFormProps = {
   onFileInputClick: () => void
   fileInputRef: RefObject<HTMLInputElement | null>
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void
+  multiple?: boolean
 }

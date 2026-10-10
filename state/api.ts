@@ -3,6 +3,10 @@ import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolk
 import type {
   AppFile,
   AnonymousLink,
+  AppBundle,
+  PublicBundle,
+  PublicRedirect,
+  BundlesPayload,
   FileMetadata,
   FilesPayload,
   ProfilePayload,
@@ -68,7 +72,16 @@ const baseQueryWithAuth: BaseQueryFn<string | AuthFetchArgs, unknown, FetchBaseQ
 export const snaphostApi = createApi({
   reducerPath: 'snaphostApi',
   baseQuery: baseQueryWithAuth,
-  tagTypes: ['Me', 'MeFiles', 'PublicFile', 'UsernameAvailability', 'AnonLinks', 'MeUploadQuota'],
+  tagTypes: [
+    'Me',
+    'MeFiles',
+    'MeBundles',
+    'PublicFile',
+    'PublicBundle',
+    'UsernameAvailability',
+    'AnonLinks',
+    'MeUploadQuota',
+  ],
   endpoints: (builder) => ({
     getMe: builder.query<ProfilePayload, void>({
       query: () => '/api/me',
@@ -85,7 +98,10 @@ export const snaphostApi = createApi({
       providesTags: ['MeUploadQuota'],
       keepUnusedDataFor: 60,
     }),
-    getFile: builder.query<FileMetadata, { fileId: string; username?: string }>({
+    getFile: builder.query<
+      FileMetadata | PublicBundle | PublicRedirect,
+      { fileId: string; username?: string }
+    >({
       query: ({ fileId, username }) => ({
         url: `/api/files/${fileId}`,
         params: username ? { username } : undefined,
@@ -140,12 +156,88 @@ export const snaphostApi = createApi({
       }),
       invalidatesTags: ['MeFiles'],
     }),
+    getMeBundles: builder.query<BundlesPayload, void>({
+      query: () => '/api/me/bundles',
+      providesTags: ['MeBundles'],
+    }),
+    createBundle: builder.mutation<{ success: true; bundle: AppBundle }, { name?: string }>({
+      query: (body) => ({
+        url: '/api/me/bundles',
+        method: 'POST',
+        body,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+      invalidatesTags: ['MeBundles'],
+    }),
+    uploadBundleFile: builder.mutation<
+      { success: true; file: unknown },
+      { bundleId: string; file: File; expiresAt?: string | null }
+    >({
+      query: ({ bundleId, file, expiresAt }) => {
+        const body = new FormData()
+        body.append('file', file)
+        if (expiresAt) body.append('expiresAt', expiresAt)
+        return { url: `/api/me/bundles/${bundleId}/files`, method: 'POST', body }
+      },
+      invalidatesTags: ['MeBundles', 'MeUploadQuota'],
+    }),
+    publishBundle: builder.mutation<{ success: true; bundle: AppBundle }, string>({
+      query: (bundleId) => ({ url: `/api/me/bundles/${bundleId}/publish`, method: 'POST' }),
+      invalidatesTags: ['MeBundles'],
+    }),
+    updateBundle: builder.mutation<
+      { bundle: AppBundle },
+      { bundleId: string; name?: string; slug?: string }
+    >({
+      query: ({ bundleId, ...body }) => ({
+        url: `/api/me/bundles/${bundleId}`,
+        method: 'PATCH',
+        body,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+      invalidatesTags: ['MeBundles'],
+    }),
+    deleteBundle: builder.mutation<{ success: true }, string>({
+      query: (bundleId) => ({ url: `/api/me/bundles/${bundleId}`, method: 'DELETE' }),
+      invalidatesTags: ['MeBundles', 'MeUploadQuota'],
+    }),
+    replaceBundleFile: builder.mutation<
+      { success: true; file: unknown },
+      { bundleId: string; fileId: string; file: File; expiresAt?: string | null }
+    >({
+      query: ({ bundleId, fileId, file, expiresAt }) => {
+        const body = new FormData()
+        body.append('file', file)
+        if (expiresAt) body.append('expiresAt', expiresAt)
+        return { url: `/api/me/bundles/${bundleId}/files/${fileId}`, method: 'POST', body }
+      },
+      invalidatesTags: ['MeBundles', 'MeUploadQuota'],
+    }),
+    updateBundleFileExpiration: builder.mutation<
+      { success: true; file: unknown },
+      { bundleId: string; fileId: string; expiresAt: string | null }
+    >({
+      query: ({ bundleId, fileId, expiresAt }) => ({
+        url: `/api/me/bundles/${bundleId}/files/${fileId}`,
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: { expiresAt },
+      }),
+      invalidatesTags: ['MeBundles'],
+    }),
+    deleteBundleFile: builder.mutation<{ success: true }, { bundleId: string; fileId: string }>({
+      query: ({ bundleId, fileId }) => ({
+        url: `/api/me/bundles/${bundleId}/files/${fileId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['MeBundles', 'MeUploadQuota'],
+    }),
     deleteAccount: builder.mutation<{ success: true }, void>({
       query: () => ({
         url: '/api/me/account',
         method: 'DELETE',
       }),
-      invalidatesTags: ['Me', 'MeFiles'],
+      invalidatesTags: ['Me', 'MeFiles', 'MeBundles'],
     }),
     updateMeUsername: builder.mutation<{ user: ProfilePayload['user'] }, { username: string }>({
       query: ({ username }) => ({
@@ -205,6 +297,15 @@ export const {
   useUploadFileMutation,
   useUpdateFileMutation,
   useDeleteFileMutation,
+  useGetMeBundlesQuery,
+  useCreateBundleMutation,
+  useUploadBundleFileMutation,
+  usePublishBundleMutation,
+  useUpdateBundleMutation,
+  useDeleteBundleMutation,
+  useReplaceBundleFileMutation,
+  useUpdateBundleFileExpirationMutation,
+  useDeleteBundleFileMutation,
   useDeleteAccountMutation,
   useUpdateMeUsernameMutation,
   useUploadAnonymousFileMutation,
