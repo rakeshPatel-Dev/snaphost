@@ -37,7 +37,15 @@ const FILE_SIGNATURES: Array<{
   {
     mimeType: 'image/jpeg',
     matches: (header) =>
-      header.length >= 3 && header[0] === 0xff && header[1] === 0xd8 && header[2] === 0xff,
+      header.length >= 4 &&
+      header[0] === 0xff &&
+      header[1] === 0xd8 &&
+      header[2] === 0xff &&
+      ((header[3] >= 0xe0 && header[3] <= 0xef) ||
+        header[3] === 0xdb ||
+        header[3] === 0xc0 ||
+        header[3] === 0xc2 ||
+        header[3] === 0xfe),
   },
   {
     mimeType: 'image/webp',
