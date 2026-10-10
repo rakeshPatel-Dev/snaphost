@@ -73,6 +73,7 @@ own `metadata` for titles and descriptions, which overrides the layout title whi
 | `faqSchema(items)`            | `FAQPage` mapped from `FAQItem[]`                                                                   |
 | `breadcrumbSchema(trail)`     | `BreadcrumbList`                                                                                    |
 | `webPageSchema(opts)`         | `WebPage` with `isPartOf`/`about` cross-references                                                  |
+| `collectionPageSchema(opts)`  | `CollectionPage` with `ItemList` for bundle share pages                                             |
 
 `createPageMetadata` signature:
 
@@ -124,8 +125,9 @@ for **every** route without its own OG image, even if a page forgets to set one.
 | `/company/privacy-policy`                                           | Privacy Policy — What Data SnapHost Collects                   | `/company/privacy-policy`   | index, follow                            | `WebPage`, `BreadcrumbList`                                                        |
 | `/company/terms-of-service`                                         | Terms of Service — Using SnapHost                              | `/company/terms-of-service` | index, follow                            | `WebPage`, `BreadcrumbList`                                                        |
 | `/f/[fileId]`                                                       | `<filename> \| Snaphost — Instant file sharing`                | `/f/[fileId]`               | index while live; `noindex` when missing | —                                                                                  |
-| `/anon/[slug]`                                                      | same, or "This snap link has expired"                          | `/anon/[slug]`              | `noindex` when expired                   | —                                                                                  |
-| `/[username]/[slug]`                                                | `<filename> \| …`                                              | `/<username>/<slug>`        | index while live                         | —                                                                                  |
+| `/anon/[slug]`                                                      | same, or "This Snap link has expired"                          | `/anon/[slug]`              | `noindex` when expired                   | —                                                                                  |
+| `/[username]/[slug]` (file)                                         | `<filename> \| …`                                              | `/<username>/<slug>`        | index while live                         | —                                                                                  |
+| `/[username]/[slug]` (bundle)                                       | `<bundle name> \| …`                                           | `/<username>/<slug>`        | index while live                         | `CollectionPage`                                                                   |
 | `/sign-in`                                                          | Sign in                                                        | none                        | `noindex`                                | —                                                                                  |
 | `/sign-up`                                                          | Create account                                                 | none                        | `noindex`                                | —                                                                                  |
 | `/forgot-password`, `/reset-password`, `/check-email`, `/auth/sync` | route-specific                                                 | none                        | `noindex`                                | —                                                                                  |
@@ -154,6 +156,17 @@ Notes:
 - `noimageindex` for Googlebot when the file has no previewable image, so Google does not request
   images it cannot render.
 
+### Bundle share pages
+
+[lib/file-page-metadata.ts](../../lib/file-page-metadata.ts) also checks for bundles before files:
+
+- When a slug resolves to a published bundle, title becomes `<bundle name> | Snaphost — Instant file
+  sharing`.
+- Description follows the pattern `View {fileCount} shared files in this bundle on SnapHost.`
+- `og:image` uses the first image file's URL if the bundle contains one, otherwise the default OG
+  image; `og:type` is `website`.
+- Bundle pages are indexable while live, matching standalone file behavior.
+
 ---
 
 ## 5. Structured data
@@ -174,6 +187,7 @@ Organization`). The root layout emits the `Organization` + `WebSite` pair on eve
 | `ItemList`            | `/` — the 5 product features  | derived from `data/features.ts` |
 | `FAQPage`             | `/`, `/getpro`                | derived from `data/faq.ts`      |
 | `Service`             | `/getpro` — Pro tier          | `proPlanSchema()`               |
+| `CollectionPage`      | `/[username]/[slug]` — bundle | `collectionPageSchema()`        |
 
 The two `FAQPage` nodes are built directly from `data/faq.ts` (`faqs` and `proFaqs`), so the
 structured data cannot drift from the FAQ sections rendered on the page. Same for the `ItemList`,
