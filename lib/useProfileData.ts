@@ -1,8 +1,8 @@
 'use client'
 
-import { useGetMeFilesQuery, useGetMeQuery } from '@/state/api'
+import { useGetMeBundlesQuery, useGetMeFilesQuery, useGetMeQuery } from '@/state/api'
 import { useAuth } from '@/components/providers/auth-provider'
-import type { AppFile, AppUser } from '@/types/app'
+import type { AppBundle, AppFile, AppUser } from '@/types/app'
 
 export function useProfileData() {
   const { isLoading, isSignedIn } = useAuth()
@@ -22,11 +22,18 @@ export function useProfileData() {
   } = useGetMeFilesQuery(undefined, {
     skip: shouldSkip,
   })
+  const {
+    data: bundlesData,
+    error: bundlesError,
+    isLoading: loadingBundles,
+  } = useGetMeBundlesQuery(undefined, { skip: shouldSkip })
 
-  const loadingProfile = isLoading || (isSignedIn && (loadingUser || loadingFiles))
-  const error = userError || filesError
+  const loadingProfile =
+    isLoading || (isSignedIn && (loadingUser || loadingFiles || loadingBundles))
+  const error = userError || filesError || bundlesError
   const user: AppUser | null = userData?.user ?? null
   const files: AppFile[] = filesData?.files ?? []
+  const bundles: AppBundle[] = bundlesData?.bundles ?? []
 
   return {
     isLoading,
@@ -35,5 +42,6 @@ export function useProfileData() {
     error,
     user,
     files,
+    bundles,
   }
 }

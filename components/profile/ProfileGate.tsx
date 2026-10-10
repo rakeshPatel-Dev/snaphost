@@ -9,7 +9,7 @@ import Container from '@/components/shared/Container'
 import BrandLoader from '@/components/shared/BrandLoader'
 
 export default function ProfileGate() {
-  const { isLoading, isSignedIn, loadingProfile, error, user, files } = useProfileData()
+  const { isLoading, isSignedIn, loadingProfile, error, user, files, bundles } = useProfileData()
 
   if (isLoading || (isSignedIn && loadingProfile)) {
     return (
@@ -69,6 +69,7 @@ export default function ProfileGate() {
       email={user.email}
       tier={user.tier}
       files={files}
+      bundles={bundles}
     />
   )
 }
