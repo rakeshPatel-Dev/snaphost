@@ -11,6 +11,9 @@ import { Button } from './ui/button'
 import { useGetFileQuery } from '@/state/api'
 import { getApiErrorMessage } from '@/lib/api-error'
 import type { FilePreviewProps } from '@/types/components'
+import BundlePreview from './BundlePreview'
+import type { PublicBundle } from '@/types/app'
+import { useRouter } from 'next/navigation'
 
 function getPreviewTitle(filename: string): string {
   const extensionStart = filename.lastIndexOf('.')
@@ -25,10 +28,13 @@ export default function FilePreview({ fileId, isAnonymous = false, username }: F
     error,
     isLoading,
   } = useGetFileQuery({ fileId, username }, { skip: !fileId })
+  const router = useRouter()
 
   useEffect(() => {
-    if (metadata) {
+    if (metadata && 'filename' in metadata) {
       document.title = getPreviewTitle(metadata.filename)
+    } else if (metadata && 'name' in metadata) {
+      document.title = `${metadata.name} | Snaphost — Instant file sharing`
     }
   }, [metadata])
 
@@ -38,6 +44,11 @@ export default function FilePreview({ fileId, isAnonymous = false, username }: F
         <BrandLoader size="lg" label="Loading file" />
       </div>
     )
+  }
+
+  if (metadata && 'redirectUrl' in metadata) {
+    router.replace(metadata.redirectUrl)
+    return null
   }
 
   if (error || !metadata) {
@@ -84,6 +95,8 @@ export default function FilePreview({ fileId, isAnonymous = false, username }: F
       </div>
     )
   }
+
+  if ('files' in metadata) return <BundlePreview bundle={metadata as PublicBundle} />
 
   return (
     <div className="min-h-screen bg-background">

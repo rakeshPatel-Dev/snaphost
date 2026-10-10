@@ -11,24 +11,24 @@ Related: [seo-recommendations.md](./seo-recommendations.md) covers what is _not_
 
 Two files do most of the work, so nothing is copy-pasted between routes.
 
-| File                                                            | Role                                                                                                                     |
-| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| [lib/seo.ts](../lib/seo.ts)                                     | Single source of truth: site constants, keyword sets, `createPageMetadata()`, `NO_INDEX`, and every schema.org builder   |
-| [components/shared/JsonLd.tsx](../components/shared/JsonLd.tsx) | Renders a `<script type="application/ld+json">` block; escapes `<` so user-facing strings cannot break out of the script |
+| File                                                               | Role                                                                                                                     |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| [lib/seo.ts](../../lib/seo.ts)                                     | Single source of truth: site constants, keyword sets, `createPageMetadata()`, `NO_INDEX`, and every schema.org builder   |
+| [components/shared/JsonLd.tsx](../../components/shared/JsonLd.tsx) | Renders a `<script type="application/ld+json">` block; escapes `<` so user-facing strings cannot break out of the script |
 
 Applying files:
 
-| File                                                                                                           | Applies                                                                      |
-| -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| [app/layout.tsx](../app/layout.tsx)                                                                            | Site-wide metadata, `metadataBase`, and the `Organization` + `WebSite` graph |
-| [app/opengraph-image.tsx](../app/opengraph-image.tsx)                                                          | Generated 1200×630 OG image for any route that has no custom one             |
-| [app/sitemap.ts](../app/sitemap.ts)                                                                            | XML sitemap                                                                  |
-| [app/robots.ts](../app/robots.ts)                                                                              | Crawl rules + sitemap/host declaration                                       |
-| [app/(auth)/layout.tsx](<../app/(auth)/layout.tsx>), [app/(product)/layout.tsx](<../app/(product)/layout.tsx>) | `noindex` for auth and dashboard routes (applies to client pages too)        |
-| [lib/file-page-metadata.ts](../lib/file-page-metadata.ts)                                                      | Per-file metadata for the three share-link routes                            |
-| [next.config.mjs](../next.config.mjs)                                                                          | `X-Robots-Tag` response headers                                              |
-| [public/llms.txt](../public/llms.txt), [public/llms-full.txt](../public/llms-full.txt)                         | AI crawler entry points                                                      |
-| [app/manifest.json](../app/manifest.json)                                                                      | PWA manifest                                                                 |
+| File                                                                                                                 | Applies                                                                      |
+| -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| [app/layout.tsx](../../app/layout.tsx)                                                                               | Site-wide metadata, `metadataBase`, and the `Organization` + `WebSite` graph |
+| [app/opengraph-image.tsx](../../app/opengraph-image.tsx)                                                             | Generated 1200×630 OG image for any route that has no custom one             |
+| [app/sitemap.ts](../../app/sitemap.ts)                                                                               | XML sitemap                                                                  |
+| [app/robots.ts](../../app/robots.ts)                                                                                 | Crawl rules + sitemap/host declaration                                       |
+| [app/(auth)/layout.tsx](<../../app/(auth)/layout.tsx>), [app/(product)/layout.tsx](<../../app/(product)/layout.tsx>) | `noindex` for auth and dashboard routes (applies to client pages too)        |
+| [lib/file-page-metadata.ts](../../lib/file-page-metadata.ts)                                                         | Per-file metadata for the three share-link routes                            |
+| [next.config.mjs](../../next.config.mjs)                                                                             | `X-Robots-Tag` response headers                                              |
+| [public/llms.txt](../../public/llms.txt), [public/llms-full.txt](../../public/llms-full.txt)                         | AI crawler entry points                                                      |
+| [app/manifest.json](../../app/manifest.json)                                                                         | PWA manifest                                                                 |
 
 ### Why route-group layouts hold `noindex`
 
@@ -73,6 +73,7 @@ own `metadata` for titles and descriptions, which overrides the layout title whi
 | `faqSchema(items)`            | `FAQPage` mapped from `FAQItem[]`                                                                   |
 | `breadcrumbSchema(trail)`     | `BreadcrumbList`                                                                                    |
 | `webPageSchema(opts)`         | `WebPage` with `isPartOf`/`about` cross-references                                                  |
+| `collectionPageSchema(opts)`  | `CollectionPage` with `ItemList` for bundle share pages                                             |
 
 `createPageMetadata` signature:
 
@@ -124,8 +125,9 @@ for **every** route without its own OG image, even if a page forgets to set one.
 | `/company/privacy-policy`                                           | Privacy Policy — What Data SnapHost Collects                   | `/company/privacy-policy`   | index, follow                            | `WebPage`, `BreadcrumbList`                                                        |
 | `/company/terms-of-service`                                         | Terms of Service — Using SnapHost                              | `/company/terms-of-service` | index, follow                            | `WebPage`, `BreadcrumbList`                                                        |
 | `/f/[fileId]`                                                       | `<filename> \| Snaphost — Instant file sharing`                | `/f/[fileId]`               | index while live; `noindex` when missing | —                                                                                  |
-| `/anon/[slug]`                                                      | same, or "This snap link has expired"                          | `/anon/[slug]`              | `noindex` when expired                   | —                                                                                  |
-| `/[username]/[slug]`                                                | `<filename> \| …`                                              | `/<username>/<slug>`        | index while live                         | —                                                                                  |
+| `/anon/[slug]`                                                      | same, or "This Snap link has expired"                          | `/anon/[slug]`              | `noindex` when expired                   | —                                                                                  |
+| `/[username]/[slug]` (file)                                         | `<filename> \| …`                                              | `/<username>/<slug>`        | index while live                         | —                                                                                  |
+| `/[username]/[slug]` (bundle)                                       | `<bundle name> \| …`                                           | `/<username>/<slug>`        | index while live                         | `CollectionPage`                                                                   |
 | `/sign-in`                                                          | Sign in                                                        | none                        | `noindex`                                | —                                                                                  |
 | `/sign-up`                                                          | Create account                                                 | none                        | `noindex`                                | —                                                                                  |
 | `/forgot-password`, `/reset-password`, `/check-email`, `/auth/sync` | route-specific                                                 | none                        | `noindex`                                | —                                                                                  |
@@ -142,7 +144,7 @@ Notes:
 
 ### File share pages
 
-[lib/file-page-metadata.ts](../lib/file-page-metadata.ts) builds metadata from the live DB row:
+[lib/file-page-metadata.ts](../../lib/file-page-metadata.ts) builds metadata from the live DB row:
 
 - Title from the filename with the extension stripped, prefixed with the brand title.
 - Description includes the detected type label and a human-readable size
@@ -153,6 +155,17 @@ Notes:
   image; `og:type` is `article`.
 - `noimageindex` for Googlebot when the file has no previewable image, so Google does not request
   images it cannot render.
+
+### Bundle share pages
+
+[lib/file-page-metadata.ts](../../lib/file-page-metadata.ts) also checks for bundles before files:
+
+- When a slug resolves to a published bundle, title becomes `<bundle name> | Snaphost — Instant file
+sharing`.
+- Description follows the pattern `View {fileCount} shared files in this bundle on SnapHost.`
+- `og:image` uses the first image file's URL if the bundle contains one, otherwise the default OG
+  image; `og:type` is `website`.
+- Bundle pages are indexable while live, matching standalone file behavior.
 
 ---
 
@@ -174,6 +187,7 @@ Organization`). The root layout emits the `Organization` + `WebSite` pair on eve
 | `ItemList`            | `/` — the 5 product features  | derived from `data/features.ts` |
 | `FAQPage`             | `/`, `/getpro`                | derived from `data/faq.ts`      |
 | `Service`             | `/getpro` — Pro tier          | `proPlanSchema()`               |
+| `CollectionPage`      | `/[username]/[slug]` — bundle | `collectionPageSchema()`        |
 
 The two `FAQPage` nodes are built directly from `data/faq.ts` (`faqs` and `proFaqs`), so the
 structured data cannot drift from the FAQ sections rendered on the page. Same for the `ItemList`,
@@ -205,7 +219,7 @@ indexed, while individual share links are public content.
 
 ## 7. Sitemap
 
-[app/sitemap.ts](../app/sitemap.ts) returns five entries with `lastModified`, `changeFrequency`,
+[app/sitemap.ts](../../app/sitemap.ts) returns five entries with `lastModified`, `changeFrequency`,
 and `priority`, and exports `revalidate = 86400` so it refreshes daily:
 
 | URL                         | changeFrequency | priority |
@@ -222,7 +236,7 @@ Share-link routes are excluded: they are user-generated, temporary, and many alr
 
 ## 8. Social sharing image
 
-[app/opengraph-image.tsx](../app/opengraph-image.tsx) renders the card with `ImageResponse`:
+[app/opengraph-image.tsx](../../app/opengraph-image.tsx) renders the card with `ImageResponse`:
 
 - 1200×630 PNG (the size Facebook, LinkedIn, Slack, and Discord render without cropping badly).
 - Dark brand background with a green accent glow, `S` badge, wordmark, headline, and three proof
@@ -237,10 +251,10 @@ dimensions.
 
 ## 9. AI crawler files
 
-| File                                            | Size    | Contents                                                                                                                   |
-| ----------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
-| [public/llms.txt](../public/llms.txt)           | ~2.4 KB | What SnapHost does, the plans table, page index, technical notes, indexing policy                                          |
-| [public/llms-full.txt](../public/llms-full.txt) | ~5.6 KB | Full prose: features, plan details, both FAQ sets, privacy/terms summaries, note on link URL patterns and `noindex` policy |
+| File                                               | Size    | Contents                                                                                                                   |
+| -------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
+| [public/llms.txt](../../public/llms.txt)           | ~2.4 KB | What SnapHost does, the plans table, page index, technical notes, indexing policy                                          |
+| [public/llms-full.txt](../../public/llms-full.txt) | ~5.6 KB | Full prose: features, plan details, both FAQ sets, privacy/terms summaries, note on link URL patterns and `noindex` policy |
 
 `llms.txt` links to `llms-full.txt` as an optional full-text version. Both are served as
 `text/plain` from `public/` with no build step.
@@ -249,7 +263,7 @@ dimensions.
 
 ## 10. PWA manifest
 
-[app/manifest.json](../app/manifest.json) now includes `description`, `id`, `start_url`, `scope`,
+[app/manifest.json](../../app/manifest.json) now includes `description`, `id`, `start_url`, `scope`,
 `lang`, `dir`, `categories`, `display_override`, `orientation`, and three `shortcuts`
 (Upload, Anonymous links, Get Pro), in addition to the existing icons and theme colors. Served as
 `application/manifest+json`.
@@ -298,7 +312,7 @@ Debugger after deploying.
    the Open Graph or Twitter objects by hand.
 2. Render a `JsonLd` block. If the page has a breadcrumb, pass the same trail to both
    `webPageSchema({ breadcrumbTrail })` and `breadcrumbSchema()`.
-3. Add the URL to `ENTRIES` in [app/sitemap.ts](../app/sitemap.ts).
+3. Add the URL to `ENTRIES` in [app/sitemap.ts](../../app/sitemap.ts).
 4. If it should not be indexed: `robots: NO_INDEX` in metadata, plus an `X-Robots-Tag` entry in
    `next.config.mjs` if it is not an HTML route.
 5. Skip `app/opengraph-image.tsx` unless the page needs its own artwork; the site default applies

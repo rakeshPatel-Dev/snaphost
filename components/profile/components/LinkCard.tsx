@@ -20,43 +20,15 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog'
 import ShareModal from '@/components/ShareModal'
+import ExpirationPicker from '@/components/ExpirationPicker'
 import type { AppFile } from '@/types/app'
 import { buildPublicFileUrl } from '@/lib/public-file-url'
 import { CONFIG } from '@/lib/config'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-
-type ExpirationPreset = '1d' | '7d' | '1m' | 'never'
-
-function getExpirationPreset(expiresAt: string | null): ExpirationPreset {
-  if (!expiresAt) return 'never'
-  const expiresAtTime = new Date(expiresAt).getTime()
-  const diffMs = expiresAtTime - Date.now()
-  const oneDayMs = 24 * 60 * 60 * 1000
-  if (diffMs <= oneDayMs * 2) return '1d'
-  if (diffMs <= oneDayMs * 10) return '7d'
-  return '1m'
-}
-
-function getExpiresAtFromPreset(preset: ExpirationPreset): string | null {
-  if (preset === 'never') return null
-  const nextDate = new Date()
-  if (preset === '1d') nextDate.setDate(nextDate.getDate() + 1)
-  else if (preset === '7d') nextDate.setDate(nextDate.getDate() + 7)
-  else nextDate.setMonth(nextDate.getMonth() + 1)
-  return nextDate.toISOString()
-}
 
 type LinkCardProps = {
   username: string
   files: AppFile[]
   savedFiles: AppFile[]
-  isPremium: boolean
   editingFileId: string | null
   setFiles: React.Dispatch<React.SetStateAction<AppFile[]>>
   onCopyLink: (url: string) => void
@@ -68,7 +40,6 @@ const LinkCard = ({
   username,
   files,
   savedFiles,
-  isPremium,
   editingFileId,
   setFiles,
   onCopyLink,
@@ -79,12 +50,10 @@ const LinkCard = ({
   const [shareFile, setShareFile] = useState<{ url: string; filename: string } | null>(null)
   const hasFileChanges = (file: AppFile, savedFile?: AppFile) => {
     if (!savedFile) return false
-    const savedPreset = getExpirationPreset(savedFile.expires_at)
-    const currentPreset = getExpirationPreset(file.expires_at)
     return (
       savedFile.filename !== file.filename ||
       savedFile.slug !== file.slug ||
-      savedPreset !== currentPreset
+      savedFile.expires_at !== file.expires_at
     )
   }
 
@@ -110,13 +79,19 @@ const LinkCard = ({
         )}
       >
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 px-5 py-4">
-          <h2 className="text-lg font-semibold tracking-tight">Your links</h2>
-          <div className="flex flex-wrap items-center gap-3">
-            {files.length > 0 && (
-              <span className="rounded-full border border-border/60 bg-muted/20 px-2.5 py-1 font-mono text-xs font-medium text-muted-foreground">
-                {files.length} / {isPremium ? '∞' : '5'}
-              </span>
-            )}
+          <div>
+            <p className="text-xs font-medium uppercase tracking-widest text-accent">
+              Single Uploads
+            </p>
+            <h2 className="mt-1 text-lg font-semibold tracking-tight">Individual Files</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Standalone files shared with direct links
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full border border-border/60 bg-muted/20 px-2.5 py-1 font-mono text-xs font-medium text-muted-foreground">
+              {files.length} {files.length === 1 ? 'file' : 'files'}
+            </span>
           </div>
         </div>
 
@@ -131,7 +106,7 @@ const LinkCard = ({
             </Button>
           </div>
         ) : (
-          <div className="divide-y divide-border/50">
+          <div className="flex flex-col gap-3 p-4">
             {files.map((file) => {
               const isEditing = editingId === file.id
               const isSaving = editingFileId === file.id
@@ -147,11 +122,9 @@ const LinkCard = ({
                 file.upload_type === 'anonymous'
                   ? `${CONFIG.BASE_URL.replace(/\/+$/, '')}/anon/`
                   : `${CONFIG.BASE_URL.replace(/\/+$/, '')}/${encodeURIComponent(username || 'user')}/`
-              const expirationPreset = getExpirationPreset(file.expires_at)
-              const isNeverExpiring = expirationPreset === 'never'
+              const isNeverExpiring = !file.expires_at
 
-              function setExpirationPreset(preset: ExpirationPreset) {
-                const nextExpiration = getExpiresAtFromPreset(preset)
+              function setExpiration(nextExpiration: string | null) {
                 setFiles((currentFiles) =>
                   currentFiles.map((item) =>
                     item.id === file.id ? { ...item, expires_at: nextExpiration } : item
@@ -188,7 +161,10 @@ const LinkCard = ({
               return (
                 <div
                   key={file.id}
-                  className={cn('relative px-4 py-4 sm:px-5', isModified && 'bg-accent/[0.03]')}
+                  className={cn(
+                    'relative overflow-hidden rounded-2xl border border-border/50 bg-muted/10 px-4 py-4',
+                    isModified && 'border-accent/30 bg-accent/[0.03]'
+                  )}
                 >
                   {isModified && (
                     <span className="absolute inset-y-3 left-0 w-0.5 rounded-full bg-accent" />
@@ -266,27 +242,7 @@ const LinkCard = ({
                           <Clock className="h-3.5 w-3.5" />
                           Expiration
                         </Label>
-                        <Select
-                          value={expirationPreset}
-                          onValueChange={(value) => setExpirationPreset(value as ExpirationPreset)}
-                        >
-                          <SelectTrigger
-                            className={cn(
-                              'h-9 w-full justify-between rounded-full border-border/60 bg-muted/20 px-4 text-sm focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
-                              isNeverExpiring && 'font-medium text-accent'
-                            )}
-                          >
-                            <SelectValue placeholder="Select expiration" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1d">1 day</SelectItem>
-                            <SelectItem value="7d">7 days</SelectItem>
-                            <SelectItem value="1m">1 month</SelectItem>
-                            <SelectItem value="never" className="font-medium text-accent">
-                              Never
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <ExpirationPicker value={file.expires_at} onChange={setExpiration} />
                       </div>
                     </div>
                   ) : (

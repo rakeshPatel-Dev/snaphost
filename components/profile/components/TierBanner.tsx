@@ -27,17 +27,17 @@ const TierBanner = ({ isPremium }: { isPremium: boolean }) => {
   }
 
   return (
-    <div className="premium-glow flex flex-wrap items-center justify-between gap-3 rounded-4xl border border-amber-400/15 bg-amber-400/[0.02] px-4 py-3.5 backdrop-blur-xl">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-4xl border border-[var(--premium-border)] bg-[var(--premium-soft)] px-4 py-3.5 backdrop-blur-xl">
       <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-400/15">
-          <Crown className="h-4 w-4 text-amber-500" />
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--premium-soft)]">
+          <Crown className="h-4 w-4 text-[var(--premium)]" />
         </div>
-        <p className="text-sm font-bold tracking-tight text-amber-500">Premium plan</p>
+        <p className="text-sm font-bold tracking-tight text-[var(--premium)]">Premium plan</p>
       </div>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
         {PREMIUM_FEATURES.map(({ icon: Icon, label }) => (
           <span key={label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Icon className="h-3.5 w-3.5 text-amber-500/80" />
+            <Icon className="h-3.5 w-3.5 text-[var(--premium)] opacity-80" />
             {label}
           </span>
         ))}

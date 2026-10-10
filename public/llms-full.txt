@@ -26,16 +26,20 @@ change its slug, adjust the expiry date, copy the link, or delete the upload ent
    24 hours so nothing lingers.
 3. Custom links — registered users can claim a username and pick their own slug for readable links
    such as `snaphost.dev/alex/quarterly-report`.
-4. Flexible expiration — signed-in users choose how long a link stays live (1 day, 7 days, 30 days,
-   or never). Anonymous links are always capped at 24 hours.
-5. File management — one dashboard lists all active links with copy, rename, and delete actions.
+4. Flexible expiration — signed-in users choose how long a link stays live (1 day, 3 days, 7 days,
+   30 days, or never). Anonymous links are always capped at 24 hours.
+5. File bundles — group multiple files into a single shareable collection with one link, per-file
+   expiration, and a bundle preview page.
+6. File management — one dashboard lists all active links and bundles with copy, rename, and delete
+   actions.
 
 ### Plans
 
 - Anonymous: up to 3 active links, 10 MB per file, links expire after 24 hours, no dashboard.
-- Starter: up to 5 active links, 10 MB per file, custom URL paths, user-controlled expiry, dashboard.
-- Pro: unlimited active links, up to 50 MB per file, password-protected links, custom expiry dates,
-  priority CDN delivery, priority support.
+- Starter: up to 5 active links, up to 5 bundles (5 files each), 10 MB per file, custom URL paths,
+  user-controlled expiry, dashboard.
+- Pro: unlimited active links, up to 20 bundles (20 files each), up to 50 MB per file,
+  password-protected links, custom expiry dates, priority CDN delivery, priority support.
 
 Pro is activated manually. A request is sent by email, payment is confirmed by Digital Wallet or
 Bank Transfer, and the account is upgraded within 24 hours. There is no recurring billing.
@@ -53,6 +57,11 @@ and PDF uploads are enabled out of the box. Pro raises the limit to 50 MB.
 **What do the share links look like?**
 Signed-in uploads use direct links in the form `baseurl/username/filename`. Anonymous uploads use a
 short anon path so you can share them immediately without creating an account.
+
+**Can I share multiple files under one link?**
+Yes. Signed-in users can create a file bundle: upload several files, set a name and optional
+per-file expiration, then publish. The bundle gets its own shareable URL at
+`snaphost.dev/<username>/<bundle-slug>`.
 
 **Can I change a file name or slug after upload?**
 Yes. Signed-in users can open the profile dashboard to rename files, update slugs, and adjust
@@ -109,5 +118,5 @@ expiry and deletion work, account termination, and the limits of liability.
 - Marketing pages are indexable and listed in https://snaphost.dev/sitemap.xml.
 - Authentication, dashboard, and API routes are marked `noindex` via both meta robots and the
   `X-Robots-Tag` header.
-- Shared file pages are indexable while the link is live and return `noindex` once the file is
-  missing or expired.
+- Shared file and bundle pages are indexable while the link is live and return `noindex` once the
+  content is missing or expired.

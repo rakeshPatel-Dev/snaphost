@@ -1,6 +1,7 @@
 type UserTier = 'free' | 'premium'
 export type UploadType = 'anonymous' | 'custom'
 export type FileType = 'image' | 'pdf'
+export type BundleStatus = 'draft' | 'published'
 
 export type AppUser = {
   id: string
@@ -17,7 +18,8 @@ export type AdminFileRow = {
   user_id: string | null
   anon_session_id?: string | null
   upload_type: UploadType
-  slug: string
+  slug: string | null
+  bundle_id?: string | null
   filename: string
   file_type: FileType
   mime_type: string
@@ -41,6 +43,35 @@ export type AppFile = {
   publicUrl: string
 }
 
+export type AppBundleFile = {
+  id: string
+  filename: string
+  file_type: FileType
+  mime_type: string
+  size: number
+  expires_at: string | null
+  created_at: string
+  storage_path?: string
+}
+
+export type AppBundle = {
+  id: string
+  slug: string | null
+  name: string
+  status: BundleStatus
+  created_at: string
+  updated_at: string
+  published_at: string | null
+  fileCount: number
+  totalSize: number
+  publicUrl: string | null
+  files?: AppBundleFile[]
+}
+
+export type BundlesPayload = {
+  bundles: AppBundle[]
+}
+
 export type FileMetadata = {
   slug: string
   filename: string
@@ -51,6 +82,10 @@ export type FileMetadata = {
   url: string
   downloadUrl: string
 }
+
+export type PublicBundleFile = AppBundleFile & { url: string; downloadUrl: string }
+export type PublicBundle = Omit<AppBundle, 'files'> & { files: PublicBundleFile[] }
+export type PublicRedirect = { redirectUrl: string }
 
 export type AnonymousLink = {
   id: string

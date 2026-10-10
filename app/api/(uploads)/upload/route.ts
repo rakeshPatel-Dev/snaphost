@@ -5,7 +5,12 @@ import { validateFileContent, getFileType } from '@/lib/fileValidation'
 import { sanitizeFilename } from '@/lib/sanitizeFilename'
 import { createFileIdSync } from '@/lib/generateFileId'
 import { deleteFileFromStorage, uploadFileToStorage } from '@/lib/server/storage'
-import { createFileRecord, buildFileUrl, countActiveFilesForUser } from '@/lib/server/file-admin'
+import {
+  createFileRecord,
+  buildFileUrl,
+  countTotalActiveLinksForUser,
+} from '@/lib/server/file-admin'
+import { CONFIG } from '@/lib/config'
 import { supabaseAdmin } from '@/lib/server/supabase-admin'
 import crypto from 'crypto'
 import { getCurrentAppUser } from '@/lib/server/auth-user'
@@ -15,32 +20,11 @@ import {
   limitAccountUploads,
   limitAnonymousUploads,
   limitUploadIpBurst,
+  rateLimitResponse,
 } from '@/lib/server/upload-rate-limit'
 import { UPLOAD_ERRORS, ANON_ERRORS, SERVER_ERRORS } from '@/lib/messages'
 
 export const maxDuration = 60 // 60 seconds for file upload
-
-function rateLimitResponse(
-  result: { remaining: number; reset: number; unavailable?: boolean },
-  message: string
-) {
-  if (result.unavailable) {
-    return NextResponse.json({ error: SERVER_ERRORS.internalError }, { status: 503 })
-  }
-
-  const retryAfter = Math.max(1, Math.ceil((result.reset - Date.now()) / 1000))
-  return NextResponse.json(
-    { error: message },
-    {
-      status: 429,
-      headers: {
-        'Retry-After': String(retryAfter),
-        'X-RateLimit-Remaining': String(result.remaining),
-        'X-RateLimit-Reset': String(result.reset),
-      },
-    }
-  )
-}
 
 export async function POST(request: NextRequest) {
   let uploadedStoragePath: string | null = null
@@ -120,8 +104,8 @@ export async function POST(request: NextRequest) {
 
     // Enforce free-tier file limit: free users can have at most 5 active links.
     if (uploadType === 'custom' && userRecord && userRecord.tier === 'free') {
-      const currentCount = await countActiveFilesForUser(userRecord.id)
-      if (currentCount >= 5) {
+      const currentCount = await countTotalActiveLinksForUser(userRecord.id)
+      if (currentCount >= CONFIG.MAX_ACTIVE_LINKS_FREE) {
         return NextResponse.json({ error: UPLOAD_ERRORS.freePlanLimitReached }, { status: 403 })
       }
     }
@@ -298,35 +282,6 @@ export async function POST(request: NextRequest) {
 
     return response
   } catch (error) {
-    if (currentUploadType === 'anonymous') {
-      const dbRecord = error as {
-        code?: string
-        message?: string
-        details?: string
-        hint?: string
-      } | null
-      const dbText = [
-        dbRecord?.code,
-        dbRecord?.message,
-        dbRecord?.details,
-        dbRecord?.hint,
-        String(error),
-      ]
-        .filter(Boolean)
-        .join(' ')
-
-      if (dbText.includes('anon session link limit reached')) {
-        if (uploadedStoragePath) {
-          await deleteFileFromStorage(uploadedStoragePath)
-        }
-
-        return NextResponse.json(
-          { error: ANON_ERRORS.linkLimitReached, details: ANON_ERRORS.linkLimitReached },
-          { status: 403 }
-        )
-      }
-    }
-
     console.error('Upload route error:', error)
     if (posthogLogsConfigured) {
       posthogLogger.emit({

@@ -56,7 +56,7 @@ export default function UserMenu() {
           <AvatarFallback>{initial}</AvatarFallback>
         </Avatar>
         {isPremium && (
-          <span className="premium-gradient absolute -bottom-0.5 -right-0.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full px-[3px] text-[8px] font-bold leading-none text-white ring-2 ring-background">
+          <span className="premium-gradient absolute -bottom-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-bold leading-none text-white ring-2 ring-background shadow-sm">
             P
           </span>
         )}

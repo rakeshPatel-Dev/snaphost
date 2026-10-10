@@ -131,6 +131,7 @@ export function softwareApplicationSchema(): JsonLd {
       'Anonymous uploads that expire after 24 hours',
       'Custom username-based URLs',
       'Per-file expiry control',
+      'Multi-file bundles with one share link',
       'Password-protected links (Pro)',
       'File management dashboard',
       'Delete uploads anytime',
@@ -225,6 +226,34 @@ export function webPageSchema(options: {
     about: { '@id': `${SITE_URL}/#organization` },
     ...(breadcrumbTrail ? { breadcrumb: { '@id': `${absoluteUrl(path)}#breadcrumb` } } : {}),
     ...(dateModified ? { dateModified } : {}),
+  }
+}
+
+export function collectionPageSchema(options: {
+  name: string
+  description: string
+  path: string
+  fileCount: number
+  breadcrumbTrail?: Crumb[]
+}): JsonLd {
+  const { name, description, path, fileCount, breadcrumbTrail } = options
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${absoluteUrl(path)}#collection`,
+    url: absoluteUrl(path),
+    name,
+    description,
+    inLanguage: SITE_LANG,
+    isPartOf: { '@id': `${SITE_URL}/#website` },
+    about: { '@id': `${SITE_URL}/#organization` },
+    ...(breadcrumbTrail ? { breadcrumb: { '@id': `${absoluteUrl(path)}#breadcrumb` } } : {}),
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: fileCount,
+      itemListElement: [],
+    },
   }
 }
 

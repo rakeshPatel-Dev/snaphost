@@ -14,6 +14,7 @@ export default function UploadForm({
   onFileInputClick,
   fileInputRef,
   onFileSelect,
+  multiple = false,
 }: UploadFormProps) {
   return (
     <div
@@ -31,6 +32,7 @@ export default function UploadForm({
         ref={fileInputRef}
         type="file"
         onChange={onFileSelect}
+        multiple={multiple}
         accept="image/png,image/jpeg,image/webp,.pdf,application/pdf"
         title="Upload file"
         placeholder="Upload file"
@@ -44,7 +46,11 @@ export default function UploadForm({
         </div>
         <div>
           <p className="text-base font-semibold text-foreground">
-            {isUploading ? 'Uploading...' : 'Drop a file or click to select'}
+            {isUploading
+              ? 'Uploading...'
+              : multiple
+                ? 'Drop files or click to select'
+                : 'Drop a file or click to select'}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">PNG, JPG, WebP, or PDF up to 10 MB</p>
         </div>
@@ -64,7 +70,7 @@ export default function UploadForm({
         ) : (
           <>
             <Upload className="h-4 w-4 mr-2" />
-            Choose file
+            {multiple ? 'Choose files' : 'Choose file'}
           </>
         )}
       </Button>
