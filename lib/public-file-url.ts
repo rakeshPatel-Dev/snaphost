@@ -17,3 +17,8 @@ export function buildPublicFileUrl({ baseUrl, slug, username, uploadType }: Publ
   const safeUsername = username || 'user'
   return `${normalizedBaseUrl}/${encodeURIComponent(safeUsername)}/${encodeURIComponent(slug)}`
 }
+
+export function buildPublicBundleUrl(baseUrl: string, username: string | null, slug: string) {
+  const normalizedBaseUrl = baseUrl.replace(/\/+$/, '')
+  return `${normalizedBaseUrl}/${encodeURIComponent(username || 'user')}/${encodeURIComponent(slug)}`
+}

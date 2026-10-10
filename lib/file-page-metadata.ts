@@ -2,6 +2,7 @@ import 'server-only'
 
 import type { Metadata } from 'next'
 import { getFileMetadata } from './server/database'
+import { getPublicBundle } from './server/bundle-admin'
 import {
   absoluteUrl,
   NO_INDEX,
@@ -45,6 +46,56 @@ export async function getFilePageMetadata(
 ): Promise<Metadata> {
   const { username, isAnonymous = false, canonicalPath } = options
   const canonical = canonicalPath ?? `/f/${slug}`
+  const bundle = !isAnonymous ? await getPublicBundle(slug, username) : null
+
+  if (bundle) {
+    const title = `${bundle.name} | ${BRAND_TITLE}`
+    const description = `View ${bundle.fileCount} shared file${bundle.fileCount === 1 ? '' : 's'} in this bundle on ${SITE_NAME}.`
+    const previewImage = bundle.files.find((file) => file.file_type === 'image')?.url
+    const socialImageUrl = previewImage ?? absoluteUrl(OG_IMAGE_PATH)
+    const socialImageAlt = previewImage ? `${bundle.name} shared on ${SITE_NAME}` : OG_IMAGE_ALT
+
+    return {
+      title: { absolute: title },
+      description,
+      alternates: { canonical },
+      applicationName: SITE_NAME,
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+          'max-video-preview': -1,
+        },
+      },
+      openGraph: {
+        title,
+        description,
+        url: absoluteUrl(canonical),
+        siteName: SITE_NAME,
+        type: 'website',
+        locale: SITE_LOCALE,
+        images: [
+          {
+            url: socialImageUrl,
+            width: OG_IMAGE_SIZE.width,
+            height: OG_IMAGE_SIZE.height,
+            alt: socialImageAlt,
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [{ url: socialImageUrl, alt: socialImageAlt }],
+      },
+    }
+  }
+
   const file = await getFileMetadata(slug, username)
 
   if (!file) {
