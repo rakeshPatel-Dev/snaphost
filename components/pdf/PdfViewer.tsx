@@ -5,7 +5,6 @@ import type { TouchEvent } from 'react'
 import { Download, Unlink } from 'lucide-react'
 import * as pdfjs from 'pdfjs-dist'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
-import Logo from '@/components/layout/Logo'
 import PdfOutline from './PdfOutline'
 import PdfPage from './PdfPage'
 import PdfSearch from './PdfSearch'
@@ -338,8 +337,6 @@ export default function PdfViewer({ url, filename, downloadUrl }: PdfViewerProps
       <header className="sticky top-0 z-20 border-b border-border/60 bg-background/95 backdrop-blur-sm">
         <div className="mx-auto flex min-h-14 max-w-7xl flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2 sm:flex-nowrap sm:gap-3 sm:px-6 sm:py-0">
           <div className="order-1 flex min-w-0 flex-1 items-center gap-3">
-            <Logo className="hidden sm:flex" />
-            <Logo className="sm:hidden [&>span]:hidden" />
             <p
               className="min-w-0 flex-1 truncate text-sm font-medium text-foreground"
               title={filename}

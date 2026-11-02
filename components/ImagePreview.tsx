@@ -3,7 +3,6 @@
 import { useCallback, useRef, useState } from 'react'
 import { Download, Maximize, Minus, Plus } from 'lucide-react'
 import BrandLoader from './shared/BrandLoader'
-import Logo from './layout/Logo'
 import { cn } from '@/lib/utils'
 
 const MIN_ZOOM = 25
@@ -65,8 +64,6 @@ export default function ImagePreview({ url, filename, downloadUrl }: ImagePrevie
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-20 border-b border-border/60 bg-background/95 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4 sm:px-6">
-          <Logo className="hidden sm:flex" />
-          <Logo className="sm:hidden [&>span]:hidden" />
           <p
             className="min-w-0 flex-1 truncate text-sm font-medium text-foreground"
             title={filename}
