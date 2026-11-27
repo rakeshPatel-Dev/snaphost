@@ -1,4 +1,4 @@
-import { FeatureShowcase, CTA, FAQ, Hero, LogoCloud, Pricing } from '@/features/landing'
+import { FeatureShowcase, CTA, FAQ, Hero, Pricing } from '@/features/landing'
 import JsonLd from '@/components/shared/JsonLd'
 import { faqs } from '@/data/faq'
 import { features } from '@/data/features'
@@ -90,7 +90,6 @@ export default function Home() {
         )}
       />
       <Hero />
-      <LogoCloud />
       <FeatureShowcase />
       <Pricing />
       <FAQ />
